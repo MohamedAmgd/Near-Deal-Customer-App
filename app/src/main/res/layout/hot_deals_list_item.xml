@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:paddingEnd="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="RtlSymmetry">
     <ImageView
         android:id="@+id/hot_deal_image"
         android:layout_width="154dp"
