@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/explore_menu_item"
+        android:enabled="true"
+        android:icon="@drawable/ic_explore"
+        android:title=""/>
+    <item
+        android:id="@+id/shops_menu_item"
+        android:enabled="true"
+        android:icon="@drawable/ic_shops"
+        android:title=""/>
+    <item
+        android:id="@+id/nearby_locations_menu_item"
+        android:enabled="true"
+        android:icon="@drawable/ic_nearby_locations"
+        android:title=""/>
+</menu>

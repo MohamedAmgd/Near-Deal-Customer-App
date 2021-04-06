@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom navigation bar values -->
+    <dimen name="explore_bottom_nav_item_icon_size">19dp</dimen>
+    <dimen name="bottom_nav_corner_radius">10dp</dimen>
+    <!-- Search view values -->
+    <dimen name="search_view_height">38dp</dimen>
+    <dimen name="search_view_corner_radius">21dp</dimen>
+    <dimen name="search_view_margin_start">16dp</dimen>
+    <dimen name="search_view_margin_End">12dp</dimen>
+    <!-- Account button values -->
+    <dimen name="account_button_size">36dp</dimen>
+    <dimen name="account_button_margin_end">16dp</dimen>
+    <!-- List header values -->
+    <dimen name="list_header_text_size">21sp</dimen>
+</resources>

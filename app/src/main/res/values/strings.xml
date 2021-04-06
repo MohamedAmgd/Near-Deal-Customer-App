@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">3ayz eh</string>
+    <string name="explore">Explore</string>
+    <string name="shops">Shops</string>
+    <string name="nearby_locations">Nearby locations</string>
+    <string name="categories">Categories</string>
+    <string name="hot_deals">Hot Deals</string>
+    <string name="see_all">See All</string>
+</resources>

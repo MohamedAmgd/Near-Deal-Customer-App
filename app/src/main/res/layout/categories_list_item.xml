@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="26dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/category_image_holder"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        app:cardCornerRadius="36dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <ImageView
+            android:id="@+id/category_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            tools:src="@drawable/ic_nearby_locations"/>
+    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/category_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:layout_marginStart="20dp"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/category_image_holder"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Men"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

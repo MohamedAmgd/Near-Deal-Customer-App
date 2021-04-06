@@ -1,0 +1,38 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.3ayzEh" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/dodger_blue</item>
+        <item name="colorPrimaryVariant">@color/picton_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/mercury</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/darker_white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Background color-->
+        <item name="backgroundColor">@color/darker_white</item>
+        <!-- font -->
+        <item name="android:fontFamily">@font/roboto_regular</item>
+
+    </style>
+    <style name="SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="android:searchIcon">@drawable/ic_search_black</item>
+        <item name="android:background">@drawable/search_view_background_light</item>
+        <item name="android:queryBackground">@android:color/transparent</item>
+        <item name="android:iconifiedByDefault">false</item>
+
+    </style>
+    <style name="BottomNavigationView" parent="Widget.Design.BottomNavigationView">
+        <item name="android:elevation">4dp</item>
+        <item name="android:background">@drawable/bottom_nav_background</item>
+        <item name="menu">@menu/bottom_navigation_menu</item>
+        <item name="itemIconTint">@color/bnv_tab_item_foreground</item>
+        <item name="labelVisibilityMode">unlabeled</item>
+    </style>
+    <style name="AccountButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_marginEnd">@dimen/account_button_margin_end</item>
+        <item name="android:background">@drawable/ic_account_circle</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+</resources>

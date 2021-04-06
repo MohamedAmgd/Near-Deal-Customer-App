@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?backgroundColor"
+    android:paddingTop="32dp"
+    tools:context=".ExploreFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SearchView
+        android:id="@+id/search_view"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_view_height"
+        android:layout_marginStart="@dimen/search_view_margin_start"
+        android:layout_marginEnd="@dimen/account_button_margin_end"
+        style="@style/SearchView"
+        app:layout_constraintEnd_toStartOf="@id/account_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/account_button"
+        android:layout_width="@dimen/account_button_size"
+        android:layout_height="@dimen/account_button_size"
+        android:theme="@style/AccountButton"
+        style="@style/AccountButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/categories_list_header"
+        android:text="@string/categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/roboto_black"
+        android:textColor="@color/black"
+        android:textSize="@dimen/list_header_text_size"
+        app:layout_constraintTop_toBottomOf="@id/search_view"
+        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/categories_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/categories_list_header"
+        tools:itemCount="1"
+        tools:listitem="@layout/categories_list_item"/>
+    <TextView
+        android:id="@+id/hot_deals_list_header"
+        android:text="@string/hot_deals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/roboto_black"
+        android:textColor="@color/black"
+        android:textSize="@dimen/list_header_text_size"
+        app:layout_constraintTop_toBottomOf="@id/categories_recycler"
+        app:layout_constraintStart_toStartOf="parent" />
+    <TextView
+        android:id="@+id/see_all"
+        android:text="@string/see_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="57dp"
+        android:layout_marginEnd="23dp"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@id/categories_recycler"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hot_deals_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hot_deals_list_header"
+        tools:itemCount="1"
+        tools:listitem="@layout/hot_deals_list_item"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
