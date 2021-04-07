@@ -21,7 +21,6 @@
         <item name="android:background">@drawable/search_view_background_light</item>
         <item name="android:queryBackground">@android:color/transparent</item>
         <item name="android:iconifiedByDefault">false</item>
-
     </style>
     <style name="BottomNavigationView" parent="Widget.Design.BottomNavigationView">
         <item name="android:elevation">4dp</item>
@@ -34,5 +33,8 @@
         <item name="android:layout_marginEnd">@dimen/account_button_margin_end</item>
         <item name="android:background">@drawable/ic_account_circle</item>
         <item name="backgroundTint">@null</item>
+    </style>
+    <style name="SearchBar" parent="Widget.Design.AppBarLayout">
+        <item name="android:background">@drawable/search_view_background_light</item>
     </style>
 </resources>

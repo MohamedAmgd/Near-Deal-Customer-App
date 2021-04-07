@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <ImageView
+        android:id="@+id/search_result_image"
+        android:layout_width="84dp"
+        android:layout_height="124dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_shops"/>
+    <TextView
+        android:id="@+id/search_result_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="34dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/search_result_image"
+        tools:text="Men Shoe"/>
+    <TextView
+        android:id="@+id/search_result_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="13sp"
+        android:layout_marginStart="28dp"
+        app:layout_constraintTop_toBottomOf="@id/search_result_name"
+        app:layout_constraintStart_toEndOf="@id/search_result_image"
+        tools:text="Adidas"/>
+    <TextView
+        android:id="@+id/search_result_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="?colorPrimary"
+        android:layout_marginTop="64dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="749 EGP"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
