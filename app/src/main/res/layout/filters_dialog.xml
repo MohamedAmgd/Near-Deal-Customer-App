@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/filters_dialog_background">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="49dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/filters"
+        android:textColor="@color/black"
+        android:textSize="27sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/exit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="57dp"
+        android:layout_marginEnd="37dp"
+        android:background="@drawable/ic_exit_filters_dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="33dp"
+        android:layout_marginTop="56dp"
+        app:chipSpacingHorizontal="20dp"
+        app:chipSpacingVertical="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:singleSelection="true">
+
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/men_chip"
+            android:layout_width="90dp"
+            android:layout_height="56dp"
+            android:text="@string/men"
+            android:textAppearance="@style/ChoiceChip" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/women_chip"
+            android:layout_width="90dp"
+            android:layout_height="56dp"
+            android:text="@string/women"
+            android:textAppearance="@style/ChoiceChip" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/devices_chip"
+            android:layout_width="90dp"
+            android:layout_height="56dp"
+            android:text="@string/devices"
+            android:textAppearance="@style/ChoiceChip" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/gadgets_chip"
+            android:layout_width="90dp"
+            android:layout_height="56dp"
+            android:text="@string/gadgets"
+            android:textAppearance="@style/ChoiceChip" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tools_chip"
+            android:layout_width="90dp"
+            android:layout_height="56dp"
+            android:text="@string/tools"
+            android:textAppearance="@style/ChoiceChip" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/price_range_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/price_range"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chip_group" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/range_slider"
+        style="@style/Widget.App.Slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="37dp"
+        android:layout_marginTop="36dp"
+        android:valueFrom="0"
+        android:valueTo="100"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/price_range_header"
+        app:thumbColor="@color/white"
+        app:thumbStrokeColor="?colorPrimary"
+        app:thumbStrokeWidth="3dp"
+        app:values="@array/range_slider_initial_values" />
+
+    <Button
+        android:id="@+id/confirm_button"
+        android:layout_width="160dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/filters_confirm_button_background"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/confirm"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/range_slider" />
+</androidx.constraintlayout.widget.ConstraintLayout>

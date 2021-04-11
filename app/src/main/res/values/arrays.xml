@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="range_slider_initial_values" >
+        <item>0</item>
+        <item>100</item>
+    </string-array>
+</resources>

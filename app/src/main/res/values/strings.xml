@@ -7,4 +7,13 @@
     <string name="hot_deals">Hot Deals</string>
     <string name="see_all">See All</string>
     <string name="offers">Offers</string>
+    <string name="filters">FILTERS</string>
+    <string name="any">Any</string>
+    <string name="men">MEN</string>
+    <string name="women">WOMEN</string>
+    <string name="devices">Devices</string>
+    <string name="gadgets">Gadgets</string>
+    <string name="tools">Tools</string>
+    <string name="price_range">Price Range</string>
+    <string name="confirm">Confirm</string>
 </resources>

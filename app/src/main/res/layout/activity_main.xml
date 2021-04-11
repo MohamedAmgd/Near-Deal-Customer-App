@@ -13,13 +13,13 @@
         android:id="@+id/fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        
     </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
+        style="@style/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/BottomNavigationView"
         app:layout_constraintBottom_toBottomOf="@+id/root" />
 </androidx.constraintlayout.widget.ConstraintLayout>

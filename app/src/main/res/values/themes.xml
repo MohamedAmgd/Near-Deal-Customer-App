@@ -15,6 +15,7 @@
         <!-- font -->
         <item name="android:fontFamily">@font/roboto_regular</item>
 
+        <item name="chipStyle">@style/ChoiceChip</item>
     </style>
     <style name="SearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:searchIcon">@drawable/ic_search_black</item>
@@ -36,5 +37,28 @@
     </style>
     <style name="SearchBar" parent="Widget.Design.AppBarLayout">
         <item name="android:background">@drawable/search_view_background_light</item>
+    </style>
+    <style name="ChoiceChip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/choice_chip_text_color</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="chipBackgroundColor">@color/choice_chip_background_color</item>
+    </style>
+
+    <style name="Widget.App.Slider" parent="Widget.MaterialComponents.Slider">
+        <item name="labelStyle">@style/Widget.App.Tooltip</item>
+    </style>
+
+    <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>
+        <item name="backgroundTint">?backgroundColor</item>
+    </style>
+
+    <style name="TextAppearance.App.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/roboto_bold</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:textSize">12sp</item>
     </style>
 </resources>
