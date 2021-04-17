@@ -25,4 +25,5 @@
     <string name="hint_email">eg: yourname@gmail.com</string>
     <string name="hint_username">eg: john doe</string>
     <string name="birth_date_hint">eg. 17/04/1980</string>
+    <string name="edit">Edit</string>
 </resources>

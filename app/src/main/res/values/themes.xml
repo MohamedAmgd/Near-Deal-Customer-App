@@ -46,6 +46,7 @@
         <item name="chipBackgroundColor">@color/choice_chip_background_color</item>
     </style>
 
+    <!-- price range slider in filters -->
     <style name="Widget.App.Slider" parent="Widget.MaterialComponents.Slider">
         <item name="labelStyle">@style/Widget.App.Tooltip</item>
     </style>
