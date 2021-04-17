@@ -16,4 +16,13 @@
     <string name="tools">Tools</string>
     <string name="price_range">Price Range</string>
     <string name="confirm">Confirm</string>
+    <string name="change_photo">Change photo</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="birth_date">Birth Date</string>
+    <string name="hint_email">eg: yourname@gmail.com</string>
+    <string name="hint_username">eg: john doe</string>
+    <string name="birth_date_hint">eg. 17/04/1980</string>
 </resources>
