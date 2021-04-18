@@ -50,5 +50,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_bar"
         tools:itemCount="5"
-        tools:listitem="@layout/search_results_list_item"/>
+        tools:listitem="@layout/products_list_item"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

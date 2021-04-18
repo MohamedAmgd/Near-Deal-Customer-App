@@ -26,4 +26,10 @@
     <string name="hint_username">eg: john doe</string>
     <string name="birth_date_hint">eg. 17/04/1980</string>
     <string name="edit">Edit</string>
+    <string name="shop_name">Shop Name</string>
+    <string name="hint_shop_name">eg: Prism 2 print store</string>
+    <string name="locations">Locations</string>
+    <string name="description">Description</string>
+    <string name="description_hint">Description...</string>
+    <string name="products">Products</string>
 </resources>
