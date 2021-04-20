@@ -12,24 +12,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ShopInfoFragment extends Fragment {
+public class EditMyShopFragment extends Fragment {
 
-    private ShopInfoViewModel mViewModel;
+    private EditMyShopViewModel mViewModel;
 
-    public static ShopInfoFragment newInstance() {
-        return new ShopInfoFragment();
+    public static EditMyShopFragment newInstance() {
+        return new EditMyShopFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.shop_info_fragment, container, false);
+        return inflater.inflate(R.layout.edit_my_shop_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ShopInfoViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(EditMyShopViewModel.class);
         // TODO: Use the ViewModel
     }
 
