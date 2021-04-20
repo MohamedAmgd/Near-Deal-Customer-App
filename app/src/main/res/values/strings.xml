@@ -32,4 +32,11 @@
     <string name="description">Description</string>
     <string name="description_hint">Description...</string>
     <string name="products">Products</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="mobile_number_hint">eg: +919909900089</string>
+    <string name="add_location">Add location</string>
+    <string name="add_location_hint">San Stefano branch</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="add_product">Add product</string>
 </resources>

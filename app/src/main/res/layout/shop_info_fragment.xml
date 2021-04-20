@@ -1,41 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?backgroundColor"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ShopInfoFragment">
 
     <ImageView
-        android:id="@+id/user_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/shop_image"
         android:layout_width="94dp"
         android:layout_height="94dp"
         android:layout_marginTop="40dp"
-        android:src="@drawable/ic_shop_circle" />
+        android:src="@drawable/ic_shop_circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.chip.Chip
         android:id="@+id/edit_chip"
-        app:chipBackgroundColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_image"
         android:layout_width="94dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="@string/edit"
         android:textColor="@color/white"
-        android:textSize="12sp" />
-
-
+        android:textSize="12sp"
+        app:chipBackgroundColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shop_image" />
 
     <TextView
         android:id="@+id/shop_name_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -43,25 +39,25 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/shop_name"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_chip" />
 
     <TextView
         android:id="@+id/shop_name_text_view"
-        app:layout_constraintTop_toBottomOf="@id/shop_name_header_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
-        tools:text="@string/hint_shop_name"/>
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shop_name_header_text_view"
+        tools:text="@string/hint_shop_name" />
 
     <TextView
         android:id="@+id/description_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -69,25 +65,25 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/description"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shop_name_text_view" />
 
     <TextView
         android:id="@+id/description_text_view"
-        app:layout_constraintTop_toBottomOf="@id/description_header_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
-        tools:text="@string/description_hint"/>
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_header_text_view"
+        tools:text="@string/description_hint" />
 
     <TextView
         android:id="@+id/locations_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -95,24 +91,25 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/locations"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_text_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/locations_recycler"
-        app:layout_constraintTop_toBottomOf="@id/locations_header_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/locations_header_text_view"
         tools:itemCount="3"
-        tools:listitem="@layout/locations_list_item"/>
+        tools:listitem="@layout/locations_list_item" />
+
     <TextView
         android:id="@+id/products_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/locations_recycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -120,20 +117,22 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/products"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/locations_recycler" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/products_recycler"
-        app:layout_constraintTop_toBottomOf="@id/products_header_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/products_header_text_view"
         tools:itemCount="3"
-        tools:listitem="@layout/products_list_item"/>
+        tools:listitem="@layout/products_list_item" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
