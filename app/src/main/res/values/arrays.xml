@@ -4,4 +4,12 @@
         <item>0</item>
         <item>100</item>
     </string-array>
+
+    <string-array name="categories_array">
+        <item>Men</item>
+        <item>Women</item>
+        <item>Devices</item>
+        <item>Gadgets</item>
+        <item>Tools</item>
+    </string-array>
 </resources>

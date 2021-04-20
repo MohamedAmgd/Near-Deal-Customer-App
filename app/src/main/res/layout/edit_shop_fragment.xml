@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?backgroundColor"
     tools:context=".EditShopFragment">
 
     <TextView
@@ -111,7 +112,7 @@
         app:layout_constraintTop_toBottomOf="@id/mobile_number_edit_text" />
 
     <EditText
-        android:id="@+id/description_text_view"
+        android:id="@+id/description_edit_text"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginHorizontal="26dp"
@@ -136,7 +137,7 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/description_edit_text" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/locations_recycler"
@@ -214,10 +215,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="43dp"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/add"
             android:textColor="?colorPrimary"
-            android:textSize="18sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location_layout" />
 
@@ -227,10 +228,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="23dp"
-            android:fontFamily="@font/roboto_bold"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/cancel"
-            android:textColor="?colorPrimary"
-            android:textSize="18sp"
+            android:textColor="@color/burnt_sienna"
+            android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@id/add_location"
             app:layout_constraintTop_toBottomOf="@id/location_layout" />
 

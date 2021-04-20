@@ -1,60 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?backgroundColor"
-    tools:context=".ShopInfoFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AddProductFragment">
+
 
     <ImageView
-        android:id="@+id/shop_image"
+        android:id="@+id/product_image"
         android:layout_width="94dp"
         android:layout_height="94dp"
         android:layout_marginTop="40dp"
-        android:src="@drawable/ic_shop_circle"
+        android:src="@drawable/ic_product"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.chip.Chip
-        android:id="@+id/edit_chip"
-        android:layout_width="94dp"
+        android:id="@+id/change_photo_chip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="@string/edit"
+        android:text="@string/change_photo"
         android:textColor="@color/white"
         android:textSize="12sp"
-        app:chipBackgroundColor="@color/black"
+        app:chipBackgroundColor="?colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_image" />
+        app:layout_constraintTop_toBottomOf="@id/product_image" />
 
     <TextView
-        android:id="@+id/shop_name_header_text_view"
+        android:id="@+id/product_name_header_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="@string/shop_name"
+        android:text="@string/product_name"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_chip" />
+        app:layout_constraintTop_toBottomOf="@id/change_photo_chip" />
 
-    <TextView
-        android:id="@+id/shop_name_text_view"
+    <EditText
+        android:id="@+id/product_name_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginHorizontal="26dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints="@string/product_name_hint"
+        android:background="@drawable/shop_edit_text_background"
+        android:hint="@string/product_name_hint"
+        android:inputType="textAutoComplete"
         android:paddingHorizontal="15dp"
-        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_name_header_text_view"
-        tools:text="@string/hint_shop_name" />
+        app:layout_constraintTop_toBottomOf="@id/product_name_header_text_view" />
 
     <TextView
         android:id="@+id/description_header_text_view"
@@ -67,72 +70,100 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_name_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/product_name_edit_text" />
 
-    <TextView
+    <EditText
         android:id="@+id/description_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginHorizontal="26dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints="@string/description_hint"
+        android:background="@drawable/shop_edit_text_background"
+        android:hint="@string/description_hint"
+        android:inputType="textAutoComplete"
         android:paddingHorizontal="15dp"
-        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description_header_text_view"
-        tools:text="@string/description_hint" />
+        app:layout_constraintTop_toBottomOf="@id/description_header_text_view" />
+
 
     <TextView
-        android:id="@+id/locations_header_text_view"
+        android:id="@+id/category_header_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="@string/locations"
+        android:text="@string/category"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description_edit_text" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/locations_recycler"
+    <Spinner
+        android:id="@+id/category_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginHorizontal="26dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shop_edit_text_background"
         android:paddingHorizontal="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/locations_header_text_view"
-        tools:itemCount="3"
-        tools:listitem="@layout/locations_list_item" />
+        app:layout_constraintTop_toBottomOf="@id/category_header_text_view"/>
 
     <TextView
-        android:id="@+id/products_header_text_view"
+        android:id="@+id/price_header_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="@string/products"
+        android:text="@string/price"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/locations_recycler" />
+        app:layout_constraintTop_toBottomOf="@id/category_spinner" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/products_recycler"
+    <EditText
+        android:id="@+id/price_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginHorizontal="26dp"
-        android:layout_marginTop="19dp"
+        android:layout_marginTop="10dp"
+        android:autofillHints="@string/price_hint"
+        android:background="@drawable/shop_edit_text_background"
+        android:hint="@string/price_hint"
+        android:inputType="number"
         android:paddingHorizontal="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/products_header_text_view"
-        tools:itemCount="3"
-        tools:listitem="@layout/products_list_item" />
+        app:layout_constraintTop_toBottomOf="@id/price_header_text_view" />
 
+    <TextView
+        android:id="@+id/add_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="74dp"
+        android:layout_marginEnd="35dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/add"
+        android:textColor="?colorPrimary"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/price_edit_text" />
 
+    <TextView
+        android:id="@+id/cancel_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="74dp"
+        android:layout_marginEnd="26dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/cancel"
+        android:textColor="@color/burnt_sienna"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toStartOf="@id/add_location"
+        app:layout_constraintTop_toBottomOf="@id/price_edit_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>

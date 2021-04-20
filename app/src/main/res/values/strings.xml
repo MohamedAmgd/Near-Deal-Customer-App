@@ -39,4 +39,9 @@
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
     <string name="add_product">Add product</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_name_hint">eg. Men shoe</string>
+    <string name="category">Category</string>
+    <string name="price">Price</string>
+    <string name="price_hint">Price (EGP)</string>
 </resources>
