@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?backgroundColor"
+    tools:context=".NearbyLocationsFragment">
+
+    <SearchView
+        android:id="@+id/search_view"
+        style="@style/SearchView"
+        android:queryHint="@string/nearby_locations_search_hint"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_view_height"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/search_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"/>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="146dp"
+        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="24dp"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/map">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:id="@+id/shop_image"
+                android:layout_width="78dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:src="@drawable/ic_shops"/>
+
+            <TextView
+                android:id="@+id/shop_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="14dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/shop_image"
+                tools:text="Adidas Outlet"/>
+            <TextView
+                android:id="@+id/shop_description_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="14dp"
+                app:layout_constraintTop_toBottomOf="@id/shop_name_text_view"
+                app:layout_constraintStart_toEndOf="@id/shop_image"
+                tools:text="Sportswear"/>
+            <TextView
+                android:id="@+id/distance_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/burnt_sienna"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_marginBottom="18dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="5 km away"/>
+            <TextView
+                android:id="@+id/details_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?colorPrimary"
+                android:textSize="15sp"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_marginBottom="18dp"
+                android:layout_marginEnd="29dp"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@string/details"
+                android:focusable="true" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

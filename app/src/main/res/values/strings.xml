@@ -44,4 +44,7 @@
     <string name="category">Category</string>
     <string name="price">Price</string>
     <string name="price_hint">Price (EGP)</string>
+    <string name="details">Details</string>
+    <string name="nearby_locations_search_hint">Search in nearby shops</string>
+    <string name="product_search_hint">What are you looking for ?</string>
 </resources>
