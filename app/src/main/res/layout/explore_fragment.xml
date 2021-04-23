@@ -15,18 +15,10 @@
         android:layout_marginStart="@dimen/search_view_margin_start"
         android:layout_marginEnd="@dimen/account_button_margin_end"
         style="@style/SearchView"
-        app:layout_constraintEnd_toStartOf="@id/account_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/account_button"
-        android:layout_width="@dimen/account_button_size"
-        android:layout_height="@dimen/account_button_size"
-        android:theme="@style/AccountButton"
-        style="@style/AccountButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:id="@+id/categories_list_header"
         android:text="@string/categories"

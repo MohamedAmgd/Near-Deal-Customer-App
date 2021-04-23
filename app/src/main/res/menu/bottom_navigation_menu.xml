@@ -6,13 +6,13 @@
         android:icon="@drawable/ic_explore"
         android:title=""/>
     <item
-        android:id="@+id/shops_menu_item"
-        android:enabled="true"
-        android:icon="@drawable/ic_shops"
-        android:title=""/>
-    <item
         android:id="@+id/nearby_locations_menu_item"
         android:enabled="true"
         android:icon="@drawable/ic_nearby_locations"
+        android:title=""/>
+    <item
+        android:id="@+id/account_menu_item"
+        android:enabled="true"
+        android:icon="@drawable/ic_account"
         android:title=""/>
 </menu>

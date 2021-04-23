@@ -1,27 +1,34 @@
 package com.mohamed_amgd.ayzeh;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView mBottomNavigationView;
+    private FragmentManager mFragmentManager;
+    private FragmentTransaction mFragmentTransaction;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mBottomNavigationView = findViewById(R.id.bottom_nav_view);
         increaseExploreItemSize();
+        initNavigation();
     }
+
     private void increaseExploreItemSize(){
         final int valueInPixels = (int) getResources().getDimension(R.dimen.explore_bottom_nav_item_icon_size);
         BottomNavigationMenuView menuView = (BottomNavigationMenuView) mBottomNavigationView.getChildAt(0);
@@ -35,5 +42,30 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP
                 , valueInPixels, displayMetrics);
         iconView.setLayoutParams(layoutParams);
+    }
+
+    private void initNavigation(){
+        mFragmentManager = getSupportFragmentManager();
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.add(R.id.fragment_layout,new ExploreFragment());
+        mFragmentTransaction.commit();
+
+        mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.explore_menu_item) {
+                mFragmentTransaction = mFragmentManager.beginTransaction();
+                mFragmentTransaction.replace(R.id.fragment_layout,new ExploreFragment());
+                mFragmentTransaction.commit();
+            }  else if (itemId == R.id.nearby_locations_menu_item) {
+                mFragmentTransaction = mFragmentManager.beginTransaction();
+                mFragmentTransaction.replace(R.id.fragment_layout,new NearbyLocationsFragment());
+                mFragmentTransaction.commit();
+            } else if (itemId == R.id.account_menu_item) {
+                mFragmentTransaction = mFragmentManager.beginTransaction();
+                mFragmentTransaction.replace(R.id.fragment_layout,new AccountFragment());
+                mFragmentTransaction.commit();
+            }
+            return true;
+        });
     }
 }
