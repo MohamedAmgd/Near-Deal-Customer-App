@@ -19,7 +19,7 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBTIj7wKNSkAGynFLiNpMJHmS0HsQG-unk" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".Views.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

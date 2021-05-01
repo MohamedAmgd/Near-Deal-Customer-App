@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh;
+package com.mohamed_amgd.ayzeh.Views.Fragments;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,24 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class AddProductFragment extends Fragment {
+import com.mohamed_amgd.ayzeh.R;
+import com.mohamed_amgd.ayzeh.ViewModels.ShopInfoViewModel;
 
-    private AddProductViewModel mViewModel;
+public class ShopInfoFragment extends Fragment {
 
-    public static AddProductFragment newInstance() {
-        return new AddProductFragment();
+    private ShopInfoViewModel mViewModel;
+
+    public static ShopInfoFragment newInstance() {
+        return new ShopInfoFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.add_product_fragment, container, false);
+        return inflater.inflate(R.layout.shop_info_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AddProductViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(ShopInfoViewModel.class);
         // TODO: Use the ViewModel
     }
 

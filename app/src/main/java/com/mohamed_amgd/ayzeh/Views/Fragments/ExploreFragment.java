@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh;
+package com.mohamed_amgd.ayzeh.Views.Fragments;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -14,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+
+import com.mohamed_amgd.ayzeh.Models.Category;
+import com.mohamed_amgd.ayzeh.R;
+import com.mohamed_amgd.ayzeh.ViewModels.ExploreViewModel;
 
 import java.util.ArrayList;
 

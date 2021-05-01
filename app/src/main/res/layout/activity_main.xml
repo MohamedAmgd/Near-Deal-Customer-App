@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?backgroundColor"
     android:clipChildren="false"
-    tools:context=".MainActivity">
+    tools:context=".Views.MainActivity">
 
     <ScrollView
         android:id="@+id/fragment_layout"

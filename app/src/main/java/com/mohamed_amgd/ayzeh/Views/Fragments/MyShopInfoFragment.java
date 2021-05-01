@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh;
+package com.mohamed_amgd.ayzeh.Views.Fragments;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,24 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SearchFragment extends Fragment {
+import com.mohamed_amgd.ayzeh.R;
+import com.mohamed_amgd.ayzeh.ViewModels.MyShopInfoViewModel;
 
-    private SearchViewModel mViewModel;
+public class MyShopInfoFragment extends Fragment {
 
-    public static SearchFragment newInstance() {
-        return new SearchFragment();
+    private MyShopInfoViewModel mViewModel;
+
+    public static MyShopInfoFragment newInstance() {
+        return new MyShopInfoFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.search_fragment, container, false);
+        return inflater.inflate(R.layout.my_shop_info_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SearchViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(MyShopInfoViewModel.class);
         // TODO: Use the ViewModel
     }
 

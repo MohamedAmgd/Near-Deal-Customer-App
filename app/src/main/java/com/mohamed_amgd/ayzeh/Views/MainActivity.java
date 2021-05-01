@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh;
+package com.mohamed_amgd.ayzeh.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -9,11 +9,13 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
+import com.mohamed_amgd.ayzeh.Views.Fragments.AccountFragment;
+import com.mohamed_amgd.ayzeh.Views.Fragments.ExploreFragment;
+import com.mohamed_amgd.ayzeh.Views.Fragments.NearbyLocationsFragment;
+import com.mohamed_amgd.ayzeh.R;
 
 public class MainActivity extends AppCompatActivity {
 

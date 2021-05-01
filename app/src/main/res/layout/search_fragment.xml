@@ -6,7 +6,7 @@
     android:background="?backgroundColor"
     android:paddingTop="32dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".SearchFragment">
+    tools:context=".Views.Fragments.SearchFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_bar"

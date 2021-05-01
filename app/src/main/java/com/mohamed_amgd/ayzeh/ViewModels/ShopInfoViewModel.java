@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh;
+package com.mohamed_amgd.ayzeh.ViewModels;
 
 import androidx.lifecycle.ViewModel;
 

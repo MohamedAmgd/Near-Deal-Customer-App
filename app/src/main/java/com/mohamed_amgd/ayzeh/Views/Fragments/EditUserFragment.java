@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh;
+package com.mohamed_amgd.ayzeh.Views.Fragments;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,24 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ShopInfoFragment extends Fragment {
+import com.mohamed_amgd.ayzeh.R;
+import com.mohamed_amgd.ayzeh.ViewModels.EditUserViewModel;
 
-    private ShopInfoViewModel mViewModel;
+public class EditUserFragment extends Fragment {
 
-    public static ShopInfoFragment newInstance() {
-        return new ShopInfoFragment();
+    private EditUserViewModel mViewModel;
+
+    public static EditUserFragment newInstance() {
+        return new EditUserFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.shop_info_fragment, container, false);
+        return inflater.inflate(R.layout.edit_user_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ShopInfoViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(EditUserViewModel.class);
         // TODO: Use the ViewModel
     }
 

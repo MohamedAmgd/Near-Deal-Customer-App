@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="?backgroundColor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".AddProductFragment">
+    tools:context=".Views.Fragments.AddProductFragment">
 
 
     <ImageView
