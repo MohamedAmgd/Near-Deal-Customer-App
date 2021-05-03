@@ -1,4 +1,4 @@
-package com.mohamed_amgd.ayzeh.Views.Fragments;
+package com.mohamed_amgd.ayzeh.Views.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,14 +20,14 @@ public class CategoriesRecyclerAdapter extends RecyclerView.Adapter<CategoriesRe
 
     private final ArrayList<Category> categories;
     private Context mContext;
-    private View.OnClickListener mCategoryOnClickListener;
+    private OnClickListener mCategoryOnClickListener;
 
     public CategoriesRecyclerAdapter(Context mContext, ArrayList<Category> categories) {
         this.categories = categories;
         this.mContext = mContext;
     }
 
-    public void setCategoryOnClickListener(View.OnClickListener mCategoryOnClickListener) {
+    public void setCategoryOnClickListener(OnClickListener mCategoryOnClickListener) {
         this.mCategoryOnClickListener = mCategoryOnClickListener;
     }
 
@@ -36,20 +36,19 @@ public class CategoriesRecyclerAdapter extends RecyclerView.Adapter<CategoriesRe
     public CategoriesRecyclerAdapter.CategoriesRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.categories_list_item,parent,false);
-        return new CategoriesRecyclerViewHolder(view);
+        return new CategoriesRecyclerViewHolder(view,mCategoryOnClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoriesRecyclerAdapter.CategoriesRecyclerViewHolder holder, int position) {
         Category category = categories.get(position);
 
-        ImageView categoryImage = holder.mCategoryImage;
+        ImageView categoryImage = holder.getCategoryImage();
         Glide.with(mContext).load(category.getImageDrawable())
                 .override(450)
                 .into(categoryImage);
 
-        categoryImage.setOnClickListener(mCategoryOnClickListener);
-        TextView categoryTitle = holder.mCategoryTitle;
+        TextView categoryTitle = holder.getCategoryTitle();
         categoryTitle.setText(category.getName());
     }
 
@@ -58,13 +57,34 @@ public class CategoriesRecyclerAdapter extends RecyclerView.Adapter<CategoriesRe
         return categories.size();
     }
 
+    public interface OnClickListener{
+        void onClick(int position);
+    }
+
     public static class CategoriesRecyclerViewHolder extends RecyclerView.ViewHolder {
-        ImageView mCategoryImage;
-        TextView mCategoryTitle;
-        public CategoriesRecyclerViewHolder(@NonNull View itemView) {
+        private final ImageView mCategoryImage;
+        private final TextView mCategoryTitle;
+        public CategoriesRecyclerViewHolder(@NonNull View itemView, OnClickListener listener) {
             super(itemView);
             mCategoryImage = itemView.findViewById(R.id.category_image);
             mCategoryTitle = itemView.findViewById(R.id.category_title);
+
+            mCategoryImage.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onClick(position);
+                    }
+                }
+            });
+        }
+
+        public ImageView getCategoryImage() {
+            return mCategoryImage;
+        }
+
+        public TextView getCategoryTitle() {
+            return mCategoryTitle;
         }
     }
 }
