@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -15,13 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
-import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.ExploreViewModel;
-import com.mohamed_amgd.ayzeh.Views.Adapters.CategoriesRecyclerAdapter;
-import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
-
-import java.util.ArrayList;
 
 public class ExploreFragment extends Fragment {
 
@@ -54,33 +48,8 @@ public class ExploreFragment extends Fragment {
             mViewModel.searchViewAction(query);
         });
 
-        initCategoriesRecycler();
-        initHotDealsRecycler();
-    }
-
-    private void initCategoriesRecycler(){
-        CategoriesRecyclerAdapter categoriesRecyclerAdapter =
-                new CategoriesRecyclerAdapter(getContext(), mViewModel.getCategories());
-        mCategoriesRecycler.setAdapter(categoriesRecyclerAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        mCategoriesRecycler.setLayoutManager(linearLayoutManager);
-        categoriesRecyclerAdapter.setCategoryOnClickListener(mViewModel.getCategoryOnClickListener());
-    }
-
-    private void initHotDealsRecycler(){
-        ArrayList<Product> mHotDeals = new ArrayList<>();
-        HotDealsRecyclerAdapter hotDealsRecyclerAdapter =
-                new HotDealsRecyclerAdapter(getContext(),mHotDeals);
-        mHotDealsRecycler.setAdapter(hotDealsRecyclerAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mHotDealsRecycler.setLayoutManager(linearLayoutManager);
-        mViewModel.getHotDealsLiveData().observe(getViewLifecycleOwner(),hotDeals -> {
-            mHotDeals.clear();
-            mHotDeals.addAll(hotDeals);
-            hotDealsRecyclerAdapter.notifyDataSetChanged();
-        });
-        hotDealsRecyclerAdapter.setHotDealOnClickListener(mViewModel.getHotDealsOnClickListener());
+        mViewModel.initCategoriesRecycler(mCategoriesRecycler);
+        mViewModel.initHotDealsRecycler(mHotDealsRecycler);
     }
 
 }

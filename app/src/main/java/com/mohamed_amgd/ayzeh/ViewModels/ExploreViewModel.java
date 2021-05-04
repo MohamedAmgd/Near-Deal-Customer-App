@@ -5,8 +5,11 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mohamed_amgd.ayzeh.Models.Category;
 import com.mohamed_amgd.ayzeh.Models.Product;
@@ -20,6 +23,7 @@ public class ExploreViewModel extends AndroidViewModel {
 
     private final ArrayList<Category> categories;
     private MutableLiveData<ArrayList<Product>> mHotDealsLiveData;
+    private Observer<ArrayList<Product>> mHotDealsObserver;
 
     ExploreViewModel(@NonNull Application application){
         super(application);
@@ -64,6 +68,40 @@ public class ExploreViewModel extends AndroidViewModel {
         return null;
     }
 
+    public void initCategoriesRecycler(RecyclerView categoriesRecycler){
+        CategoriesRecyclerAdapter categoriesRecyclerAdapter =
+                new CategoriesRecyclerAdapter(getApplication(), categories);
+        categoriesRecycler.setAdapter(categoriesRecyclerAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication());
+        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        categoriesRecycler.setLayoutManager(linearLayoutManager);
+        categoriesRecyclerAdapter.setCategoryOnClickListener(getCategoryOnClickListener());
+    }
+
+    public void initHotDealsRecycler(RecyclerView hotDealsRecycler){
+        ArrayList<Product> mHotDeals = new ArrayList<>();
+        HotDealsRecyclerAdapter hotDealsRecyclerAdapter =
+                new HotDealsRecyclerAdapter(getApplication(),mHotDeals);
+        hotDealsRecycler.setAdapter(hotDealsRecyclerAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication());
+        hotDealsRecycler.setLayoutManager(linearLayoutManager);
+        mHotDealsObserver = new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> hotDeals) {
+                mHotDeals.clear();
+                mHotDeals.addAll(hotDeals);
+                hotDealsRecyclerAdapter.notifyDataSetChanged();
+            }
+        };
+        mHotDealsLiveData.observeForever(mHotDealsObserver);
+        hotDealsRecyclerAdapter.setHotDealOnClickListener(getHotDealsOnClickListener());
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mHotDealsLiveData.removeObserver(mHotDealsObserver);
+    }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 
