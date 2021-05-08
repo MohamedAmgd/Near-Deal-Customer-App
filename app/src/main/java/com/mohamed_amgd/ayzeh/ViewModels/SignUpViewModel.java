@@ -2,6 +2,6 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 
 import androidx.lifecycle.ViewModel;
 
-public class AccountViewModel extends ViewModel {
+public class SignUpViewModel extends ViewModel {
     // TODO: Implement the ViewModel
 }

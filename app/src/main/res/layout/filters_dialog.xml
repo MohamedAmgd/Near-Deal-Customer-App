@@ -111,7 +111,7 @@
         android:layout_width="160dp"
         android:layout_height="37dp"
         android:layout_marginTop="32dp"
-        android:background="@drawable/filters_confirm_button_background"
+        android:background="@drawable/confirm_button_background"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/confirm"
         android:textColor="@color/white"

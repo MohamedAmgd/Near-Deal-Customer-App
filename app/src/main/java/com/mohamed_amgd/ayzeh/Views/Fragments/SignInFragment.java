@@ -13,26 +13,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mohamed_amgd.ayzeh.R;
-import com.mohamed_amgd.ayzeh.ViewModels.AccountViewModel;
+import com.mohamed_amgd.ayzeh.ViewModels.SignInViewModel;
 
-public class AccountFragment extends Fragment {
+public class SignInFragment extends Fragment {
 
-    private AccountViewModel mViewModel;
+    private SignInViewModel mViewModel;
 
-    public static AccountFragment newInstance() {
-        return new AccountFragment();
+    public static SignInFragment newInstance() {
+        return new SignInFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.account_fragment, container, false);
+        return inflater.inflate(R.layout.sign_in_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AccountViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
         // TODO: Use the ViewModel
     }
 

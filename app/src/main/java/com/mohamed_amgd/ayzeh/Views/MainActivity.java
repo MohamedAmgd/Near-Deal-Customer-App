@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.mohamed_amgd.ayzeh.Views.Fragments.AccountFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ExploreFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.NearbyLocationsFragment;
 import com.mohamed_amgd.ayzeh.R;
+import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 mFragmentTransaction.commit();
             } else if (itemId == R.id.account_menu_item) {
                 mFragmentTransaction = mFragmentManager.beginTransaction();
-                mFragmentTransaction.replace(R.id.fragment_layout,new AccountFragment());
+                mFragmentTransaction.replace(R.id.fragment_layout,new UserInfoFragment());
                 mFragmentTransaction.commit();
             }
             return true;

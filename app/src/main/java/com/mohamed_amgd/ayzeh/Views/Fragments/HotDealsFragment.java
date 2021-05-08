@@ -12,27 +12,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mohamed_amgd.ayzeh.ViewModels.HotDealsViewModel;
 import com.mohamed_amgd.ayzeh.R;
-import com.mohamed_amgd.ayzeh.ViewModels.AddProductViewModel;
 
-public class AddProductFragment extends Fragment {
+public class HotDealsFragment extends Fragment {
 
-    private AddProductViewModel mViewModel;
+    private HotDealsViewModel mViewModel;
 
-    public static AddProductFragment newInstance() {
-        return new AddProductFragment();
+    public static HotDealsFragment newInstance() {
+        return new HotDealsFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.add_product_fragment, container, false);
+        return inflater.inflate(R.layout.hot_deals_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AddProductViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(HotDealsViewModel.class);
         // TODO: Use the ViewModel
     }
 

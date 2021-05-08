@@ -1,38 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Views.Fragments.UserInfoFragment">
 
-    <ImageView
-        android:id="@+id/user_image"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="231dp"
+        android:background="@drawable/top_background_user"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="94dp"
-        android:layout_height="94dp"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/ic_account_circle" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/edit_chip"
-        app:chipBackgroundColor="?colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_image"
-        android:layout_width="94dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/edit"
-        android:textColor="@color/white"
-        android:textSize="12sp" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_image"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/ic_account_circle"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/edit_chip"
+            android:layout_width="94dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/edit"
+            android:textColor="?colorPrimary"
+            android:textSize="12sp"
+            app:chipBackgroundColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <TextView
         android:id="@+id/email_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -40,25 +51,25 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/email"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar" />
 
     <TextView
         android:id="@+id/email_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_header_text_view"
-        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
-        tools:text="@string/hint_email"/>
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email_header_text_view"
+        tools:text="@string/hint_email" />
 
     <TextView
         android:id="@+id/username_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/email_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -66,25 +77,25 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/username"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email_text_view" />
 
     <TextView
         android:id="@+id/username_text_view"
-        app:layout_constraintTop_toBottomOf="@id/username_header_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
-        tools:text="@string/hint_username"/>
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username_header_text_view"
+        tools:text="@string/hint_username" />
 
     <TextView
         android:id="@+id/birthday_header_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/username_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
@@ -92,19 +103,21 @@
         android:fontFamily="@font/roboto_medium"
         android:text="@string/birth_date"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username_text_view" />
 
     <TextView
         android:id="@+id/birthday_text_view"
-        app:layout_constraintTop_toBottomOf="@id/birthday_header_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
-        tools:text="@string/birth_date_hint"/>
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/birthday_header_text_view"
+        tools:text="@string/birth_date_hint" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

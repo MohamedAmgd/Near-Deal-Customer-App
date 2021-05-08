@@ -13,26 +13,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mohamed_amgd.ayzeh.R;
-import com.mohamed_amgd.ayzeh.ViewModels.EditMyShopViewModel;
+import com.mohamed_amgd.ayzeh.ViewModels.SignUpViewModel;
 
-public class EditMyShopFragment extends Fragment {
+public class SignUpFragment extends Fragment {
 
-    private EditMyShopViewModel mViewModel;
+    private SignUpViewModel mViewModel;
 
-    public static EditMyShopFragment newInstance() {
-        return new EditMyShopFragment();
+    public static SignUpFragment newInstance() {
+        return new SignUpFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.edit_my_shop_fragment, container, false);
+        return inflater.inflate(R.layout.sign_up_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(EditMyShopViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
         // TODO: Use the ViewModel
     }
 

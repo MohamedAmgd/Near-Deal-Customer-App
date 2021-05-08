@@ -2,6 +2,6 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 
 import androidx.lifecycle.ViewModel;
 
-public class EditMyShopViewModel extends ViewModel {
+public class HotDealsViewModel extends ViewModel {
     // TODO: Implement the ViewModel
 }

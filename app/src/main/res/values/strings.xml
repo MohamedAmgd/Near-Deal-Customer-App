@@ -47,4 +47,10 @@
     <string name="details">Details</string>
     <string name="nearby_locations_search_hint">Search in nearby shops</string>
     <string name="product_search_hint">What are you looking for ?</string>
+    <string name="sign_in">Sign in</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="new_user">New user?</string>
+    <string name="already_a_user">Already a user?</string>
+    <string name="product_image">Product Image</string>
 </resources>

@@ -10,7 +10,9 @@
         android:id="@+id/category_image_holder"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:layout_margin="4dp"
         app:cardCornerRadius="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,11 +20,11 @@
             android:id="@+id/category_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="center"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            tools:src="@drawable/ic_men_category"/>
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:scaleType="center"
+            tools:src="@drawable/ic_men_category" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -30,8 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
-        android:textSize="15sp"
         android:textColor="@color/black"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/category_image_holder"
