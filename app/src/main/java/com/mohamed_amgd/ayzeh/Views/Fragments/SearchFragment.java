@@ -17,6 +17,8 @@ import com.mohamed_amgd.ayzeh.ViewModels.SearchViewModel;
 
 public class SearchFragment extends Fragment {
 
+    public static final String QUERY_BUNDLE_TAG = "query";
+    public static final String CATEGORY_FILTER_BUNDLE_TAG = "category";
     private SearchViewModel mViewModel;
 
     public static SearchFragment newInstance() {

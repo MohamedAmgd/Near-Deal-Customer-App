@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.ExploreViewModel;
@@ -21,6 +22,7 @@ public class ExploreFragment extends Fragment {
 
     private ExploreViewModel mViewModel;
     private SearchView mSearchView;
+    private TextView mSeeAllTextView;
     private RecyclerView mCategoriesRecycler;
     private RecyclerView mHotDealsRecycler;
 
@@ -37,15 +39,20 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ExploreViewModel.Factory factory = new ExploreViewModel.Factory(getActivity().getApplication());
+        ExploreViewModel.Factory factory =
+                new ExploreViewModel.Factory(getActivity().getApplication(), getFragmentManager());
         mViewModel = new ViewModelProvider(this,factory).get(ExploreViewModel.class);
-        mSearchView = getActivity().findViewById(R.id.search_view);
-        mCategoriesRecycler = getActivity().findViewById(R.id.categories_recycler);
-        mHotDealsRecycler = getActivity().findViewById(R.id.hot_deals_recycler);
+        mSearchView = view.findViewById(R.id.search_view);
+        mSeeAllTextView = view.findViewById(R.id.see_all);
+        mCategoriesRecycler = view.findViewById(R.id.categories_recycler);
+        mHotDealsRecycler = view.findViewById(R.id.hot_deals_recycler);
 
         mSearchView.setOnSearchClickListener(v -> {
             String query = (String) mSearchView.getQuery();
             mViewModel.searchViewAction(query);
+        });
+        mSeeAllTextView.setOnClickListener(v -> {
+            mViewModel.seeAllAction();
         });
 
         mViewModel.initCategoriesRecycler(mCategoriesRecycler);

@@ -1,6 +1,9 @@
 package com.mohamed_amgd.ayzeh.Models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
+    private String id;
     private String name;
     private String category;
     private String brand;
@@ -9,7 +12,8 @@ public class Product {
     private String imageUrl;
     private String shopId;
 
-    public Product(String name, String category, String brand, String price, String description, String imageUrl, String shopId) {
+    public Product(String id, String name, String category, String brand, String price, String description, String imageUrl, String shopId) {
+        this.id = id;
         this.name = name;
         this.category = category;
         this.brand = brand;
@@ -17,6 +21,14 @@ public class Product {
         this.description = description;
         this.imageUrl = imageUrl;
         this.shopId = shopId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
