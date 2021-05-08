@@ -14,6 +14,7 @@
         android:layout_height="@dimen/search_view_height"
         android:layout_marginStart="@dimen/search_view_margin_start"
         android:layout_marginEnd="@dimen/account_button_margin_end"
+        android:queryHint="@string/product_search_hint"
         style="@style/SearchView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

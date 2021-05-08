@@ -17,6 +17,7 @@ import com.mohamed_amgd.ayzeh.R;
 
 public class HotDealsFragment extends Fragment {
 
+    public static final String CLASS_NAME = "HotDealsFragment";
     private HotDealsViewModel mViewModel;
 
     public static HotDealsFragment newInstance() {

@@ -17,6 +17,8 @@ import com.mohamed_amgd.ayzeh.ViewModels.ShopInfoViewModel;
 
 public class ShopInfoFragment extends Fragment {
 
+    public static final String SHOP_ID_BUNDLE_TAG = "shop_id";
+    public static final String CLASS_NAME = "ShopInfoFragment";
     private ShopInfoViewModel mViewModel;
 
     public static ShopInfoFragment newInstance() {

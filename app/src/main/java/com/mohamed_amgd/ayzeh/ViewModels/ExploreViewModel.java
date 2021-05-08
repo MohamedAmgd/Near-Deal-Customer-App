@@ -22,6 +22,7 @@ import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
+import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 
 import java.util.ArrayList;
@@ -56,13 +57,15 @@ public class ExploreViewModel extends AndroidViewModel {
         SearchFragment searchFragment = new SearchFragment();
         searchFragment.setArguments(bundle);
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.add(R.id.fragment_layout, searchFragment);
+        transaction.replace(R.id.fragment_layout, searchFragment);
+        transaction.addToBackStack(SearchFragment.CLASS_NAME);
         transaction.commit();
     }
 
     public void seeAllAction() {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.add(R.id.fragment_layout, new HotDealsFragment());
+        transaction.replace(R.id.fragment_layout, new HotDealsFragment());
+        transaction.addToBackStack(HotDealsFragment.CLASS_NAME);
         transaction.commit();
     }
 
@@ -74,7 +77,8 @@ public class ExploreViewModel extends AndroidViewModel {
             SearchFragment searchFragment = new SearchFragment();
             searchFragment.setArguments(bundle);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            transaction.add(R.id.fragment_layout, searchFragment);
+            transaction.replace(R.id.fragment_layout, searchFragment);
+            transaction.addToBackStack(SearchFragment.CLASS_NAME);
             transaction.commit();
         };
     }
@@ -86,7 +90,8 @@ public class ExploreViewModel extends AndroidViewModel {
             bundle.putSerializable(ProductFragment.PRODUCT_BUNDLE_TAG, product);
             ProductFragment productFragment = new ProductFragment();
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            transaction.add(R.id.fragment_layout, productFragment);
+            transaction.replace(R.id.fragment_layout, productFragment);
+            transaction.addToBackStack(ProductFragment.CLASS_NAME);
             transaction.commit();
         };
     }

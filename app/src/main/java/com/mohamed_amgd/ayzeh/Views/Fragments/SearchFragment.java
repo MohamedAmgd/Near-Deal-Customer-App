@@ -19,6 +19,7 @@ public class SearchFragment extends Fragment {
 
     public static final String QUERY_BUNDLE_TAG = "query";
     public static final String CATEGORY_FILTER_BUNDLE_TAG = "category";
+    public static final String CLASS_NAME = "SearchFragment";
     private SearchViewModel mViewModel;
 
     public static SearchFragment newInstance() {

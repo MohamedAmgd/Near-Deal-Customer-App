@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.ExploreViewModel;
@@ -47,9 +48,18 @@ public class ExploreFragment extends Fragment {
         mCategoriesRecycler = view.findViewById(R.id.categories_recycler);
         mHotDealsRecycler = view.findViewById(R.id.hot_deals_recycler);
 
-        mSearchView.setOnSearchClickListener(v -> {
-            String query = (String) mSearchView.getQuery();
-            mViewModel.searchViewAction(query);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getContext(), query, Toast.LENGTH_LONG).show();
+                mViewModel.searchViewAction(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
         });
         mSeeAllTextView.setOnClickListener(v -> {
             mViewModel.seeAllAction();

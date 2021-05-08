@@ -10,13 +10,16 @@
     tools:context=".Views.MainActivity">
 
     <ScrollView
-        android:id="@+id/fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/bottom_nav_view"
         app:layout_constraintTop_toTopOf="parent">
 
+        <FrameLayout
+            android:id="@+id/fragment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
