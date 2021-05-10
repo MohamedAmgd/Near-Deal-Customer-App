@@ -1,7 +1,215 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.SearchView;
 
-public class SearchViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.slider.RangeSlider;
+import com.mohamed_amgd.ayzeh.Models.Filter;
+import com.mohamed_amgd.ayzeh.Models.Product;
+import com.mohamed_amgd.ayzeh.Models.SearchResult;
+import com.mohamed_amgd.ayzeh.R;
+import com.mohamed_amgd.ayzeh.Views.Adapters.SearchResultsRecyclerAdapter;
+import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
+import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
+import com.mohamed_amgd.ayzeh.repo.Repository;
+
+import java.util.ArrayList;
+
+public class SearchViewModel extends AndroidViewModel {
+
+    private FragmentManager mFragmentManager;
+    private String mQuery;
+    private Filter mFilter;
+    private MutableLiveData<ArrayList<Product>> mResultsLiveData;
+    private Observer<ArrayList<Product>> mResultsObserver;
+    private float mMinSearchResultPrice;
+    private float mMaxSearchResultPrice;
+
+    public SearchViewModel(@NonNull Application application, FragmentManager fragmentManager, Bundle bundle) {
+        super(application);
+        mFragmentManager = fragmentManager;
+        mQuery = bundle.getString(SearchFragment.QUERY_BUNDLE_TAG);
+        mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(SearchFragment.FILTER_BUNDLE_TAG));
+        SearchResult searchResult = Repository.getInstance().getSearchResults(mQuery, mFilter);
+        mResultsLiveData = searchResult.getResultsLiveData();
+        mMinSearchResultPrice = searchResult.getMinPrice();
+        mMaxSearchResultPrice = searchResult.getMaxPrice();
+    }
+
+    public void initSearchView(SearchView searchView) {
+        searchView.setQuery(mQuery, true);
+    }
+
+
+    public void searchViewAction(String query) {
+        initNewSearchFragment(query, mFilter);
+    }
+
+    private void initNewSearchFragment(String query, Filter filter) {
+        Bundle bundle = new Bundle();
+        bundle.putString(SearchFragment.QUERY_BUNDLE_TAG, query);
+        bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG, filter);
+        SearchFragment searchFragment = new SearchFragment();
+        searchFragment.setArguments(bundle);
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_layout, searchFragment);
+        transaction.addToBackStack(SearchFragment.CLASS_NAME);
+        transaction.commit();
+    }
+
+    public void filtersButtonAction(View view) {
+        BottomSheetDialog filterDialog = new BottomSheetDialog(view.getContext(), R.style.FilterDialog);
+        View filterLayout =
+                LayoutInflater.from(view.getContext()).inflate(R.layout.filters_dialog, null);
+        ImageButton exitButton = filterLayout.findViewById(R.id.exit_button);
+        ChipGroup chipGroup = filterLayout.findViewById(R.id.chip_group);
+        RangeSlider rangeSlider = filterLayout.findViewById(R.id.range_slider);
+        Button confirmButton = filterLayout.findViewById(R.id.confirm_button);
+        initFiltersDialog(rangeSlider, chipGroup);
+        exitButton.setOnClickListener(v -> {
+            filterDialog.cancel();
+        });
+        confirmButton.setOnClickListener(v -> {
+            filterDialogConfirmAction(filterDialog, rangeSlider, chipGroup);
+        });
+        filterDialog.setContentView(filterLayout);
+        filterDialog.show();
+    }
+
+    private void initFiltersDialog(RangeSlider rangeSlider, ChipGroup chipGroup) {
+        rangeSlider.setValueFrom(mMinSearchResultPrice);
+        rangeSlider.setValueTo(mMaxSearchResultPrice);
+        float leftThumb = mMinSearchResultPrice;
+        float rightThumb = mMaxSearchResultPrice;
+        if (mFilter.getPriceMin() != Filter.NO_PRICE) {
+            leftThumb = mFilter.getPriceMin();
+        }
+        if (mFilter.getPriceMax() != Filter.NO_PRICE ) {
+            rightThumb = mFilter.getPriceMax();
+        }
+        rangeSlider.setValues(leftThumb, rightThumb);
+        switch (mFilter.getCategoryName()) {
+            case Filter.MEN_CATEGORY:
+                chipGroup.check(R.id.men_chip);
+                break;
+            case Filter.WOMEN_CATEGORY:
+                chipGroup.check(R.id.women_chip);
+                break;
+            case Filter.DEVICES_CATEGORY:
+                chipGroup.check(R.id.devices_chip);
+                break;
+            case Filter.GADGETS_CATEGORY:
+                chipGroup.check(R.id.gadgets_chip);
+                break;
+            case Filter.TOOLS_CATEGORY:
+                chipGroup.check(R.id.tools_chip);
+                break;
+            case Filter.NO_CATEGORY:
+                chipGroup.clearCheck();
+                break;
+        }
+    }
+
+    private void filterDialogConfirmAction(BottomSheetDialog filterDialog, RangeSlider rangeSlider, ChipGroup chipGroup) {
+        Filter newFilter = Filter.createFromAnotherFilter(mFilter);
+        ArrayList<Float> values = (ArrayList<Float>) rangeSlider.getValues();
+        float leftThumb = values.get(0);
+        float rightThumb = values.get(1);
+        if (leftThumb > rangeSlider.getValueFrom()) {
+            newFilter.setPriceMin(leftThumb);
+        }
+        if (rightThumb < rangeSlider.getValueTo()) {
+            newFilter.setPriceMax(rightThumb);
+        }
+        int checkedChipId = chipGroup.getCheckedChipId();
+        if (checkedChipId == R.id.men_chip) {
+            newFilter.setCategoryName(Filter.MEN_CATEGORY);
+        } else if (checkedChipId == R.id.women_chip) {
+            newFilter.setCategoryName(Filter.WOMEN_CATEGORY);
+        } else if (checkedChipId == R.id.devices_chip) {
+            newFilter.setCategoryName(Filter.DEVICES_CATEGORY);
+        } else if (checkedChipId == R.id.gadgets_chip) {
+            newFilter.setCategoryName(Filter.GADGETS_CATEGORY);
+        } else if (checkedChipId == R.id.tools_chip) {
+            newFilter.setCategoryName(Filter.TOOLS_CATEGORY);
+        }
+        filterDialog.dismiss();
+        initNewSearchFragment(mQuery, newFilter);
+    }
+
+
+    public void initSearchResultsRecycler(RecyclerView searchResultsRecycler) {
+        ArrayList<Product> mResults = new ArrayList<>();
+        SearchResultsRecyclerAdapter adapter =
+                new SearchResultsRecyclerAdapter(getApplication(), mResults);
+        searchResultsRecycler.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
+        searchResultsRecycler.setLayoutManager(layoutManager);
+
+        mResultsObserver = new Observer<ArrayList<Product>>() {
+            @Override
+            public void onChanged(ArrayList<Product> products) {
+                mResults.clear();
+                mResults.addAll(products);
+                adapter.notifyDataSetChanged();
+            }
+        };
+        mResultsLiveData.observeForever(mResultsObserver);
+        adapter.setSearchResultOnClickListener(getSearchResultOnClickListener());
+    }
+
+    private SearchResultsRecyclerAdapter.OnClickListener getSearchResultOnClickListener() {
+        return position -> {
+            Product product = mResultsLiveData.getValue().get(position);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(ProductFragment.PRODUCT_BUNDLE_TAG, product);
+            ProductFragment productFragment = new ProductFragment();
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_layout, productFragment);
+            transaction.addToBackStack(ProductFragment.CLASS_NAME);
+            transaction.commit();
+        };
+    }
+
+
+    public static class Factory extends ViewModelProvider.NewInstanceFactory {
+
+        @NonNull
+        private final Application mApplication;
+        @NonNull
+        private final FragmentManager mFragmentManager;
+
+        private final Bundle mBundle;
+
+        public Factory(@NonNull Application application, @NonNull FragmentManager fragmentManager, Bundle bundle) {
+            mApplication = application;
+            mFragmentManager = fragmentManager;
+            mBundle = bundle;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        @NonNull
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new SearchViewModel(mApplication, mFragmentManager, mBundle);
+        }
+    }
 }
