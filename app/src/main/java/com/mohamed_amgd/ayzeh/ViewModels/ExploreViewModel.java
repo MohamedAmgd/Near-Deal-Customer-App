@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mohamed_amgd.ayzeh.Models.Category;
+import com.mohamed_amgd.ayzeh.Models.Filter;
 import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.CategoriesRecyclerAdapter;
@@ -22,7 +23,6 @@ import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
-import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 
 import java.util.ArrayList;
@@ -54,6 +54,7 @@ public class ExploreViewModel extends AndroidViewModel {
     public void searchViewAction(String query) {
         Bundle bundle = new Bundle();
         bundle.putString(SearchFragment.QUERY_BUNDLE_TAG, query);
+        bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG,new Filter());
         SearchFragment searchFragment = new SearchFragment();
         searchFragment.setArguments(bundle);
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -73,7 +74,9 @@ public class ExploreViewModel extends AndroidViewModel {
         return position -> {
             String categoryName = categories.get(position).getName();
             Bundle bundle = new Bundle();
-            bundle.putString(SearchFragment.CATEGORY_FILTER_BUNDLE_TAG, categoryName);
+            Filter filter = new Filter();
+            filter.setCategoryName(categoryName);
+            bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG, filter);
             SearchFragment searchFragment = new SearchFragment();
             searchFragment.setArguments(bundle);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -85,7 +88,7 @@ public class ExploreViewModel extends AndroidViewModel {
 
     public HotDealsRecyclerAdapter.OnClickListener getHotDealsOnClickListener() {
         return position -> {
-                Product product = mHotDealsLiveData.getValue().get(position);
+            Product product = mHotDealsLiveData.getValue().get(position);
             Bundle bundle = new Bundle();
             bundle.putSerializable(ProductFragment.PRODUCT_BUNDLE_TAG, product);
             ProductFragment productFragment = new ProductFragment();
@@ -112,6 +115,7 @@ public class ExploreViewModel extends AndroidViewModel {
                 new HotDealsRecyclerAdapter(getApplication(), mHotDeals);
         hotDealsRecycler.setAdapter(hotDealsRecyclerAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplication());
+        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         hotDealsRecycler.setLayoutManager(linearLayoutManager);
         mHotDealsObserver = new Observer<ArrayList<Product>>() {
             @Override
