@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SearchView;
 
 import com.google.android.material.button.MaterialButton;
@@ -27,7 +28,7 @@ public class SearchFragment extends Fragment {
 
     private SearchViewModel mViewModel;
     private SearchView mSearchView;
-    private Button mFiltersButton;
+    private ImageButton mFiltersButton;
     private RecyclerView mSearchResultsRecycler;
 
     public static SearchFragment newInstance() {
