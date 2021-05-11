@@ -38,14 +38,12 @@ public class ExploreViewModel extends AndroidViewModel {
         super(application);
         mFragmentManager = fragmentManager;
         // init categories
-        String[] categoriesNames = getApplication().getResources()
-                .getStringArray(R.array.categories_array);
         categories = new ArrayList<>();
-        categories.add(new Category(categoriesNames[0], R.drawable.ic_men_category));
-        categories.add(new Category(categoriesNames[1], R.drawable.ic_women_category));
-        categories.add(new Category(categoriesNames[2], R.drawable.ic_devices_category));
-        categories.add(new Category(categoriesNames[3], R.drawable.ic_gadgets_category));
-        categories.add(new Category(categoriesNames[4], R.drawable.ic_tools_category));
+        categories.add(new Category(Filter.MEN_CATEGORY, R.drawable.ic_men_category));
+        categories.add(new Category(Filter.WOMEN_CATEGORY, R.drawable.ic_women_category));
+        categories.add(new Category(Filter.DEVICES_CATEGORY, R.drawable.ic_devices_category));
+        categories.add(new Category(Filter.GADGETS_CATEGORY, R.drawable.ic_gadgets_category));
+        categories.add(new Category(Filter.TOOLS_CATEGORY, R.drawable.ic_tools_category));
 
         // init hot deals live data
         mHotDealsLiveData = Repository.getInstance().getHotDeals();

@@ -6,11 +6,11 @@ public class Filter implements Serializable {
 
     public static final String NO_CATEGORY = "";
     public static final float NO_PRICE = -1f;
-    public static final String MEN_CATEGORY = "men";
-    public static final String WOMEN_CATEGORY = "women";
-    public static final String DEVICES_CATEGORY = "devices";
-    public static final String GADGETS_CATEGORY = "gadgets";
-    public static final String TOOLS_CATEGORY = "tools";
+    public static final String MEN_CATEGORY = "Men";
+    public static final String WOMEN_CATEGORY = "Women";
+    public static final String DEVICES_CATEGORY = "Devices";
+    public static final String GADGETS_CATEGORY = "Gadgets";
+    public static final String TOOLS_CATEGORY = "Tools";
     private String mCategoryName;
     private float mPriceMin;
     private float mPriceMax;
