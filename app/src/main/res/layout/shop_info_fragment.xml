@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/shop_name_text_view" />
 
     <TextView
-        android:id="@+id/description_edit_text"
+        android:id="@+id/shop_description_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
@@ -58,30 +58,19 @@
         tools:text="@string/description_hint" />
 
     <TextView
-        android:id="@+id/locations_header_text_view"
+        android:id="@+id/get_directions_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="30dp"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="24dp"
+        android:layout_marginTop="18dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="@string/locations"
-        android:textColor="@color/black"
+        android:text="@string/get_directions"
+        android:textColor="?colorPrimary"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description_edit_text" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/locations_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="26dp"
-        android:layout_marginTop="19dp"
-        android:paddingHorizontal="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/locations_header_text_view"
-        tools:itemCount="3"
-        tools:listitem="@layout/locations_list_item" />
+        app:layout_constraintTop_toBottomOf="@id/shop_name_text_view" />
+
 
     <TextView
         android:id="@+id/products_header_text_view"
@@ -94,10 +83,10 @@
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/locations_recycler" />
+        app:layout_constraintTop_toBottomOf="@id/shop_description_text_view" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/products_recycler"
+        android:id="@+id/shop_products_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"

@@ -53,4 +53,5 @@
     <string name="new_user">New user?</string>
     <string name="already_a_user">Already a user?</string>
     <string name="product_image">Product Image</string>
+    <string name="get_directions">Get directions</string>
 </resources>
