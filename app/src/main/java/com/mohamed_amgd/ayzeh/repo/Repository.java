@@ -6,6 +6,7 @@ import com.mohamed_amgd.ayzeh.Models.Filter;
 import com.mohamed_amgd.ayzeh.Models.Offer;
 import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.Models.SearchResult;
+import com.mohamed_amgd.ayzeh.Models.Shop;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,17 @@ public class Repository {
     }
 
     public SearchResult getSearchResult(String query, Filter filter) {
-        // TODO: 5/9/2021 use retrofit client to get search results of query with filter
+        // TODO: 5/9/2021 use retrofit client to get search result of query with filter
         return new SearchResult(new MutableLiveData<>(),0f,1000f);
+    }
+
+    public MutableLiveData<Shop> getShopById(String shopId) {
+        // TODO: 5/12/2021 use retrofit client to get shop details using its shopId
+        return new MutableLiveData<>();
+    }
+
+    public MutableLiveData<ArrayList<Product>> getShopProductsByShopId(String shopId) {
+        // TODO: 5/12/2021 use retrofit client to get shop's products using shopId
+        return new MutableLiveData<>();
     }
 }
