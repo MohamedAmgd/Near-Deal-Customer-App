@@ -38,8 +38,8 @@ public class SearchViewModel extends AndroidViewModel {
     private FragmentManager mFragmentManager;
     private String mQuery;
     private Filter mFilter;
-    private MutableLiveData<ArrayList<Product>> mResultsLiveData;
-    private Observer<ArrayList<Product>> mResultsObserver;
+    private MutableLiveData<ArrayList<Product>> mProductsLiveData;
+    private Observer<ArrayList<Product>> mProductsObserver;
     private float mMinSearchResultPrice;
     private float mMaxSearchResultPrice;
 
@@ -48,8 +48,8 @@ public class SearchViewModel extends AndroidViewModel {
         mFragmentManager = fragmentManager;
         mQuery = bundle.getString(SearchFragment.QUERY_BUNDLE_TAG);
         mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(SearchFragment.FILTER_BUNDLE_TAG));
-        SearchResult searchResult = Repository.getInstance().getSearchResults(mQuery, mFilter);
-        mResultsLiveData = searchResult.getResultsLiveData();
+        SearchResult searchResult = Repository.getInstance().getSearchResult(mQuery, mFilter);
+        mProductsLiveData = searchResult.getResultsLiveData();
         mMinSearchResultPrice = searchResult.getMinPrice();
         mMaxSearchResultPrice = searchResult.getMaxPrice();
     }
@@ -164,7 +164,7 @@ public class SearchViewModel extends AndroidViewModel {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         productsRecycler.setLayoutManager(layoutManager);
 
-        mResultsObserver = new Observer<ArrayList<Product>>() {
+        mProductsObserver = new Observer<ArrayList<Product>>() {
             @Override
             public void onChanged(ArrayList<Product> products) {
                 mResults.clear();
@@ -172,13 +172,13 @@ public class SearchViewModel extends AndroidViewModel {
                 adapter.notifyDataSetChanged();
             }
         };
-        mResultsLiveData.observeForever(mResultsObserver);
+        mProductsLiveData.observeForever(mProductsObserver);
         adapter.setProductOnClickListener(getProductOnClickListener());
     }
 
     private ProductsRecyclerAdapter.OnClickListener getProductOnClickListener() {
         return position -> {
-            Product product = mResultsLiveData.getValue().get(position);
+            Product product = mProductsLiveData.getValue().get(position);
             Bundle bundle = new Bundle();
             bundle.putSerializable(ProductFragment.PRODUCT_BUNDLE_TAG, product);
             ProductFragment productFragment = new ProductFragment();
@@ -189,6 +189,11 @@ public class SearchViewModel extends AndroidViewModel {
         };
     }
 
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mProductsLiveData.removeObserver(mProductsObserver);
+    }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 

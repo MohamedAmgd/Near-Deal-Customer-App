@@ -32,7 +32,7 @@ public class Repository {
         return new MutableLiveData<>();
     }
 
-    public SearchResult getSearchResults(String query, Filter filter) {
+    public SearchResult getSearchResult(String query, Filter filter) {
         // TODO: 5/9/2021 use retrofit client to get search results of query with filter
         return new SearchResult(new MutableLiveData<>(),0f,1000f);
     }
