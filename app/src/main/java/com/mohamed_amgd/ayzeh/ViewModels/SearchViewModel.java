@@ -26,7 +26,7 @@ import com.mohamed_amgd.ayzeh.Models.Filter;
 import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.Models.SearchResult;
 import com.mohamed_amgd.ayzeh.R;
-import com.mohamed_amgd.ayzeh.Views.Adapters.SearchResultsRecyclerAdapter;
+import com.mohamed_amgd.ayzeh.Views.Adapters.ProductsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
@@ -156,13 +156,13 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
 
-    public void initSearchResultsRecycler(RecyclerView searchResultsRecycler) {
+    public void initProductsRecycler(RecyclerView productsRecycler) {
         ArrayList<Product> mResults = new ArrayList<>();
-        SearchResultsRecyclerAdapter adapter =
-                new SearchResultsRecyclerAdapter(getApplication(), mResults);
-        searchResultsRecycler.setAdapter(adapter);
+        ProductsRecyclerAdapter adapter =
+                new ProductsRecyclerAdapter(getApplication(), mResults);
+        productsRecycler.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
-        searchResultsRecycler.setLayoutManager(layoutManager);
+        productsRecycler.setLayoutManager(layoutManager);
 
         mResultsObserver = new Observer<ArrayList<Product>>() {
             @Override
@@ -173,10 +173,10 @@ public class SearchViewModel extends AndroidViewModel {
             }
         };
         mResultsLiveData.observeForever(mResultsObserver);
-        adapter.setSearchResultOnClickListener(getSearchResultOnClickListener());
+        adapter.setProductOnClickListener(getProductOnClickListener());
     }
 
-    private SearchResultsRecyclerAdapter.OnClickListener getSearchResultOnClickListener() {
+    private ProductsRecyclerAdapter.OnClickListener getProductOnClickListener() {
         return position -> {
             Product product = mResultsLiveData.getValue().get(position);
             Bundle bundle = new Bundle();

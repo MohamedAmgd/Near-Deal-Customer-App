@@ -16,19 +16,19 @@ import com.mohamed_amgd.ayzeh.R;
 
 import java.util.ArrayList;
 
-public class SearchResultsRecyclerAdapter extends RecyclerView.Adapter<SearchResultsRecyclerAdapter.ViewHolder> {
+public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecyclerAdapter.ViewHolder> {
 
     private final Context mContext;
     private final ArrayList<Product> mProducts;
-    private OnClickListener mSearchResultOnClickListener;
+    private OnClickListener mProductOnClickListener;
 
-    public SearchResultsRecyclerAdapter(Context context, ArrayList<Product> products) {
+    public ProductsRecyclerAdapter(Context context, ArrayList<Product> products) {
         mContext = context;
         mProducts = products;
     }
 
-    public void setSearchResultOnClickListener(OnClickListener mSearchResultOnClickListener) {
-        this.mSearchResultOnClickListener = mSearchResultOnClickListener;
+    public void setProductOnClickListener(OnClickListener mProductOnClickListener) {
+        this.mProductOnClickListener = mProductOnClickListener;
     }
 
     @NonNull
@@ -36,7 +36,7 @@ public class SearchResultsRecyclerAdapter extends RecyclerView.Adapter<SearchRes
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.products_list_item,parent,false);
-        return new ViewHolder(view, mSearchResultOnClickListener);
+        return new ViewHolder(view, mProductOnClickListener);
     }
 
     @Override

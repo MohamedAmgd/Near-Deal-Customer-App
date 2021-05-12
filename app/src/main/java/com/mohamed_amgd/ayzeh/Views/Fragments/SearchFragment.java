@@ -12,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 
-import com.google.android.material.button.MaterialButton;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.SearchViewModel;
 
@@ -29,7 +27,7 @@ public class SearchFragment extends Fragment {
     private SearchViewModel mViewModel;
     private SearchView mSearchView;
     private ImageButton mFiltersButton;
-    private RecyclerView mSearchResultsRecycler;
+    private RecyclerView mProductsRecycler;
 
     public static SearchFragment newInstance() {
         return new SearchFragment();
@@ -50,13 +48,13 @@ public class SearchFragment extends Fragment {
         mViewModel = new ViewModelProvider(this,factory).get(SearchViewModel.class);
         mSearchView = view.findViewById(R.id.search_view);
         mFiltersButton = view.findViewById(R.id.filters_button);
-        mSearchResultsRecycler = view.findViewById(R.id.search_results_recycler);
+        mProductsRecycler = view.findViewById(R.id.products_recycler);
 
         mViewModel.initSearchView(mSearchView);
         mFiltersButton.setOnClickListener(v -> {
             mViewModel.filtersButtonAction(v);
         });
-        mViewModel.initSearchResultsRecycler(mSearchResultsRecycler);
+        mViewModel.initProductsRecycler(mProductsRecycler);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
