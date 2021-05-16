@@ -1,9 +1,11 @@
 package com.mohamed_amgd.ayzeh.Views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -17,7 +19,13 @@ import com.mohamed_amgd.ayzeh.Views.Fragments.NearbyLocationsFragment;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 52;
 
     private BottomNavigationView mBottomNavigationView;
     private FragmentManager mFragmentManager;
@@ -59,9 +67,14 @@ public class MainActivity extends AppCompatActivity {
                 mFragmentTransaction.replace(R.id.fragment_layout,new ExploreFragment());
                 mFragmentTransaction.commit();
             }  else if (itemId == R.id.nearby_locations_menu_item) {
-                mFragmentTransaction = mFragmentManager.beginTransaction();
-                mFragmentTransaction.replace(R.id.fragment_layout,new NearbyLocationsFragment());
-                mFragmentTransaction.commit();
+                if(hasLocationAccess()){
+                    mFragmentTransaction = mFragmentManager.beginTransaction();
+                    mFragmentTransaction.replace(R.id.fragment_layout,new NearbyLocationsFragment());
+                    mFragmentTransaction.commit();
+                } else {
+                    requestLocationPermission();
+                    return false;
+                }
             } else if (itemId == R.id.account_menu_item) {
                 mFragmentTransaction = mFragmentManager.beginTransaction();
                 mFragmentTransaction.replace(R.id.fragment_layout,new UserInfoFragment());
@@ -69,6 +82,38 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+    }
+
+    private boolean hasLocationAccess() {
+        return EasyPermissions.hasPermissions(getApplication()
+                , Manifest.permission.ACCESS_COARSE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    private void requestLocationPermission(){
+        EasyPermissions.requestPermissions(this
+                , getString(R.string.location_permission_rationale)
+                , LOCATION_PERMISSION_REQUEST_CODE
+                , Manifest.permission.ACCESS_COARSE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        mBottomNavigationView.setSelectedItemId(R.id.nearby_locations_menu_item);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+
     }
 
     @Override
