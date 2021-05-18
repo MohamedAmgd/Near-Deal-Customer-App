@@ -9,12 +9,12 @@ public class Shop implements Serializable {
     private String description;
     private double locationLon;
     private double locationLat;
-    private float distanceToUser;
+    private String distanceToUser;
 
     public Shop() {
     }
 
-    public Shop(String id, String name, String imageUrl, String description, double locationLon, double locationLat, float distanceToUser) {
+    public Shop(String id, String name, String imageUrl, String description, double locationLon, double locationLat, String distanceToUser) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -72,11 +72,11 @@ public class Shop implements Serializable {
         this.locationLat = locationLat;
     }
 
-    public float getDistanceToUser() {
+    public String getDistanceToUser() {
         return distanceToUser;
     }
 
-    public void setDistanceToUser(float distanceToUser) {
+    public void setDistanceToUser(String distanceToUser) {
         this.distanceToUser = distanceToUser;
     }
 }

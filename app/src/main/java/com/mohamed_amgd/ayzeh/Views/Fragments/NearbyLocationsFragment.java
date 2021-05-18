@@ -1,23 +1,25 @@
 package com.mohamed_amgd.ayzeh.Views.Fragments;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.google.android.gms.maps.SupportMapFragment;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.NearbyLocationsViewModel;
 
 public class NearbyLocationsFragment extends Fragment {
 
     private NearbyLocationsViewModel mViewModel;
+    private SearchView mSearchView;
+    private SupportMapFragment mMapFragment;
 
     public static NearbyLocationsFragment newInstance() {
         return new NearbyLocationsFragment();
@@ -30,10 +32,28 @@ public class NearbyLocationsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(NearbyLocationsViewModel.class);
-        // TODO: Use the ViewModel
-    }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        NearbyLocationsViewModel.Factory factory = new NearbyLocationsViewModel.Factory(getActivity().getApplication(), getFragmentManager());
+        mViewModel = new ViewModelProvider(this, factory).get(NearbyLocationsViewModel.class);
 
+        mSearchView = view.findViewById(R.id.search_view);
+        mMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mViewModel.searchViewAction(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        mMapFragment.getMapAsync(googleMap -> {
+            mViewModel.onMapReady(googleMap,mMapFragment.getContext());
+        });
+    }
 }

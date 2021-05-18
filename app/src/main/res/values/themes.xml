@@ -69,4 +69,9 @@
     <style name="FilterDialog.Style" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+    <style name="ShopDialog" parent="android:Theme.Material.Dialog.Alert">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:layout_marginBottom">24dp</item>
+    </style>
 </resources>

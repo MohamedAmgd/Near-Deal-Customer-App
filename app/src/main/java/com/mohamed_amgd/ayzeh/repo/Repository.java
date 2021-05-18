@@ -47,4 +47,14 @@ public class Repository {
         // TODO: 5/12/2021 use retrofit client to get shop's products using shopId
         return new MutableLiveData<>();
     }
+
+    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
+        // TODO: 5/15/2021 use retrofit to get nearby shops to user's location by userLat,userLon
+        return new MutableLiveData<>();
+    }
+
+    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
+        // TODO: 5/18/2021 use retrofit to get nearby shops to user's location by userLat,userLon and query
+        return new MutableLiveData<>();
+    }
 }
