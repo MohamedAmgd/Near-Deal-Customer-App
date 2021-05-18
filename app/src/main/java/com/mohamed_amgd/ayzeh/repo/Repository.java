@@ -57,4 +57,13 @@ public class Repository {
         // TODO: 5/18/2021 use retrofit to get nearby shops to user's location by userLat,userLon and query
         return new MutableLiveData<>();
     }
+
+    public SearchResult getHotDealsSearchResult(String query, Filter filter) {
+        // TODO: 5/9/2021 use retrofit client to get hot deals search result of query with filter
+        if (query == null){
+            return new SearchResult(getHotDeals(),0f,1000f);
+        } else {
+            return new SearchResult(new MutableLiveData<>(),0f,1000f);
+        }
+    }
 }

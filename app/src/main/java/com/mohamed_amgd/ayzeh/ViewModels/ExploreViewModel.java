@@ -62,8 +62,12 @@ public class ExploreViewModel extends AndroidViewModel {
     }
 
     public void seeAllAction() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG, new Filter());
+        HotDealsFragment hotDealsFragment =  new HotDealsFragment();
+        hotDealsFragment.setArguments(bundle);
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_layout, new HotDealsFragment());
+        transaction.replace(R.id.fragment_layout,hotDealsFragment);
         transaction.addToBackStack(HotDealsFragment.CLASS_NAME);
         transaction.commit();
     }
