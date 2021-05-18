@@ -150,6 +150,8 @@ public class SearchViewModel extends AndroidViewModel {
             newFilter.setCategoryName(Filter.GADGETS_CATEGORY);
         } else if (checkedChipId == R.id.tools_chip) {
             newFilter.setCategoryName(Filter.TOOLS_CATEGORY);
+        } else {
+            newFilter.setCategoryName(Filter.NO_CATEGORY);
         }
         filterDialog.dismiss();
         initNewSearchFragment(mQuery, newFilter);
