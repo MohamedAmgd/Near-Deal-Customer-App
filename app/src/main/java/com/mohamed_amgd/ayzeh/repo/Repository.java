@@ -7,6 +7,7 @@ import com.mohamed_amgd.ayzeh.Models.Offer;
 import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.Models.SearchResult;
 import com.mohamed_amgd.ayzeh.Models.Shop;
+import com.mohamed_amgd.ayzeh.Models.User;
 
 import java.util.ArrayList;
 
@@ -59,11 +60,16 @@ public class Repository {
     }
 
     public SearchResult getHotDealsSearchResult(String query, Filter filter) {
-        // TODO: 5/9/2021 use retrofit client to get hot deals search result of query with filter
+        // TODO: 5/18/2021 use retrofit client to get hot deals search result of query with filter
         if (query == null){
             return new SearchResult(getHotDeals(),0f,1000f);
         } else {
             return new SearchResult(new MutableLiveData<>(),0f,1000f);
         }
+    }
+
+    public MutableLiveData<User> getUser() {
+        // TODO: 5/19/2021 use firebase auth and retrofit to get user's info
+        return new MutableLiveData<>();
     }
 }

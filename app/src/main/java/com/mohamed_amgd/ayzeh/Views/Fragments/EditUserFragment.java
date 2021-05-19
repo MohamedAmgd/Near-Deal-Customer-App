@@ -17,6 +17,7 @@ import com.mohamed_amgd.ayzeh.ViewModels.EditUserViewModel;
 
 public class EditUserFragment extends Fragment {
 
+    public static final String CLASS_NAME = "EditUserFragment";
     private EditUserViewModel mViewModel;
 
     public static EditUserFragment newInstance() {

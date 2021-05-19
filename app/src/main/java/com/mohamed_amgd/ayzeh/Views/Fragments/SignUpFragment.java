@@ -17,6 +17,7 @@ import com.mohamed_amgd.ayzeh.ViewModels.SignUpViewModel;
 
 public class SignUpFragment extends Fragment {
 
+    public static final String CLASS_NAME = "SignUpFragment";
     private SignUpViewModel mViewModel;
 
     public static SignUpFragment newInstance() {
