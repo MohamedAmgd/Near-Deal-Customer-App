@@ -32,10 +32,8 @@ public class UserInfoViewModel extends AndroidViewModel {
         mUser = new MutableLiveData<>();
         mUser = Repository.getInstance().getUser();
         if (mUser.getValue() == null) {
-            mFragmentManager.popBackStack(UserInfoFragment.CLASS_NAME, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             transaction.replace(R.id.fragment_layout, new SignUpFragment());
-            transaction.addToBackStack(SignUpFragment.CLASS_NAME);
             transaction.commit();
         }
     }
