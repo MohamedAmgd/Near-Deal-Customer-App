@@ -18,7 +18,7 @@ public class Repository {
     }
 
     public static Repository getInstance() {
-        if (mInstance == null){
+        if (mInstance == null) {
             mInstance = new Repository();
         }
         return mInstance;
@@ -36,7 +36,7 @@ public class Repository {
 
     public SearchResult getSearchResult(String query, Filter filter) {
         // TODO: 5/9/2021 use retrofit client to get search result of query with filter
-        return new SearchResult(new MutableLiveData<>(),0f,1000f);
+        return new SearchResult(new MutableLiveData<>(), 0f, 1000f);
     }
 
     public MutableLiveData<Shop> getShopById(String shopId) {
@@ -61,10 +61,10 @@ public class Repository {
 
     public SearchResult getHotDealsSearchResult(String query, Filter filter) {
         // TODO: 5/18/2021 use retrofit client to get hot deals search result of query with filter
-        if (query == null){
-            return new SearchResult(getHotDeals(),0f,1000f);
+        if (query == null) {
+            return new SearchResult(getHotDeals(), 0f, 1000f);
         } else {
-            return new SearchResult(new MutableLiveData<>(),0f,1000f);
+            return new SearchResult(new MutableLiveData<>(), 0f, 1000f);
         }
     }
 
@@ -75,6 +75,11 @@ public class Repository {
 
     public MutableLiveData<Boolean> createUser(String email, String username, String password, String birthdate) {
         // TODO: 5/26/2021 use firebase auth and retrofit to create user
+        return new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Boolean> signInUser(String email, String password) {
+        // TODO: 5/26/2021 use firebase auth to sign in user
         return new MutableLiveData<>();
     }
 }

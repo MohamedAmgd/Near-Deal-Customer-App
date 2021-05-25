@@ -99,10 +99,12 @@
         app:layout_constraintTop_toBottomOf="@id/password_edit_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sign_up_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="62dp"
+        android:paddingHorizontal="27dp"
+        android:paddingVertical="12dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sign_in_button">
 

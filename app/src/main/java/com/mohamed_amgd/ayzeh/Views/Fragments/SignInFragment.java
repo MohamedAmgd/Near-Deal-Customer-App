@@ -1,5 +1,6 @@
 package com.mohamed_amgd.ayzeh.Views.Fragments;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -11,13 +12,23 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.SignInViewModel;
+import com.mohamed_amgd.ayzeh.ViewModels.SignUpViewModel;
 
 public class SignInFragment extends Fragment {
 
+    public static final String CLASS_NAME = "SignInFragment";
+
     private SignInViewModel mViewModel;
+    private EditText mEmailEditText;
+    private EditText mPasswordEditText;
+    private Button mSignInButton;
+    private ConstraintLayout mSignUpLayout;
+
 
     public static SignInFragment newInstance() {
         return new SignInFragment();
@@ -30,10 +41,22 @@ public class SignInFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SignInViewModel.class);
-        // TODO: Use the ViewModel
-    }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        SignInViewModel.Factory factory = new SignInViewModel.Factory(getActivity().getApplication(), getFragmentManager());
+        mViewModel = new ViewModelProvider(this, factory).get(SignInViewModel.class);
+        mEmailEditText = view.findViewById(R.id.email_edit_text);
+        mPasswordEditText = view.findViewById(R.id.password_edit_text);
+        mSignInButton = view.findViewById(R.id.sign_in_button);
+        mSignUpLayout = view.findViewById(R.id.sign_up_layout);
 
+        mSignUpLayout.setOnClickListener(v -> {
+            mViewModel.signUpAction();
+        });
+
+        mSignInButton.setOnClickListener(v -> {
+            mViewModel.signInAction(mEmailEditText,mPasswordEditText);
+        });
+
+    }
 }
