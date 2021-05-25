@@ -72,4 +72,9 @@ public class Repository {
         // TODO: 5/19/2021 use firebase auth and retrofit to get user's info
         return new MutableLiveData<>();
     }
+
+    public MutableLiveData<Boolean> createUser(String email, String username, String password, String birthdate) {
+        // TODO: 5/26/2021 use firebase auth and retrofit to create user
+        return new MutableLiveData<>();
+    }
 }

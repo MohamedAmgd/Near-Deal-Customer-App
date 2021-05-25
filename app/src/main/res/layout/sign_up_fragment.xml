@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="8dp"
+    android:paddingBottom="16dp"
     tools:context=".Views.Fragments.SignUpFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -159,6 +159,8 @@
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/user_edit_text_background"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:paddingHorizontal="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -183,19 +185,19 @@
             android:id="@+id/date_picker_icon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="14dp"
+            android:paddingEnd="14dp"
             android:src="@drawable/ic_date_picker"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/sign_in_button"
+        android:id="@+id/sign_up_button"
         android:layout_width="144dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="78dp"
         android:background="@drawable/confirm_button_background"
         android:fontFamily="@font/roboto_bold"
-        android:text="@string/sign_in"
+        android:text="@string/sign_up"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -203,15 +205,17 @@
         app:layout_constraintTop_toBottomOf="@id/date_picker_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sign_in_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="62dp"
+        android:paddingHorizontal="27dp"
+        android:paddingVertical="12dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sign_in_button">
+        app:layout_constraintTop_toBottomOf="@id/sign_up_button">
 
         <TextView
-            android:id="@+id/pre_sign_up_text"
+            android:id="@+id/pre_sign_in_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
@@ -230,7 +234,7 @@
             android:textColor="?colorPrimary"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/pre_sign_up_text"
+            app:layout_constraintStart_toEndOf="@id/pre_sign_in_text"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
