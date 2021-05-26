@@ -8,10 +8,13 @@
     tools:context=".Views.Fragments.EditUserFragment">
 
     <TextView
+        android:id="@+id/confirm_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="26dp"
+        android:paddingHorizontal="27dp"
+        android:paddingVertical="12dp"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/confirm"
         android:textColor="?colorPrimary"
@@ -172,6 +175,8 @@
         android:layout_marginHorizontal="26dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/user_edit_text_background"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:paddingHorizontal="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +201,7 @@
             android:id="@+id/date_picker_icon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="14dp"
+            android:paddingEnd="14dp"
             android:src="@drawable/ic_date_picker"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

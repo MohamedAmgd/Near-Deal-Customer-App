@@ -1,5 +1,7 @@
 package com.mohamed_amgd.ayzeh.repo;
 
+import android.net.Uri;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.mohamed_amgd.ayzeh.Models.Filter;
@@ -80,6 +82,16 @@ public class Repository {
 
     public MutableLiveData<Boolean> signInUser(String email, String password) {
         // TODO: 5/26/2021 use firebase auth to sign in user
+        return new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Boolean> updateUser(String email, String username, String password, String birthdate) {
+        // TODO: 5/26/2021 use firebase auth and retrofit to update user info
+        return new MutableLiveData<>();
+    }
+
+    public MutableLiveData<Boolean> updateUserImage(Uri mUserImageUri) {
+        // TODO: 5/26/2021 use firebase auth and retrofit to update user's image
         return new MutableLiveData<>();
     }
 }
