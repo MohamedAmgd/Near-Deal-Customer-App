@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "68520782867",
+    "firebase_url": "https://ayz-eh.firebaseio.com",
+    "project_id": "ayz-eh",
+    "storage_bucket": "ayz-eh.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68520782867:android:56b913bbd6b2df6e7463e6",
+        "android_client_info": {
+          "package_name": "com.mohamed_amgd.ayzeh"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68520782867-6kpf22r492k52k9itb7sh5hfvm0lcrmr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAz-AEd5vUtAgrpNx_ar4pvswH-7JBHD6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68520782867-6kpf22r492k52k9itb7sh5hfvm0lcrmr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

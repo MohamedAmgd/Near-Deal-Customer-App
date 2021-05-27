@@ -14,9 +14,10 @@ import com.mohamed_amgd.ayzeh.Models.User;
 import java.util.ArrayList;
 
 public class Repository {
-    static Repository mInstance;
-
+    private static Repository mInstance;
+    private final FirebaseClient firebaseClient;
     private Repository() {
+        firebaseClient = FirebaseClient.getInstance();
     }
 
     public static Repository getInstance() {
@@ -72,17 +73,25 @@ public class Repository {
 
     public MutableLiveData<User> getUser() {
         // TODO: 5/19/2021 use firebase auth and retrofit to get user's info
-        return new MutableLiveData<>();
+        if (firebaseClient.getCurrentUser() == null){
+            return new MutableLiveData<>();
+        }
+        MutableLiveData<User> result = new MutableLiveData<>();
+        String email = firebaseClient.getCurrentUser().getEmail();
+        String uid = firebaseClient.getCurrentUser().getUid();
+        User user = new User(uid,email,"","");
+        result.setValue(user);
+        return result;
     }
 
     public MutableLiveData<Boolean> createUser(String email, String username, String password, String birthdate) {
         // TODO: 5/26/2021 use firebase auth and retrofit to create user
-        return new MutableLiveData<>();
+        return firebaseClient.createNewUser(email, password);
     }
 
     public MutableLiveData<Boolean> signInUser(String email, String password) {
         // TODO: 5/26/2021 use firebase auth to sign in user
-        return new MutableLiveData<>();
+        return firebaseClient.signInUser(email, password);
     }
 
     public MutableLiveData<Boolean> updateUser(String email, String username, String password, String birthdate) {
@@ -95,8 +104,7 @@ public class Repository {
         return new MutableLiveData<>();
     }
 
-    public MutableLiveData<Boolean> logoutUser() {
-        // TODO: 5/27/2021 use firebase auth and retrofit to update user's image
-        return new MutableLiveData<>();
+    public void logoutUser() {
+        firebaseClient.signOutUser();
     }
 }

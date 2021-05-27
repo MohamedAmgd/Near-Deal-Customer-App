@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -66,15 +65,10 @@ public class UserInfoViewModel extends AndroidViewModel {
     }
 
     public void logoutAction() {
-        MutableLiveData<Boolean> status = Repository.getInstance().logoutUser();
-        status.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                transaction.replace(R.id.fragment_layout, new SignUpFragment());
-                transaction.commit();
-            }
-        });
+        Repository.getInstance().logoutUser();
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment_layout, new SignUpFragment());
+        transaction.commit();
     }
 
 
