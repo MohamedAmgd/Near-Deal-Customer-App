@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.EditUserViewModel;
+import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,7 +45,7 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
     private EditText mUsernameEditText;
     private EditText mPasswordEditText;
     private EditText mConfirmPasswordEditText;
-    private EditText mBirthdateEditText;
+    private TextView mBirthdateTextView;
     private ConstraintLayout mBirthdateLayout;
 
 
@@ -70,19 +71,19 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
         mUsernameEditText = view.findViewById(R.id.username_edit_text);
         mPasswordEditText = view.findViewById(R.id.password_edit_text);
         mConfirmPasswordEditText = view.findViewById(R.id.confirm_password_edit_text);
-        mBirthdateEditText = view.findViewById(R.id.birthday_edit_text);
+        mBirthdateTextView = view.findViewById(R.id.birthday_edit_text);
         mBirthdateLayout = view.findViewById(R.id.date_picker_layout);
 
         mViewModel.mUser.observe(getViewLifecycleOwner(), user -> {
             mViewModel.initUserImage(mUserImage);
             mViewModel.initEmail(mEmailEditText);
             mViewModel.initUsername(mUsernameEditText);
-            mViewModel.initBirthdate(mBirthdateEditText);
+            mViewModel.initBirthdate(mBirthdateTextView);
         });
         mConfirm.setOnClickListener(this);
         mChangePhotoChip.setOnClickListener(this);
         mBirthdateLayout.setOnClickListener(this);
-        mBirthdateEditText.setOnClickListener(this);
+        mBirthdateTextView.setOnClickListener(this);
     }
 
     @Override
@@ -94,14 +95,14 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
     }
 
     private void updateLabel() {
-        String myFormat = "dd/mm/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        mBirthdateEditText.setText(sdf.format(myCalendar.getTime()));
+        SimpleDateFormat sdf = new SimpleDateFormat(Util.DATE_FORMAT, Locale.US);
+        mBirthdateTextView.setText(sdf.format(myCalendar.getTime()));
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.birthday_edit_text || v.getId() == R.id.date_picker_layout) {
+        if (v.getId() == R.id.date_picker_layout) {
+            mBirthdateTextView.setError(null);
             new DatePickerDialog(getContext(), this, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -112,7 +113,7 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
                     , mUsernameEditText
                     , mPasswordEditText
                     , mConfirmPasswordEditText
-                    , mBirthdateEditText);
+                    , mBirthdateTextView);
         }
     }
 

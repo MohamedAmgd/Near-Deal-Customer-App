@@ -34,14 +34,18 @@ public class SignInViewModel extends AndroidViewModel {
     }
 
     public void signInAction(EditText emailEditText, EditText passwordEditText) {
+        boolean inputError = false;
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         if (!Util.getInstance().isEmailValid(email)) {
-            // TODO: 5/26/2021  show email error
+            inputError = true;
+            emailEditText.setError(getApplication().getString(R.string.email_input_error));
         }
         if (!Util.getInstance().isPasswordValid(password)) {
-            // TODO: 5/26/2021  show password error
+            inputError = true;
+            passwordEditText.setError(getApplication().getString(R.string.password_input_error));
         }
+        if (inputError) return;
 
         MutableLiveData<Boolean> status =
                 Repository.getInstance().signInUser(email, password);

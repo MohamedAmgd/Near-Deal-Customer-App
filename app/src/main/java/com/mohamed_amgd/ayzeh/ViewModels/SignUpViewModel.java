@@ -2,6 +2,7 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -37,7 +38,8 @@ public class SignUpViewModel extends AndroidViewModel {
             , EditText usernameEditText
             , EditText passwordEditText
             , EditText confirmPasswordEditText
-            , EditText birthdateEditText) {
+            , TextView birthdateEditText) {
+        boolean inputError = false;
 
         String email = emailEditText.getText().toString();
         String username = usernameEditText.getText().toString();
@@ -45,20 +47,27 @@ public class SignUpViewModel extends AndroidViewModel {
         String confirmPassword = confirmPasswordEditText.getText().toString();
         String birthdate = birthdateEditText.getText().toString();
         if (!Util.getInstance().isEmailValid(email)) {
-            // TODO: 5/26/2021  show email error
+            inputError = true;
+            emailEditText.setError(getApplication().getString(R.string.email_input_error));
         }
         if (!Util.getInstance().isUsernameValid(username)) {
-            // TODO: 5/26/2021  show username error
+            inputError = true;
+            usernameEditText.setError(getApplication().getString(R.string.username_input_error));
         }
         if (!Util.getInstance().isPasswordValid(password)) {
-            // TODO: 5/26/2021  show password error
+            inputError = true;
+            passwordEditText.setError(getApplication().getString(R.string.password_input_error));
         }
         if (!Util.getInstance().isConfirmPasswordValid(password, confirmPassword)) {
-            // TODO: 5/26/2021  show confirm password error
+            inputError = true;
+            confirmPasswordEditText.setError(getApplication().getString(R.string.confirm_password_input_error));
         }
         if (!Util.getInstance().isBirthdateValid(birthdate)) {
-            // TODO: 5/26/2021  show birthdate error
+            inputError = true;
+            birthdateEditText.setError(getApplication().getString(R.string.birthdate_input_error));
         }
+        if (inputError) return;
+
         MutableLiveData<Boolean> status =
                 Repository.getInstance().createUser(email, username, password, birthdate);
         status.observeForever(new Observer<Boolean>() {

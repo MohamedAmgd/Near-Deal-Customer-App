@@ -183,18 +183,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/birthday_text_view">
 
-        <EditText
+        <TextView
             android:id="@+id/birthday_edit_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            style="@android:style/Widget.EditText"
+            android:textSize="15sp"
             android:autofillHints="@string/birth_date"
             android:backgroundTint="@android:color/transparent"
-            android:clickable="false"
-            android:cursorVisible="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             android:hint="@string/birth_date_hint"
-            android:inputType="date"
             app:layout_constraintEnd_toStartOf="@id/date_picker_icon"
             app:layout_constraintStart_toStartOf="parent" />
 

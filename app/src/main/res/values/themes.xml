@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/dodger_blue</item>
         <item name="colorPrimaryVariant">@color/picton_blue</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorAccent">@color/dodger_blue</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/mercury</item>
         <!-- Status bar color. -->
