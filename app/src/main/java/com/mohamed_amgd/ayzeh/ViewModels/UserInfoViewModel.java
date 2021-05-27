@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,7 +18,6 @@ import com.mohamed_amgd.ayzeh.Models.User;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.EditUserFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SignUpFragment;
-import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -62,6 +62,18 @@ public class UserInfoViewModel extends AndroidViewModel {
             transaction.replace(R.id.fragment_layout, new EditUserFragment());
             transaction.addToBackStack(EditUserFragment.CLASS_NAME);
             transaction.commit();
+        });
+    }
+
+    public void logoutAction() {
+        MutableLiveData<Boolean> status = Repository.getInstance().logoutUser();
+        status.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_layout, new SignUpFragment());
+                transaction.commit();
+            }
         });
     }
 

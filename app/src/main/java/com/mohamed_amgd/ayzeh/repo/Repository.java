@@ -94,4 +94,9 @@ public class Repository {
         // TODO: 5/26/2021 use firebase auth and retrofit to update user's image
         return new MutableLiveData<>();
     }
+
+    public MutableLiveData<Boolean> logoutUser() {
+        // TODO: 5/27/2021 use firebase auth and retrofit to update user's image
+        return new MutableLiveData<>();
+    }
 }

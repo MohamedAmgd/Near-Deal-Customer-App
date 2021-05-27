@@ -32,7 +32,6 @@ import static android.app.Activity.RESULT_OK;
 public class EditUserFragment extends Fragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
     public static final String CLASS_NAME = "EditUserFragment";
-    private static final int STORAGE_PERMISSION_REQUEST_CODE = 53;
     private static final int CHOOSE_IMAGE_REQUEST = 1;
 
     final Calendar myCalendar = Calendar.getInstance();
