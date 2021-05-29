@@ -55,6 +55,7 @@
     <string name="product_image">Product Image</string>
     <string name="get_directions">Get directions</string>
     <string name="location_permission_rationale">To get nearby shops we need your location</string>
+    <string name="storage_permission_rationale">To choose an image we need storage access</string>
     <string name="logout">logout</string>
     <string name="email_input_error">Wrong email address \nPlease enter a proper email</string>
     <string name="username_input_error">Username must contain characters only [A-Z,a-z]</string>

@@ -1,8 +1,7 @@
 package com.mohamed_amgd.ayzeh.repo;
 
-import android.net.Uri;
-
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.mohamed_amgd.ayzeh.Models.Filter;
 import com.mohamed_amgd.ayzeh.Models.Offer;
@@ -10,14 +9,17 @@ import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.Models.SearchResult;
 import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
+import com.mohamed_amgd.ayzeh.repo.retrofit.RetrofitClient;
 
 import java.util.ArrayList;
 
 public class Repository {
     private static Repository mInstance;
-    private final FirebaseClient firebaseClient;
+    private final FirebaseClient mFirebaseClient;
+    private final RetrofitClient mRetrofitClient;
     private Repository() {
-        firebaseClient = FirebaseClient.getInstance();
+        mFirebaseClient = FirebaseClient.getInstance();
+        mRetrofitClient = RetrofitClient.getInstance();
     }
 
     public static Repository getInstance() {
@@ -72,39 +74,70 @@ public class Repository {
     }
 
     public MutableLiveData<User> getUser() {
-        // TODO: 5/19/2021 use firebase auth and retrofit to get user's info
-        if (firebaseClient.getCurrentUser() == null){
+        if (mFirebaseClient.getCurrentUser() == null){
             return new MutableLiveData<>();
         }
         MutableLiveData<User> result = new MutableLiveData<>();
-        String email = firebaseClient.getCurrentUser().getEmail();
-        String uid = firebaseClient.getCurrentUser().getUid();
-        User user = new User(uid,email,"","");
-        result.setValue(user);
+        String email = mFirebaseClient.getCurrentUser().getEmail();
+        String uid = mFirebaseClient.getCurrentUser().getUid();
+        User currentUser = new User(uid,email,"","");
+        mRetrofitClient.getUserData(uid).observeForever(new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                currentUser.setUsername(user.getUsername());
+                currentUser.setBirthdate(user.getBirthdate());
+                currentUser.setImageUrl(user.getImageUrl());
+                result.setValue(currentUser);
+            }
+        });
+        result.setValue(currentUser);
         return result;
     }
 
     public MutableLiveData<Boolean> createUser(String email, String username, String password, String birthdate) {
-        // TODO: 5/26/2021 use firebase auth and retrofit to create user
-        return firebaseClient.createNewUser(email, password);
+        MutableLiveData<Boolean> status = new MutableLiveData<>();
+        MutableLiveData<Boolean> creationStatus =
+                mFirebaseClient.createNewUser(email, password);
+        creationStatus.observeForever(new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    String uid = mFirebaseClient.getCurrentUser().getUid();
+                    User data = new User(uid,email,username,birthdate);
+                    MutableLiveData<Boolean> userDataStatus
+                            = mRetrofitClient.insertUserData(uid,data);
+                    userDataStatus.observeForever(new Observer<Boolean>() {
+                        @Override
+                        public void onChanged(Boolean aBoolean) {
+                            status.setValue(aBoolean);
+                        }
+                    });
+                }
+                else {
+                    status.setValue(false);
+                }
+            }
+        });
+        return status;
     }
 
     public MutableLiveData<Boolean> signInUser(String email, String password) {
-        // TODO: 5/26/2021 use firebase auth to sign in user
-        return firebaseClient.signInUser(email, password);
+        return mFirebaseClient.signInUser(email, password);
     }
 
     public MutableLiveData<Boolean> updateUser(String email, String username, String password, String birthdate) {
-        // TODO: 5/26/2021 use firebase auth and retrofit to update user info
-        return new MutableLiveData<>();
+        String uid = mFirebaseClient.getCurrentUser().getUid();
+        User data = new User(uid,email,username,birthdate);
+        return mRetrofitClient.updateUserData(uid,data);
     }
 
-    public MutableLiveData<Boolean> updateUserImage(Uri mUserImageUri) {
-        // TODO: 5/26/2021 use firebase auth and retrofit to update user's image
-        return new MutableLiveData<>();
+    public MutableLiveData<Boolean> updateUserImage(String userImagePath) {
+        String uid = mFirebaseClient.getCurrentUser().getUid();
+        String type = RetrofitClient.UPLOAD_USER_IMAGE;
+        return mRetrofitClient.uploadImage(uid,type,userImagePath);
     }
 
     public void logoutUser() {
-        firebaseClient.signOutUser();
+        mFirebaseClient.signOutUser();
     }
 }

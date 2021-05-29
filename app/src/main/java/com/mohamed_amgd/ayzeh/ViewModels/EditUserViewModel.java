@@ -1,7 +1,7 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
-import android.net.Uri;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,12 +26,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditUserViewModel extends AndroidViewModel {
     public MutableLiveData<User> mUser;
-    private Uri mUserImageUri;
+    private String mUserImagePath;
     private FragmentManager mFragmentManager;
 
     public EditUserViewModel(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
         mFragmentManager = fragmentManager;
+        mUserImagePath = null;
         mUser = new MutableLiveData<>();
         mUser = Repository.getInstance().getUser();
         if (mUser.getValue() == null) {
@@ -59,8 +60,8 @@ public class EditUserViewModel extends AndroidViewModel {
         birthdate.setText(mUser.getValue().getBirthdate());
     }
 
-    public void changePhotoAction(Uri data) {
-        mUserImageUri = data;
+    public void changePhotoAction(String imagePath) {
+        mUserImagePath = imagePath;
     }
 
     public void confirmAction(EditText emailEditText
@@ -74,6 +75,7 @@ public class EditUserViewModel extends AndroidViewModel {
         String password = passwordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
         String birthdate = birthdateEditText.getText().toString();
+
         if (!Util.getInstance().isEmailValid(email)) {
             inputError = true;
             emailEditText.setError(getApplication().getString(R.string.email_input_error));
@@ -96,32 +98,40 @@ public class EditUserViewModel extends AndroidViewModel {
         }
         if (inputError) return;
 
-
-        MutableLiveData<Boolean> userImageStatus =
-                Repository.getInstance().updateUserImage(mUserImageUri);
-        userImageStatus.observeForever(new Observer<Boolean>() {
+        MutableLiveData<Boolean> status =
+                Repository.getInstance().updateUser(email, username, password, birthdate);
+        status.observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
-                    MutableLiveData<Boolean> status =
-                            Repository.getInstance().updateUser(email, username, password, birthdate);
-                    status.observeForever(new Observer<Boolean>() {
-                        @Override
-                        public void onChanged(Boolean aBoolean) {
-                            if (aBoolean) {
-                                FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                                transaction.replace(R.id.fragment_layout, new UserInfoFragment());
-                                transaction.commit();
-                            } else {
-                                // TODO: 5/26/2021  show cannot update user error
+                    if (mUserImagePath != null) {
+                        MutableLiveData<Boolean> userImageStatus =
+                                Repository.getInstance().updateUserImage(mUserImagePath);
+                        userImageStatus.observeForever(new Observer<Boolean>() {
+                            @Override
+                            public void onChanged(Boolean aBoolean) {
+                                if (aBoolean) {
+                                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                                    transaction.replace(R.id.fragment_layout, new UserInfoFragment());
+                                    transaction.commit();
+                                } else {
+                                    // TODO: 5/26/2021  show cannot update user's image error
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                        transaction.replace(R.id.fragment_layout, new UserInfoFragment());
+                        transaction.commit();
+                    }
+
                 } else {
-                    // TODO: 5/26/2021  show cannot update user's image error
+                    // TODO: 5/26/2021  show cannot update user error
                 }
             }
         });
+
+
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
