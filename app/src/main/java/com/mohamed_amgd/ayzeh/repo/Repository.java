@@ -1,5 +1,7 @@
 package com.mohamed_amgd.ayzeh.repo;
 
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -11,6 +13,7 @@ import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
 import com.mohamed_amgd.ayzeh.repo.retrofit.RetrofitClient;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Repository {
@@ -131,10 +134,11 @@ public class Repository {
         return mRetrofitClient.updateUserData(uid,data);
     }
 
-    public MutableLiveData<Boolean> updateUserImage(String userImagePath) {
+    public MutableLiveData<Boolean> updateUserImage(Context context, String userImagePath) {
         String uid = mFirebaseClient.getCurrentUser().getUid();
         String type = RetrofitClient.UPLOAD_USER_IMAGE;
-        return mRetrofitClient.uploadImage(uid,type,userImagePath);
+        File compressedImage = Util.getInstance().getCompressedImageFile(context,userImagePath);
+        return mRetrofitClient.uploadImage(uid,type,compressedImage);
     }
 
     public void logoutUser() {

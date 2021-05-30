@@ -106,7 +106,8 @@ public class EditUserViewModel extends AndroidViewModel {
                 if (aBoolean) {
                     if (mUserImagePath != null) {
                         MutableLiveData<Boolean> userImageStatus =
-                                Repository.getInstance().updateUserImage(mUserImagePath);
+                                Repository.getInstance()
+                                        .updateUserImage(emailEditText.getContext(),mUserImagePath);
                         userImageStatus.observeForever(new Observer<Boolean>() {
                             @Override
                             public void onChanged(Boolean aBoolean) {

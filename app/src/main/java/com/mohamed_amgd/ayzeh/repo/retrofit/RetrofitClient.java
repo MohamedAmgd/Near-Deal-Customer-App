@@ -10,9 +10,12 @@ import com.mohamed_amgd.ayzeh.Models.User;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
+import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,8 +33,13 @@ public class RetrofitClient {
     private Api mApi;
 
     private RetrofitClient() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .retryOnConnectionFailure(true)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .build();
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mApi = mRetrofit.create(Api.class);
@@ -128,16 +136,14 @@ public class RetrofitClient {
         return resultLiveData;
     }
 
-    public MutableLiveData<Boolean> uploadImage(String id, String type, String imagePath) {
+    public MutableLiveData<Boolean> uploadImage(String id, String type, File imageFile) {
         MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
-        File image = new File(imagePath);
-        Log.i("Image", image.getAbsolutePath());
         RequestBody requestFile =
-                RequestBody.create(MediaType.parse("multipart/form-data"), image);
+                RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
 
         // MultipartBody.Part is used to send also the actual file name
         MultipartBody.Part body =
-                MultipartBody.Part.createFormData("file", image.getName(), requestFile);
+                MultipartBody.Part.createFormData("file", imageFile.getName(), requestFile);
 
         Call<JsonObject> request = mApi.uploadImage(id, type, body);
         request.enqueue(new Callback<JsonObject>() {

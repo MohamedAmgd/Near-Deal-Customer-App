@@ -1,13 +1,18 @@
 package com.mohamed_amgd.ayzeh.repo;
 
+import android.content.Context;
 import android.util.Patterns;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import id.zelory.compressor.Compressor;
 
 public class Util {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -58,5 +63,14 @@ public class Util {
         } else {
             return false;
         }
+    }
+
+    public File getCompressedImageFile(Context context, String imagePath){
+        try {
+            return new Compressor(context).compressToFile(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new File(imagePath);
     }
 }
