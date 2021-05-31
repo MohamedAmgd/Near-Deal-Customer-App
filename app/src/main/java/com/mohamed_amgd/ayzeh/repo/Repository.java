@@ -132,7 +132,8 @@ public class Repository {
 
     public MutableLiveData<Boolean> updateUser(String email, String username, String password, String birthdate) {
         MutableLiveData<Boolean> status = new MutableLiveData<>();
-        mFirebaseClient.signInUser(email, password).observeForever((signedIn) -> {
+        String oldEmail = mFirebaseClient.getCurrentUser().getEmail();
+        mFirebaseClient.signInUser(oldEmail, password).observeForever((signedIn) -> {
             String uid = mFirebaseClient.getCurrentUser().getUid();
             mFirebaseClient.changeUserEmail(email).observeForever(emailChanged -> {
                 if (emailChanged) {
