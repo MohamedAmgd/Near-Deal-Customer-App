@@ -100,26 +100,21 @@ public class EditUserViewModel extends AndroidViewModel {
 
         MutableLiveData<Boolean> status =
                 Repository.getInstance().updateUser(email, username, password, birthdate);
-        status.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
+        status.observeForever(userUpdated -> {
+                if (userUpdated) {
                     if (mUserImagePath != null) {
                         MutableLiveData<Boolean> userImageStatus =
                                 Repository.getInstance()
                                         .updateUserImage(emailEditText.getContext(),mUserImagePath);
-                        userImageStatus.observeForever(new Observer<Boolean>() {
-                            @Override
-                            public void onChanged(Boolean aBoolean) {
-                                if (aBoolean) {
+                        userImageStatus.observeForever(imageUpdated -> {
+                                if (imageUpdated) {
                                     FragmentTransaction transaction = mFragmentManager.beginTransaction();
                                     transaction.replace(R.id.fragment_layout, new UserInfoFragment());
                                     transaction.commit();
                                 } else {
                                     // TODO: 5/26/2021  show cannot update user's image error
                                 }
-                            }
-                        });
+                            });
                     } else {
                         FragmentTransaction transaction = mFragmentManager.beginTransaction();
                         transaction.replace(R.id.fragment_layout, new UserInfoFragment());
@@ -129,8 +124,7 @@ public class EditUserViewModel extends AndroidViewModel {
                 } else {
                     // TODO: 5/26/2021  show cannot update user error
                 }
-            }
-        });
+            });
 
 
     }

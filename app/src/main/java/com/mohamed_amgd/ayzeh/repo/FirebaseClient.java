@@ -1,11 +1,14 @@
 package com.mohamed_amgd.ayzeh.repo;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseClient {
+    private static final String TAG = "FirebaseClient :";
     private static FirebaseClient mInstance;
 
     private final FirebaseAuth mAuth;
@@ -45,6 +48,27 @@ public class FirebaseClient {
         return result;
     }
 
+    public MutableLiveData<Boolean> changeUserEmail(String newEmail){
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+        mAuth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener(authResult -> {
+            Log.i(TAG, "changeUserEmail true");
+            result.setValue(true);
+        }).addOnFailureListener(e -> {
+            e.printStackTrace();
+            Log.i(TAG, "changeUserEmail false"+e.getMessage());
+            result.setValue(false);
+        });
+        return result;
+    }
+    public MutableLiveData<Boolean> changeUserPassword(String newPassword){
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+        mAuth.getCurrentUser().updatePassword(newPassword).addOnSuccessListener(authResult -> {
+            result.setValue(true);
+        }).addOnFailureListener(e -> {
+            result.setValue(false);
+        });
+        return result;
+    }
 
     public void signOutUser() {
         mAuth.signOut();

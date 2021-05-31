@@ -17,9 +17,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Repository {
+
+    private static final String TAG = "Repository :";
     private static Repository mInstance;
     private final FirebaseClient mFirebaseClient;
     private final RetrofitClient mRetrofitClient;
+
     private Repository() {
         mFirebaseClient = FirebaseClient.getInstance();
         mRetrofitClient = RetrofitClient.getInstance();
@@ -77,13 +80,13 @@ public class Repository {
     }
 
     public MutableLiveData<User> getUser() {
-        if (mFirebaseClient.getCurrentUser() == null){
+        if (mFirebaseClient.getCurrentUser() == null) {
             return new MutableLiveData<>();
         }
         MutableLiveData<User> result = new MutableLiveData<>();
         String email = mFirebaseClient.getCurrentUser().getEmail();
         String uid = mFirebaseClient.getCurrentUser().getUid();
-        User currentUser = new User(uid,email,"","");
+        User currentUser = new User(uid, email, "", "");
         mRetrofitClient.getUserData(uid).observeForever(new Observer<User>() {
             @Override
             public void onChanged(User user) {
@@ -104,19 +107,18 @@ public class Repository {
         creationStatus.observeForever(new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
+                if (aBoolean) {
                     String uid = mFirebaseClient.getCurrentUser().getUid();
-                    User data = new User(uid,email,username,birthdate);
+                    User data = new User(uid, email, username, birthdate);
                     MutableLiveData<Boolean> userDataStatus
-                            = mRetrofitClient.insertUserData(uid,data);
+                            = mRetrofitClient.insertUserData(uid, data);
                     userDataStatus.observeForever(new Observer<Boolean>() {
                         @Override
                         public void onChanged(Boolean aBoolean) {
                             status.setValue(aBoolean);
                         }
                     });
-                }
-                else {
+                } else {
                     status.setValue(false);
                 }
             }
@@ -129,16 +131,37 @@ public class Repository {
     }
 
     public MutableLiveData<Boolean> updateUser(String email, String username, String password, String birthdate) {
-        String uid = mFirebaseClient.getCurrentUser().getUid();
-        User data = new User(uid,email,username,birthdate);
-        return mRetrofitClient.updateUserData(uid,data);
+        MutableLiveData<Boolean> status = new MutableLiveData<>();
+        mFirebaseClient.signInUser(email, password).observeForever((signedIn) -> {
+            String uid = mFirebaseClient.getCurrentUser().getUid();
+            mFirebaseClient.changeUserEmail(email).observeForever(emailChanged -> {
+                if (emailChanged) {
+                    mFirebaseClient.changeUserPassword(password).observeForever(passwordChanged -> {
+                        if (passwordChanged) {
+                            User data = new User(uid, email, username, birthdate);
+                            mRetrofitClient.updateUserData(uid, data).observeForever(dataChanged -> {
+                                if (dataChanged) status.setValue(true);
+                                else status.setValue(false);
+                            });
+                        } else {
+                            status.setValue(false);
+                        }
+                    });
+                } else {
+                    status.setValue(false);
+                }
+            });
+        });
+
+
+        return status;
     }
 
     public MutableLiveData<Boolean> updateUserImage(Context context, String userImagePath) {
         String uid = mFirebaseClient.getCurrentUser().getUid();
         String type = RetrofitClient.UPLOAD_USER_IMAGE;
-        File compressedImage = Util.getInstance().getCompressedImageFile(context,userImagePath);
-        return mRetrofitClient.uploadImage(uid,type,compressedImage);
+        File compressedImage = Util.getInstance().getCompressedImageFile(context, userImagePath);
+        return mRetrofitClient.uploadImage(uid, type, compressedImage);
     }
 
     public void logoutUser() {
