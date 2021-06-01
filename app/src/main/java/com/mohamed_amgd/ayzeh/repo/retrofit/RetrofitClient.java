@@ -4,11 +4,15 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -165,6 +169,47 @@ public class RetrofitClient {
             }
         });
         return resultLiveData;
+    }
+
+    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double lat, double lon, int range){
+        MutableLiveData<ArrayList<Shop>> shopsLiveData = new MutableLiveData<>();
+        Call<JsonObject> request = mApi.getNearbyShops(lat, lon, range);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.code() == STATUS_CODE_SUCCESSFUL) {
+                    shopsLiveData.setValue(convertResponseToShopsArrayList(response));
+                    Log.i("Retrofit", "onSuccess: " + shopsLiveData.getValue());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                // TODO: 6/1/2021
+                t.printStackTrace();
+                Log.i("Retrofit", "onFailure: " + t.getMessage());
+            }
+        });
+        return shopsLiveData;
+    }
+
+    private ArrayList<Shop> convertResponseToShopsArrayList(Response<JsonObject> response) {
+        ArrayList<Shop> shops = null;
+        if (response.body() != null) {
+            shops = new ArrayList<>();
+            JsonArray elements = response.body().getAsJsonArray("message");
+            for (JsonElement element:
+                 elements) {
+                String name = element.getAsJsonObject().get("name").getAsString();
+                String description = element.getAsJsonObject().get("description").getAsString();
+                String image_url = element.getAsJsonObject().get("image_url").getAsString();
+                double lat = element.getAsJsonObject().get("lat").getAsDouble();
+                double lon = element.getAsJsonObject().get("lon").getAsDouble();
+                Shop shop = new Shop("",name,image_url,description,lon,lat,"");
+                shops.add(shop);
+            }
+        }
+        return shops;
     }
 
     private User convertResponseToUser(Response<JsonObject> response) {

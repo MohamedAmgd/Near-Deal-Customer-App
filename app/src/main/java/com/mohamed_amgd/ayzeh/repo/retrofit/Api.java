@@ -21,10 +21,10 @@ public interface Api {
     Call<JsonObject> getUserData(@Query("uid") String uid);
 
     @POST("user_data")
-    Call<JsonObject> insertUserData(@Query("uid") String uid, @Body() HashMap<String,Object> userData);
+    Call<JsonObject> insertUserData(@Query("uid") String uid, @Body() HashMap<String, Object> userData);
 
     @PUT("user_data")
-    Call<JsonObject> updateUserData(@Query("uid") String uid, @Body() HashMap<String,Object> userData);
+    Call<JsonObject> updateUserData(@Query("uid") String uid, @Body() HashMap<String, Object> userData);
 
     @DELETE("user_data")
     Call<JsonObject> deleteUserData(@Query("uid") String uid);
@@ -32,7 +32,12 @@ public interface Api {
     @Multipart
     @POST("upload_image")
     Call<JsonObject> uploadImage(@Query("id") String id
-                                , @Query("type") String type
-                                , @Part MultipartBody.Part image);
+            , @Query("type") String type
+            , @Part MultipartBody.Part image);
+
+    @GET("nearby_shops")
+    Call<JsonObject> getNearbyShops(@Query("lat") double lat
+            , @Query("lon") double lan
+            , @Query("range") int range);
 
 }

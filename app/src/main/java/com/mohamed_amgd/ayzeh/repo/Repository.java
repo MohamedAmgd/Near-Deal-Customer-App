@@ -62,7 +62,7 @@ public class Repository {
 
     public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
         // TODO: 5/15/2021 use retrofit to get nearby shops to user's location by userLat,userLon
-        return new MutableLiveData<>();
+        return mRetrofitClient.getNearbyShops(userLat,userLon,50);
     }
 
     public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
