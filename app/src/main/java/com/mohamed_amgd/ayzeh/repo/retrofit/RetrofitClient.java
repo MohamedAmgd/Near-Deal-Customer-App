@@ -10,13 +10,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
+import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -171,14 +171,14 @@ public class RetrofitClient {
         return resultLiveData;
     }
 
-    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double lat, double lon, int range){
+    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double lat, double lon, int range) {
         MutableLiveData<ArrayList<Shop>> shopsLiveData = new MutableLiveData<>();
         Call<JsonObject> request = mApi.getNearbyShops(lat, lon, range);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    shopsLiveData.setValue(convertResponseToShopsArrayList(response));
+                    shopsLiveData.setValue(convertResponseToShopsArrayList(lat, lon, response));
                     Log.i("Retrofit", "onSuccess: " + shopsLiveData.getValue());
                 }
             }
@@ -193,19 +193,21 @@ public class RetrofitClient {
         return shopsLiveData;
     }
 
-    private ArrayList<Shop> convertResponseToShopsArrayList(Response<JsonObject> response) {
+    private ArrayList<Shop> convertResponseToShopsArrayList(double userLat, double userLon, Response<JsonObject> response) {
         ArrayList<Shop> shops = null;
         if (response.body() != null) {
             shops = new ArrayList<>();
             JsonArray elements = response.body().getAsJsonArray("message");
-            for (JsonElement element:
-                 elements) {
+            for (JsonElement element :
+                    elements) {
                 String name = element.getAsJsonObject().get("name").getAsString();
                 String description = element.getAsJsonObject().get("description").getAsString();
                 String image_url = element.getAsJsonObject().get("image_url").getAsString();
-                double lat = element.getAsJsonObject().get("lat").getAsDouble();
-                double lon = element.getAsJsonObject().get("lon").getAsDouble();
-                Shop shop = new Shop("",name,image_url,description,lon,lat,"");
+                double shop_lat = element.getAsJsonObject().get("lat").getAsDouble();
+                double shop_lon = element.getAsJsonObject().get("lon").getAsDouble();
+                String distanceToUser
+                        = Util.getInstance().getDistanceBetweenUserAndShop(userLat, userLon, shop_lat, shop_lon);
+                Shop shop = new Shop("", name, image_url, description, shop_lon, shop_lat, distanceToUser);
                 shops.add(shop);
             }
         }

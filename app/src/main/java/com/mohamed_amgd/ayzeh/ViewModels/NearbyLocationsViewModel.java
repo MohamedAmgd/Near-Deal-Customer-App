@@ -38,6 +38,7 @@ import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -72,10 +73,14 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     }
 
     private void updateMapData(Location location) {
-        userLat = location.getLatitude();
-        userLon = location.getLongitude();
-        focusMapOnUserLocation();
-        initShopsLiveData(null);
+        boolean userLocationChanged = Util.getInstance()
+                .userLocationChanged(userLat, userLon, location.getLatitude(), location.getLongitude());
+        if (userLocationChanged) {
+            userLat = location.getLatitude();
+            userLon = location.getLongitude();
+            focusMapOnUserLocation();
+            initShopsLiveData(null);
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -125,9 +130,11 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
                 , Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    @SuppressLint("MissingPermission")
     private void focusMapOnUserLocation() {
+        mMap.setMyLocationEnabled(true);
         LatLng userLocation = new LatLng(userLat, userLon);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 10.0f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15.0f));
     }
 
     private void addShopsMarkers() {
@@ -147,7 +154,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     }
 
     private void shopDialogBuild(Shop shop) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mMapContextWeakReference.get(),R.style.ShopDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mMapContextWeakReference.get(), R.style.ShopDialog);
         View shopDialogView = LayoutInflater.from(mMapContextWeakReference.get()).inflate(R.layout.selected_shop_dialog, null);
         builder.setView(shopDialogView);
         AlertDialog shopDialog = builder.create();
@@ -155,7 +162,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         layoutParams.gravity = Gravity.BOTTOM;
         shopDialog.getWindow().setAttributes(layoutParams);
         shopDialog.show();
-        initShopDialogViews(shopDialog,shop);
+        initShopDialogViews(shopDialog, shop);
     }
 
     private void initShopDialogViews(AlertDialog shopDialog, Shop shop) {
@@ -170,7 +177,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         shopDistance.setText(shop.getDistanceToUser());
         details.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG,shop.getId());
+            bundle.putString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG, shop.getId());
             ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
             shopInfoFragment.setArguments(bundle);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();

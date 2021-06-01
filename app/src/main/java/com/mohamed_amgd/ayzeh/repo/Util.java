@@ -1,6 +1,7 @@
 package com.mohamed_amgd.ayzeh.repo;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Patterns;
 
 import java.io.File;
@@ -73,4 +74,41 @@ public class Util {
         }
         return new File(imagePath);
     }
+
+
+    private double calculateDistanceInKilometer(double firstLat, double firstLon,
+                                               double secondLat, double secondLon) {
+
+        double latDistance = Math.toRadians(firstLat - secondLat);
+        double lngDistance = Math.toRadians(firstLon - secondLon);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(firstLat)) * Math.cos(Math.toRadians(secondLat))
+                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return 6371 * c;
+    }
+
+    public String getDistanceBetweenUserAndShop(double userLat, double userLon, double shopLat, double shopLon){
+        double distance = calculateDistanceInKilometer(userLat, userLon, shopLat, shopLon);
+        boolean lessThanAKilometer = ((int) distance) == 0;
+        if (lessThanAKilometer){
+           double distanceInMeters = ((double)Math.round(distance * 1000d) / 1000d)*1000;
+           return distanceInMeters+" m";
+        }else {
+            double distanceInKilometers = ((double)Math.round(distance * 100d) / 100d);
+            return distanceInKilometers+" km";
+        }
+    }
+
+    public boolean userLocationChanged(double oldLat,double oldLon, double newLat,double newLon){
+        int latDiff = (int) (Math.abs(oldLat - newLat) * 1000);
+        int lonDiff = (int) (Math.abs(oldLon - newLon) * 1000);
+        Log.i("Util", "userLocationChanged: "+latDiff + " , "+ lonDiff);
+        return latDiff != 0 || lonDiff != 0;
+    }
+
+
 }

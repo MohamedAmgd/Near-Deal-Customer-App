@@ -18,10 +18,11 @@
 
         <ImageView
             android:id="@+id/shop_image"
-            android:layout_width="78dp"
-            android:layout_height="50dp"
+            android:layout_width="94dp"
+            android:layout_height="54dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_shops" />
