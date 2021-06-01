@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +25,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,7 +48,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     public MutableLiveData<ArrayList<Shop>> mShops;
     private Observer<ArrayList<Shop>> mShopsObserver;
     private FragmentManager mFragmentManager;
-    private FusedLocationProviderClient fusedLocationClient;
+    private FusedLocationProviderClient mFusedLocationClient;
     private WeakReference<Context> mMapContextWeakReference;
     private GoogleMap mMap;
     private double userLat;
@@ -55,18 +59,45 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         super(application);
         mFragmentManager = fragmentManager;
         mShops = new MutableLiveData<>();
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
 
         if (hasLocationAccess()) {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            askForLocationUpdate();
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                 if (location != null) {
-                    userLat = location.getLatitude();
-                    userLon = location.getLongitude();
-                    focusMapOnUserLocation();
-                    initShopsLiveData(null);
+                    updateMapData(location);
                 }
             });
         }
+    }
+
+    private void updateMapData(Location location) {
+        userLat = location.getLatitude();
+        userLon = location.getLongitude();
+        focusMapOnUserLocation();
+        initShopsLiveData(null);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void askForLocationUpdate() {
+        LocationRequest mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(60000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationCallback mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        updateMapData(location);
+                    }
+                }
+            }
+        };
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
     }
 
     public void onMapReady(GoogleMap googleMap, Context context) {
@@ -84,12 +115,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         } else {
             mShops = Repository.getInstance().getNearbyShops(userLat, userLon, query);
         }
-        mShopsObserver = new Observer<ArrayList<Shop>>() {
-            @Override
-            public void onChanged(ArrayList<Shop> shops) {
-                addShopsMarkers();
-            }
-        };
+        mShopsObserver = shops -> addShopsMarkers();
         mShops.observeForever(mShopsObserver);
     }
 
@@ -128,8 +154,8 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         WindowManager.LayoutParams layoutParams = shopDialog.getWindow().getAttributes();
         layoutParams.gravity = Gravity.BOTTOM;
         shopDialog.getWindow().setAttributes(layoutParams);
-        initShopDialogViews(shopDialog,shop);
         shopDialog.show();
+        initShopDialogViews(shopDialog,shop);
     }
 
     private void initShopDialogViews(AlertDialog shopDialog, Shop shop) {
@@ -151,6 +177,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
             transaction.replace(R.id.fragment_layout, shopInfoFragment);
             transaction.addToBackStack(ShopInfoFragment.CLASS_NAME);
             transaction.commit();
+            shopDialog.cancel();
         });
     }
 

@@ -45,7 +45,7 @@ public class ShopInfoFragment extends Fragment {
         ShopInfoViewModel.Factory factory =
                 new ShopInfoViewModel.Factory(getActivity().getApplication()
                 , getFragmentManager(), bundle);
-        mViewModel = new ViewModelProvider(this).get(ShopInfoViewModel.class);
+        mViewModel = new ViewModelProvider(this,factory).get(ShopInfoViewModel.class);
 
         mShopImage = view.findViewById(R.id.shop_image);
         mShopName = view.findViewById(R.id.shop_name_text_view);
