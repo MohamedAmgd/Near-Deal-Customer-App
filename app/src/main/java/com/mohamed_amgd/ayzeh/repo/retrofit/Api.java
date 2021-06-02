@@ -40,4 +40,13 @@ public interface Api {
             , @Query("lon") double lan
             , @Query("range") int range);
 
+    @GET("search_nearby_shops_by_name")
+    Call<JsonObject> searchNearbyShopsByName(@Query("lat") double lat
+            , @Query("lon") double lan
+            , @Query("range") int range
+            , @Query("input_name") String name);
+
+    @GET("shops")
+    Call<JsonObject> getShop(@Query("id") String id);
+
 }

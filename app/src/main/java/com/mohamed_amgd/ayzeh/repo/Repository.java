@@ -3,7 +3,6 @@ package com.mohamed_amgd.ayzeh.repo;
 import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.mohamed_amgd.ayzeh.Models.Filter;
 import com.mohamed_amgd.ayzeh.Models.Offer;
@@ -52,7 +51,7 @@ public class Repository {
 
     public MutableLiveData<Shop> getShopById(String shopId) {
         // TODO: 5/12/2021 use retrofit client to get shop details using its shopId
-        return new MutableLiveData<>();
+        return mRetrofitClient.getShop(shopId);
     }
 
     public MutableLiveData<ArrayList<Product>> getShopProductsByShopId(String shopId) {
@@ -67,7 +66,7 @@ public class Repository {
 
     public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
         // TODO: 5/18/2021 use retrofit to get nearby shops to user's location by userLat,userLon and query
-        return new MutableLiveData<>();
+        return mRetrofitClient.searchNearbyShopsByName(userLat, userLon, 50, query);
     }
 
     public SearchResult getHotDealsSearchResult(String query, Filter filter) {
@@ -87,14 +86,11 @@ public class Repository {
         String email = mFirebaseClient.getCurrentUser().getEmail();
         String uid = mFirebaseClient.getCurrentUser().getUid();
         User currentUser = new User(uid, email, "", "");
-        mRetrofitClient.getUserData(uid).observeForever(new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                currentUser.setUsername(user.getUsername());
-                currentUser.setBirthdate(user.getBirthdate());
-                currentUser.setImageUrl(user.getImageUrl());
-                result.setValue(currentUser);
-            }
+        mRetrofitClient.getUserData(uid).observeForever(user -> {
+            currentUser.setUsername(user.getUsername());
+            currentUser.setBirthdate(user.getBirthdate());
+            currentUser.setImageUrl(user.getImageUrl());
+            result.setValue(currentUser);
         });
         result.setValue(currentUser);
         return result;
@@ -104,23 +100,15 @@ public class Repository {
         MutableLiveData<Boolean> status = new MutableLiveData<>();
         MutableLiveData<Boolean> creationStatus =
                 mFirebaseClient.createNewUser(email, password);
-        creationStatus.observeForever(new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    String uid = mFirebaseClient.getCurrentUser().getUid();
-                    User data = new User(uid, email, username, birthdate);
-                    MutableLiveData<Boolean> userDataStatus
-                            = mRetrofitClient.insertUserData(uid, data);
-                    userDataStatus.observeForever(new Observer<Boolean>() {
-                        @Override
-                        public void onChanged(Boolean aBoolean) {
-                            status.setValue(aBoolean);
-                        }
-                    });
-                } else {
-                    status.setValue(false);
-                }
+        creationStatus.observeForever(userCreated -> {
+            if (userCreated) {
+                String uid = mFirebaseClient.getCurrentUser().getUid();
+                User data = new User(uid, email, username, birthdate);
+                MutableLiveData<Boolean> userDataStatus
+                        = mRetrofitClient.insertUserData(uid, data);
+                userDataStatus.observeForever(userDataInserted -> status.setValue(userDataInserted));
+            } else {
+                status.setValue(false);
             }
         });
         return status;

@@ -2,6 +2,7 @@ package com.mohamed_amgd.ayzeh.repo.retrofit;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.JsonArray;
@@ -59,14 +60,14 @@ public class RetrofitClient {
         Call<JsonObject> request = mApi.getUserData(userId);
         request.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
                     resultLiveData.setValue(convertResponseToUser(response));
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 // TODO: 5/29/2021
             }
         });
@@ -79,7 +80,7 @@ public class RetrofitClient {
         Call<JsonObject> request = mApi.insertUserData(userId, requestBody);
         request.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
                     resultLiveData.setValue(true);
                 } else {
@@ -88,7 +89,7 @@ public class RetrofitClient {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 resultLiveData.setValue(false);
             }
         });
@@ -101,7 +102,7 @@ public class RetrofitClient {
         Call<JsonObject> request = mApi.updateUserData(userId, requestBody);
         request.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
                     resultLiveData.setValue(true);
                 } else {
@@ -111,7 +112,7 @@ public class RetrofitClient {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 Log.i("Retrofit", "onFailure: " + t.getMessage());
                 resultLiveData.setValue(false);
             }
@@ -124,7 +125,7 @@ public class RetrofitClient {
         Call<JsonObject> request = mApi.deleteUserData(userId);
         request.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
                     resultLiveData.setValue(true);
                 } else {
@@ -133,7 +134,7 @@ public class RetrofitClient {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 resultLiveData.setValue(false);
             }
         });
@@ -152,7 +153,7 @@ public class RetrofitClient {
         Call<JsonObject> request = mApi.uploadImage(id, type, body);
         request.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
                     resultLiveData.setValue(true);
                 } else {
@@ -162,7 +163,7 @@ public class RetrofitClient {
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 resultLiveData.setValue(false);
                 t.printStackTrace();
                 Log.i("Retrofit", "onFailure: " + t.getMessage());
@@ -176,15 +177,15 @@ public class RetrofitClient {
         Call<JsonObject> request = mApi.getNearbyShops(lat, lon, range);
         request.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    shopsLiveData.setValue(convertResponseToShopsArrayList(lat, lon, response));
+                    shopsLiveData.setValue(convertResponseToShopsArrayList(response, lat, lon));
                     Log.i("Retrofit", "onSuccess: " + shopsLiveData.getValue());
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
                 // TODO: 6/1/2021
                 t.printStackTrace();
                 Log.i("Retrofit", "onFailure: " + t.getMessage());
@@ -193,25 +194,79 @@ public class RetrofitClient {
         return shopsLiveData;
     }
 
-    private ArrayList<Shop> convertResponseToShopsArrayList(double userLat, double userLon, Response<JsonObject> response) {
-        ArrayList<Shop> shops = null;
+    public MutableLiveData<ArrayList<Shop>> searchNearbyShopsByName(double lat, double lon, int range, String name) {
+        MutableLiveData<ArrayList<Shop>> shopsLiveData = new MutableLiveData<>();
+        Call<JsonObject> request = mApi.searchNearbyShopsByName(lat, lon, range, name);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.code() == STATUS_CODE_SUCCESSFUL) {
+                    shopsLiveData.setValue(convertResponseToShopsArrayList(response, lat, lon));
+                    Log.i("Retrofit", "onSuccess: " + shopsLiveData.getValue());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                // TODO: 6/1/2021
+                t.printStackTrace();
+                Log.i("Retrofit", "onFailure: " + t.getMessage());
+            }
+        });
+        return shopsLiveData;
+    }
+
+    public MutableLiveData<Shop> getShop(String id) {
+        MutableLiveData<Shop> shopLiveData = new MutableLiveData<>();
+        Call<JsonObject> request = mApi.getShop(id);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                if (response.code() == STATUS_CODE_SUCCESSFUL) {
+                    shopLiveData.setValue(convertResponseToShop(response, 0, 0));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                // TODO: 5/29/2021
+                t.printStackTrace();
+            }
+        });
+        return shopLiveData;
+    }
+
+    private Shop convertResponseToShop(Response<JsonObject> response, double userLat, double userLon) {
+        Shop shop = null;
         if (response.body() != null) {
-            shops = new ArrayList<>();
+            shop = convertJsonObjectToShop(response.body().getAsJsonObject("message"), userLat, userLon);
+        }
+        return shop;
+    }
+
+    private ArrayList<Shop> convertResponseToShopsArrayList(Response<JsonObject> response, double userLat, double userLon) {
+        ArrayList<Shop> shops = new ArrayList<>();
+        if (response.body() != null) {
             JsonArray elements = response.body().getAsJsonArray("message");
             for (JsonElement element :
                     elements) {
-                String name = element.getAsJsonObject().get("name").getAsString();
-                String description = element.getAsJsonObject().get("description").getAsString();
-                String image_url = element.getAsJsonObject().get("image_url").getAsString();
-                double shop_lat = element.getAsJsonObject().get("lat").getAsDouble();
-                double shop_lon = element.getAsJsonObject().get("lon").getAsDouble();
-                String distanceToUser
-                        = Util.getInstance().getDistanceBetweenUserAndShop(userLat, userLon, shop_lat, shop_lon);
-                Shop shop = new Shop("", name, image_url, description, shop_lon, shop_lat, distanceToUser);
+                Shop shop = convertJsonObjectToShop(element.getAsJsonObject(), userLat, userLon);
                 shops.add(shop);
             }
         }
         return shops;
+    }
+
+    private Shop convertJsonObjectToShop(JsonObject jsonObject, double userLat, double userLon) {
+        String id = jsonObject.get("id").getAsString();
+        String name = jsonObject.get("name").getAsString();
+        String description = jsonObject.get("description").getAsString();
+        String image_url = jsonObject.get("image_url").getAsString();
+        double shop_lat = jsonObject.get("lat").getAsDouble();
+        double shop_lon = jsonObject.get("lon").getAsDouble();
+        String distanceToUser
+                = Util.getInstance().getDistanceBetweenUserAndShop(userLat, userLon, shop_lat, shop_lon);
+        return new Shop(id, name, image_url, description, shop_lon, shop_lat, distanceToUser);
     }
 
     private User convertResponseToUser(Response<JsonObject> response) {
