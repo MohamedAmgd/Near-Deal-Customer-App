@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,7 +92,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationCallback mLocationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
+            public void onLocationResult(@NonNull LocationResult locationResult) {
                 if (locationResult == null) {
                     return;
                 }
@@ -120,7 +121,8 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         } else {
             mShops = Repository.getInstance().getNearbyShops(userLat, userLon, query);
         }
-        mShopsObserver = shops -> addShopsMarkers();
+        mMap.clear();
+        mShopsObserver = shops -> addShopsMarkers(shops);
         mShops.observeForever(mShopsObserver);
     }
 
@@ -137,9 +139,10 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15.0f));
     }
 
-    private void addShopsMarkers() {
-        for (int i = 0; i < mShops.getValue().size(); i++) {
-            Shop shop = mShops.getValue().get(i);
+    private void addShopsMarkers(ArrayList<Shop> shops) {
+        if (shops == null) return;
+        for (int i = 0; i < shops.size(); i++) {
+            Shop shop = shops.get(i);
             LatLng shopLocation = new LatLng(shop.getLocationLat(), shop.getLocationLon());
             Marker shopMarker = mMap.addMarker(new MarkerOptions()
                     .position(shopLocation));
@@ -176,15 +179,21 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         shopDescription.setText(shop.getDescription());
         shopDistance.setText(shop.getDistanceToUser());
         details.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG, shop.getId());
-            ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
-            shopInfoFragment.setArguments(bundle);
-            FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            transaction.replace(R.id.fragment_layout, shopInfoFragment);
-            transaction.addToBackStack(ShopInfoFragment.CLASS_NAME);
-            transaction.commit();
-            shopDialog.cancel();
+            shopDialog.dismiss();
+            // go to shop fragment is delayed by 0.25 second
+            // this workaround to fix map become extremely laggy
+            // this issue happens because shop dialog takes time to fully dismiss
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                Bundle bundle = new Bundle();
+                bundle.putString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG, shop.getId());
+                ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
+                shopInfoFragment.setArguments(bundle);
+                FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_layout, shopInfoFragment);
+                transaction.addToBackStack(ShopInfoFragment.CLASS_NAME);
+                transaction.commit();
+            }, 250);
         });
     }
 
