@@ -1,7 +1,5 @@
 package com.mohamed_amgd.ayzeh.repo.retrofit;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -11,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.io.File;
@@ -32,6 +32,9 @@ public class RetrofitClient {
     public static final String UPLOAD_USER_IMAGE = "user";
     private static final String BASE_URL = "https://ayz-eh.herokuapp.com/";
     private static final int STATUS_CODE_SUCCESSFUL = 200;
+    private static final int STATUS_CODE_CLIENT_INPUT_ERROR = 400;
+    private static final int STATUS_CODE_CLIENT_EMPTY_IMAGE_ERROR = 403;
+    private static final int STATUS_CODE_SERVER_ERROR = 500;
     private static RetrofitClient mInstance;
 
     private Retrofit mRetrofit;
@@ -55,94 +58,92 @@ public class RetrofitClient {
         return mInstance;
     }
 
-    public MutableLiveData<User> getUserData(String userId) {
-        MutableLiveData<User> resultLiveData = new MutableLiveData<>();
+    public RepositoryResult<User> getUserData(String userId) {
+        RepositoryResult<User> result = new RepositoryResult<>(new MutableLiveData<>());
         Call<JsonObject> request = mApi.getUserData(userId);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    resultLiveData.setValue(convertResponseToUser(response));
+                    User user = convertResponseToUser(response);
+                    if (user != null) {
+                        result.setFinishedSuccessfully(user);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                // TODO: 5/29/2021
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return resultLiveData;
+        return result;
     }
 
-    public MutableLiveData<Boolean> insertUserData(String userId, User userData) {
-        MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
+    public RepositoryResult<Boolean> insertUserData(String userId, User userData) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
         HashMap<String, Object> requestBody = convertUserDataToRequestBody(userData);
         Call<JsonObject> request = mApi.insertUserData(userId, requestBody);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    resultLiveData.setValue(true);
-                } else {
-                    resultLiveData.setValue(false);
+                    if (response.body() != null) {
+                        result.setFinishedSuccessfully(true);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                resultLiveData.setValue(false);
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return resultLiveData;
+        return result;
     }
 
-    public MutableLiveData<Boolean> updateUserData(String userId, User userData) {
-        MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
+    public RepositoryResult<Boolean> updateUserData(String userId, User userData) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
         HashMap<String, Object> requestBody = convertUserDataToRequestBody(userData);
         Call<JsonObject> request = mApi.updateUserData(userId, requestBody);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    resultLiveData.setValue(true);
-                } else {
-                    resultLiveData.setValue(false);
-                }
-                Log.i("Image", response.message());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                Log.i("Retrofit", "onFailure: " + t.getMessage());
-                resultLiveData.setValue(false);
-            }
-        });
-        return resultLiveData;
-    }
-
-    public MutableLiveData<Boolean> deleteUserData(String userId) {
-        MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
-        Call<JsonObject> request = mApi.deleteUserData(userId);
-        request.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    resultLiveData.setValue(true);
-                } else {
-                    resultLiveData.setValue(false);
+                    if (response.body() != null) {
+                        result.setFinishedSuccessfully(true);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                resultLiveData.setValue(false);
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return resultLiveData;
+        return result;
     }
 
-    public MutableLiveData<Boolean> uploadImage(String id, String type, File imageFile) {
-        MutableLiveData<Boolean> resultLiveData = new MutableLiveData<>();
+    public RepositoryResult<Boolean> uploadImage(String id, String type, File imageFile) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
         RequestBody requestFile =
                 RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
 
@@ -155,85 +156,108 @@ public class RetrofitClient {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    resultLiveData.setValue(true);
-                } else {
-                    resultLiveData.setValue(false);
+                    if (response.body() != null) {
+                        result.setFinishedSuccessfully(true);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
-                Log.i("Image", response.message());
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                resultLiveData.setValue(false);
-                t.printStackTrace();
-                Log.i("Retrofit", "onFailure: " + t.getMessage());
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return resultLiveData;
+        return result;
     }
 
-    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double lat, double lon, int range) {
-        MutableLiveData<ArrayList<Shop>> shopsLiveData = new MutableLiveData<>();
+    public RepositoryResult<ArrayList<Shop>> getNearbyShops(double lat, double lon, int range) {
+        RepositoryResult<ArrayList<Shop>> result = new RepositoryResult<>(new MutableLiveData<>());
         Call<JsonObject> request = mApi.getNearbyShops(lat, lon, range);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    shopsLiveData.setValue(convertResponseToShopsArrayList(response, lat, lon));
-                    Log.i("Retrofit", "onSuccess: " + shopsLiveData.getValue());
+                    if (response.body() != null) {
+                        ArrayList<Shop> shops = convertResponseToShopsArrayList(response, lat, lon);
+                        result.setFinishedSuccessfully(shops);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                // TODO: 6/1/2021
-                t.printStackTrace();
-                Log.i("Retrofit", "onFailure: " + t.getMessage());
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return shopsLiveData;
+        return result;
     }
 
-    public MutableLiveData<ArrayList<Shop>> searchNearbyShopsByName(double lat, double lon, int range, String name) {
-        MutableLiveData<ArrayList<Shop>> shopsLiveData = new MutableLiveData<>();
+    public RepositoryResult<ArrayList<Shop>> searchNearbyShopsByName(double lat, double lon, int range, String name) {
+        RepositoryResult<ArrayList<Shop>> result = new RepositoryResult<>(new MutableLiveData<>());
         Call<JsonObject> request = mApi.searchNearbyShopsByName(lat, lon, range, name);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    shopsLiveData.setValue(convertResponseToShopsArrayList(response, lat, lon));
-                    Log.i("Retrofit", "onSuccess: " + shopsLiveData.getValue());
+                    if (response.body() != null) {
+                        ArrayList<Shop> shops = convertResponseToShopsArrayList(response, lat, lon);
+                        result.setFinishedSuccessfully(shops);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                // TODO: 6/1/2021
-                t.printStackTrace();
-                Log.i("Retrofit", "onFailure: " + t.getMessage());
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return shopsLiveData;
+        return result;
     }
 
-    public MutableLiveData<Shop> getShop(String id) {
-        MutableLiveData<Shop> shopLiveData = new MutableLiveData<>();
+    public RepositoryResult<Shop> getShop(String id) {
+        RepositoryResult<Shop> result = new RepositoryResult<>(new MutableLiveData<>());
         Call<JsonObject> request = mApi.getShop(id);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    shopLiveData.setValue(convertResponseToShop(response, 0, 0));
+                    if (response.body() != null) {
+                        Shop shop = convertResponseToShop(response, 0, 0);
+                        result.setFinishedSuccessfully(shop);
+                    } else {
+                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
+                    }
+                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
+                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                // TODO: 5/29/2021
-                t.printStackTrace();
+                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
             }
         });
-        return shopLiveData;
+        return result;
     }
 
     private Shop convertResponseToShop(Response<JsonObject> response, double userLat, double userLon) {

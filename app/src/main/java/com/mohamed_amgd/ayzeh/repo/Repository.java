@@ -1,6 +1,7 @@
 package com.mohamed_amgd.ayzeh.repo;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -49,7 +50,7 @@ public class Repository {
         return new SearchResult(new MutableLiveData<>(), 0f, 1000f);
     }
 
-    public MutableLiveData<Shop> getShopById(String shopId) {
+    public RepositoryResult<Shop> getShopById(String shopId) {
         // TODO: 5/12/2021 use retrofit client to get shop details using its shopId
         return mRetrofitClient.getShop(shopId);
     }
@@ -59,12 +60,12 @@ public class Repository {
         return new MutableLiveData<>();
     }
 
-    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
+    public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
         // TODO: 5/15/2021 use retrofit to get nearby shops to user's location by userLat,userLon
-        return mRetrofitClient.getNearbyShops(userLat,userLon,50);
+        return mRetrofitClient.getNearbyShops(userLat, userLon, 50);
     }
 
-    public MutableLiveData<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
+    public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
         // TODO: 5/18/2021 use retrofit to get nearby shops to user's location by userLat,userLon and query
         return mRetrofitClient.searchNearbyShopsByName(userLat, userLon, 50, query);
     }
@@ -78,75 +79,87 @@ public class Repository {
         }
     }
 
-    public MutableLiveData<User> getUser() {
+    public RepositoryResult<User> getUser() {
+        RepositoryResult<User> result;
         if (mFirebaseClient.getCurrentUser() == null) {
-            return new MutableLiveData<>();
+            result = new RepositoryResult<>(new MutableLiveData<>());
+            result.setFinishedWithError(ErrorHandler.NEED_SIGN_IN_ERROR);
+        } else {
+            String email = mFirebaseClient.getCurrentUser().getEmail();
+            String uid = mFirebaseClient.getCurrentUser().getUid();
+            result = mRetrofitClient.getUserData(uid);
+            result.getIsLoadingLiveData().observeForever(isLoading -> {
+                if (result.isFinishedSuccessfully()) {
+                    result.getData().getValue().setEmail(email);
+                }
+            });
         }
-        MutableLiveData<User> result = new MutableLiveData<>();
-        String email = mFirebaseClient.getCurrentUser().getEmail();
-        String uid = mFirebaseClient.getCurrentUser().getUid();
-        User currentUser = new User(uid, email, "", "");
-        mRetrofitClient.getUserData(uid).observeForever(user -> {
-            currentUser.setUsername(user.getUsername());
-            currentUser.setBirthdate(user.getBirthdate());
-            currentUser.setImageUrl(user.getImageUrl());
-            result.setValue(currentUser);
-        });
-        result.setValue(currentUser);
         return result;
     }
 
-    public MutableLiveData<Boolean> createUser(String email, String username, String password, String birthdate) {
-        MutableLiveData<Boolean> status = new MutableLiveData<>();
-        MutableLiveData<Boolean> creationStatus =
-                mFirebaseClient.createNewUser(email, password);
-        creationStatus.observeForever(userCreated -> {
-            if (userCreated) {
+    public RepositoryResult<Boolean> createUser(String email, String username, String password, String birthdate) {
+        final RepositoryResult<Boolean> result = mFirebaseClient.createNewUser(email, password);
+
+        result.getIsLoadingLiveData().observeForever(isLoading -> {
+            if (result.isFinishedSuccessfully()) {
                 String uid = mFirebaseClient.getCurrentUser().getUid();
                 User data = new User(uid, email, username, birthdate);
-                MutableLiveData<Boolean> userDataStatus
+                RepositoryResult<Boolean> insertUserDataResult
                         = mRetrofitClient.insertUserData(uid, data);
-                userDataStatus.observeForever(userDataInserted -> status.setValue(userDataInserted));
-            } else {
-                status.setValue(false);
+                insertUserDataResult.getIsLoadingLiveData().observeForever(aBoolean -> {
+                    if (insertUserDataResult.isFinishedWithError()) {
+                        // updating the main result
+                        result.setFinishedWithError(insertUserDataResult.getErrorCode());
+                    }
+                });
             }
         });
-        return status;
+        return result;
     }
 
-    public MutableLiveData<Boolean> signInUser(String email, String password) {
+    public RepositoryResult<Boolean> signInUser(String email, String password) {
         return mFirebaseClient.signInUser(email, password);
     }
 
-    public MutableLiveData<Boolean> updateUser(String email, String username, String password, String birthdate) {
-        MutableLiveData<Boolean> status = new MutableLiveData<>();
+    public RepositoryResult<Boolean> updateUser(String email, String username, String password, String birthdate) {
         String oldEmail = mFirebaseClient.getCurrentUser().getEmail();
-        mFirebaseClient.signInUser(oldEmail, password).observeForever((signedIn) -> {
-            String uid = mFirebaseClient.getCurrentUser().getUid();
-            mFirebaseClient.changeUserEmail(email).observeForever(emailChanged -> {
-                if (emailChanged) {
-                    mFirebaseClient.changeUserPassword(password).observeForever(passwordChanged -> {
-                        if (passwordChanged) {
-                            User data = new User(uid, email, username, birthdate);
-                            mRetrofitClient.updateUserData(uid, data).observeForever(dataChanged -> {
-                                if (dataChanged) status.setValue(true);
-                                else status.setValue(false);
-                            });
-                        } else {
-                            status.setValue(false);
-                        }
-                    });
-                } else {
-                    status.setValue(false);
-                }
-            });
+        final RepositoryResult<Boolean> result = mFirebaseClient.signInUser(oldEmail, password);
+        result.getIsLoadingLiveData().observeForever((isLoading) -> {
+            if (result.isFinishedSuccessfully()) {
+                Log.i(TAG, "updateUser: signedIn");
+                String uid = mFirebaseClient.getCurrentUser().getUid();
+                RepositoryResult<Boolean> changeEmailResult = mFirebaseClient.changeUserEmail(email);
+                changeEmailResult.getIsLoadingLiveData().observeForever(isLoadingChangeEmail -> {
+                    if (changeEmailResult.isFinishedSuccessfully()) {
+                        Log.i(TAG, "updateUser: emailChanged");
+                        RepositoryResult<Boolean> changePasswordResult = mFirebaseClient.changeUserPassword(password);
+                        changePasswordResult.getIsLoadingLiveData().observeForever(isLoadingChangePassword -> {
+                            if (changePasswordResult.isFinishedSuccessfully()) {
+                                Log.i(TAG, "updateUser: passwordChanged");
+                                User data = new User(uid, email, username, birthdate);
+                                RepositoryResult<Boolean> updateUserDataResult
+                                        = mRetrofitClient.updateUserData(uid, data);
+                                updateUserDataResult.getIsLoadingLiveData().observeForever(isLoadingUpdateUserData -> {
+                                    if (updateUserDataResult.isFinishedWithError()) {
+                                        result.setFinishedWithError(updateUserDataResult.getErrorCode());
+                                    }
+                                });
+                            } else if (changePasswordResult.isFinishedWithError()) {
+                                result.setFinishedWithError(changePasswordResult.getErrorCode());
+                            }
+                        });
+                    } else if (changeEmailResult.isFinishedWithError()) {
+                        result.setFinishedWithError(changeEmailResult.getErrorCode());
+                    }
+                });
+            }
         });
 
 
-        return status;
+        return result;
     }
 
-    public MutableLiveData<Boolean> updateUserImage(Context context, String userImagePath) {
+    public RepositoryResult<Boolean> updateUserImage(Context context, String userImagePath) {
         String uid = mFirebaseClient.getCurrentUser().getUid();
         String type = RetrofitClient.UPLOAD_USER_IMAGE;
         File compressedImage = Util.getInstance().getCompressedImageFile(context, userImagePath);

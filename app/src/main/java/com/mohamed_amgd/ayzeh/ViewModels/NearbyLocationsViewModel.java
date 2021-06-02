@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -39,6 +40,7 @@ import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.lang.ref.WeakReference;
@@ -93,9 +95,6 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         LocationCallback mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
                         updateMapData(location);
@@ -116,11 +115,23 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     }
 
     private void initShopsLiveData(String query) {
+        RepositoryResult<ArrayList<Shop>> result;
         if (query == null) {
-            mShops = Repository.getInstance().getNearbyShops(userLat, userLon);
+            result = Repository.getInstance().getNearbyShops(userLat, userLon);
         } else {
-            mShops = Repository.getInstance().getNearbyShops(userLat, userLon, query);
+            result = Repository.getInstance().getNearbyShops(userLat, userLon, query);
         }
+        result.getIsLoadingLiveData().observeForever(isLoading -> {
+            if (result.isFinishedSuccessfully()) {
+                mShops.setValue(result.getData().getValue());
+            } else if (result.isFinishedWithError()) {
+                // TODO: 6/2/2021 show error ui
+                Toast.makeText(getApplication(), "Error :" + result.getErrorCode(), Toast.LENGTH_LONG).show();
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
         mMap.clear();
         mShopsObserver = shops -> addShopsMarkers(shops);
         mShops.observeForever(mShopsObserver);

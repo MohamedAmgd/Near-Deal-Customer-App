@@ -1,16 +1,15 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,13 +18,16 @@ import com.mohamed_amgd.ayzeh.Models.User;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SignUpFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 import com.mohamed_amgd.ayzeh.repo.Util;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditUserViewModel extends AndroidViewModel {
     public MutableLiveData<User> mUser;
+    private RepositoryResult<User> mRepositoryResult;
     private String mUserImagePath;
     private FragmentManager mFragmentManager;
 
@@ -34,12 +36,26 @@ public class EditUserViewModel extends AndroidViewModel {
         mFragmentManager = fragmentManager;
         mUserImagePath = null;
         mUser = new MutableLiveData<>();
-        mUser = Repository.getInstance().getUser();
-        if (mUser.getValue() == null) {
-            FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            transaction.replace(R.id.fragment_layout, new SignUpFragment());
-            transaction.commit();
-        }
+        mRepositoryResult = Repository.getInstance().getUser();
+        mRepositoryResult.getIsLoadingLiveData().observeForever(isLoading -> {
+            if (mRepositoryResult.isFinishedSuccessfully()) {
+                mUser.setValue(mRepositoryResult.getData().getValue());
+            } else if (mRepositoryResult.isFinishedWithError()) {
+                if (mRepositoryResult.getErrorCode() == ErrorHandler.NEED_SIGN_IN_ERROR) {
+                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                    transaction.replace(R.id.fragment_layout, new SignUpFragment());
+                    transaction.commit();
+                } else {
+                    // TODO: 6/2/2021 show the error
+                    Toast.makeText(getApplication()
+                            , "Error code:" + mRepositoryResult.getErrorCode(), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                // TODO: 6/2/2021 show loading
+                Toast.makeText(getApplication()
+                        , "Loading", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void initUserImage(CircleImageView userImageView) {
@@ -98,33 +114,47 @@ public class EditUserViewModel extends AndroidViewModel {
         }
         if (inputError) return;
 
-        MutableLiveData<Boolean> status =
+        RepositoryResult<Boolean> result =
                 Repository.getInstance().updateUser(email, username, password, birthdate);
-        status.observeForever(userUpdated -> {
-                if (userUpdated) {
-                    if (mUserImagePath != null) {
-                        MutableLiveData<Boolean> userImageStatus =
-                                Repository.getInstance()
-                                        .updateUserImage(emailEditText.getContext(),mUserImagePath);
-                        userImageStatus.observeForever(imageUpdated -> {
-                                if (imageUpdated) {
-                                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                                    transaction.replace(R.id.fragment_layout, new UserInfoFragment());
-                                    transaction.commit();
-                                } else {
-                                    // TODO: 5/26/2021  show cannot update user's image error
-                                }
-                            });
-                    } else {
-                        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                        transaction.replace(R.id.fragment_layout, new UserInfoFragment());
-                        transaction.commit();
-                    }
+        result.getIsLoadingLiveData().observeForever(isLoading -> {
+            if (result.isFinishedSuccessfully()) {
+                if (mUserImagePath != null) {
+                    RepositoryResult<Boolean> updateUserImageResult =
+                            Repository.getInstance()
+                                    .updateUserImage(emailEditText.getContext(), mUserImagePath);
+                    updateUserImageResult.getIsLoadingLiveData().observeForever(isLoadingUpdateUserImage -> {
+                        if (updateUserImageResult.isFinishedSuccessfully()) {
+                            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                            transaction.replace(R.id.fragment_layout, new UserInfoFragment());
+                            transaction.commit();
+                        } else if (updateUserImageResult.isFinishedWithError()) {
+                            // TODO: 5/26/2021  show cannot update user's image error
+                            Toast.makeText(getApplication()
+                                    , "Error code:" + result.getErrorCode(), Toast.LENGTH_LONG).show();
 
+                        } else {
+                            // TODO: 6/2/2021 show loading
+                            Toast.makeText(getApplication()
+                                    , "Loading", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
-                    // TODO: 5/26/2021  show cannot update user error
+                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                    transaction.replace(R.id.fragment_layout, new UserInfoFragment());
+                    transaction.commit();
                 }
-            });
+
+            } else if (result.isFinishedWithError()) {
+                // TODO: 5/26/2021  show cannot update user error
+                Toast.makeText(getApplication()
+                        , "Error code:" + result.getErrorCode(), Toast.LENGTH_LONG).show();
+
+            } else {
+                // TODO: 6/2/2021 show loading
+                Toast.makeText(getApplication()
+                        , "Loading", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
     }

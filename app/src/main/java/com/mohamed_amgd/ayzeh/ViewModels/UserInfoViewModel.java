@@ -2,6 +2,7 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -17,24 +18,41 @@ import com.mohamed_amgd.ayzeh.Models.User;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.EditUserFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SignUpFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserInfoViewModel extends AndroidViewModel {
     public MutableLiveData<User> mUser;
+    private RepositoryResult<User> mRepositoryResult;
     private FragmentManager mFragmentManager;
 
     public UserInfoViewModel(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
-        mFragmentManager = fragmentManager;
         mUser = new MutableLiveData<>();
-        mUser = Repository.getInstance().getUser();
-        if (mUser.getValue() == null) {
-            FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            transaction.replace(R.id.fragment_layout, new SignUpFragment());
-            transaction.commit();
-        }
+        mFragmentManager = fragmentManager;
+        mRepositoryResult = Repository.getInstance().getUser();
+        mRepositoryResult.getIsLoadingLiveData().observeForever(isLoading -> {
+            if (mRepositoryResult.isFinishedSuccessfully()) {
+                mUser.setValue(mRepositoryResult.getData().getValue());
+            } else if (mRepositoryResult.isFinishedWithError()) {
+                if (mRepositoryResult.getErrorCode() == ErrorHandler.NEED_SIGN_IN_ERROR) {
+                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                    transaction.replace(R.id.fragment_layout, new SignUpFragment());
+                    transaction.commit();
+                } else {
+                    // TODO: 6/2/2021 show the error
+                    Toast.makeText(getApplication()
+                            , "Error code:" + mRepositoryResult.getErrorCode(), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                // TODO: 6/2/2021 show loading
+                Toast.makeText(getApplication()
+                        , "Loading", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void initUserImage(CircleImageView userImageView) {

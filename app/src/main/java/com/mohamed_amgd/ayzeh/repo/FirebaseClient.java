@@ -28,45 +28,64 @@ public class FirebaseClient {
         return mAuth.getCurrentUser();
     }
 
-    public MutableLiveData<Boolean> createNewUser(String email, String password) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    public RepositoryResult<Boolean> createNewUser(String email, String password) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
         mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
-            result.setValue(true);
+            if (authResult.getUser() != null) {
+                result.setFinishedSuccessfully(true);
+            } else {
+                result.setFinishedWithError(ErrorHandler.UNKNOWN_SIGN_USER_ERROR);
+            }
         }).addOnFailureListener(e -> {
-            result.setValue(false);
+            result.setFinishedWithError(ErrorHandler.FAILED_CREATE_USER_ERROR);
+            Log.i(TAG, "createNewUser: " + e.getMessage());
         });
         return result;
     }
 
-    public MutableLiveData<Boolean> signInUser(String email, String password) {
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
+    public RepositoryResult<Boolean> signInUser(String email, String password) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
         mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
-            result.setValue(true);
+            if (authResult.getUser() != null) {
+                result.setFinishedSuccessfully(true);
+            } else {
+                result.setFinishedWithError(ErrorHandler.UNKNOWN_SIGN_USER_ERROR);
+            }
         }).addOnFailureListener(e -> {
-            result.setValue(false);
+            result.setFinishedWithError(ErrorHandler.FAILED_SIGN_IN_ERROR);
+            Log.i(TAG, "createNewUser: " + e.getMessage());
         });
         return result;
     }
 
-    public MutableLiveData<Boolean> changeUserEmail(String newEmail){
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        mAuth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener(authResult -> {
-            Log.i(TAG, "changeUserEmail true");
-            result.setValue(true);
-        }).addOnFailureListener(e -> {
-            e.printStackTrace();
-            Log.i(TAG, "changeUserEmail false"+e.getMessage());
-            result.setValue(false);
-        });
+    public RepositoryResult<Boolean> changeUserEmail(String newEmail) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
+        if (mAuth.getCurrentUser() != null) {
+            mAuth.getCurrentUser().updateEmail(newEmail).addOnSuccessListener((voidItem) -> {
+                result.setFinishedSuccessfully(true);
+            }).addOnFailureListener(e -> {
+                result.setFinishedWithError(ErrorHandler.FAILED_UPDATE_EMAIL_ERROR);
+                Log.i(TAG, "createNewUser: " + e.getMessage());
+            });
+        } else {
+            result.setFinishedWithError(ErrorHandler.NEED_SIGN_IN_ERROR);
+        }
         return result;
     }
-    public MutableLiveData<Boolean> changeUserPassword(String newPassword){
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        mAuth.getCurrentUser().updatePassword(newPassword).addOnSuccessListener(authResult -> {
-            result.setValue(true);
-        }).addOnFailureListener(e -> {
-            result.setValue(false);
-        });
+
+    public RepositoryResult<Boolean> changeUserPassword(String newPassword) {
+        RepositoryResult<Boolean> result = new RepositoryResult<>(new MutableLiveData<>());
+        if (mAuth.getCurrentUser() != null) {
+            mAuth.getCurrentUser().updatePassword(newPassword).addOnSuccessListener((voidItem) -> {
+                result.setFinishedSuccessfully(true);
+                Log.i(TAG, "updatePassword: " + true);
+            }).addOnFailureListener(e -> {
+                result.setFinishedWithError(ErrorHandler.FAILED_UPDATE_PASSWORD_ERROR);
+                Log.i(TAG, "updatePassword: " + e.getMessage());
+            });
+        } else {
+            result.setFinishedWithError(ErrorHandler.NEED_SIGN_IN_ERROR);
+        }
         return result;
     }
 

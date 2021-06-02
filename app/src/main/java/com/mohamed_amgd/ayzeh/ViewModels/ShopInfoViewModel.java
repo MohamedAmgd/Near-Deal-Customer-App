@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -27,6 +28,7 @@ import com.mohamed_amgd.ayzeh.Views.Adapters.ProductsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -43,7 +45,19 @@ public class ShopInfoViewModel extends AndroidViewModel {
         mFragmentManager = fragmentManager;
         mShopId = bundle.getString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG);
         Repository repository = Repository.getInstance();
-        mShopLiveData = repository.getShopById(mShopId);
+        mShopLiveData = new MutableLiveData<>();
+        RepositoryResult<Shop> result = repository.getShopById(mShopId);
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                mShopLiveData.setValue(result.getData().getValue());
+            } else if (result.isFinishedWithError()) {
+                // TODO: 6/2/2021 show error ui
+                Toast.makeText(getApplication(), "Error :" + result.getErrorCode(), Toast.LENGTH_LONG).show();
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
         mProductsLiveData = repository.getShopProductsByShopId(mShopId);
     }
 
@@ -81,13 +95,10 @@ public class ShopInfoViewModel extends AndroidViewModel {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         productsRecycler.setLayoutManager(layoutManager);
 
-        mProductsObserver = new Observer<ArrayList<Product>>() {
-            @Override
-            public void onChanged(ArrayList<Product> products) {
-                mProducts.clear();
-                mProducts.addAll(products);
-                adapter.notifyDataSetChanged();
-            }
+        mProductsObserver = products -> {
+            mProducts.clear();
+            mProducts.addAll(products);
+            adapter.notifyDataSetChanged();
         };
         mProductsLiveData.observeForever(mProductsObserver);
         adapter.setProductOnClickListener(getProductOnClickListener());
