@@ -1,5 +1,7 @@
 package com.mohamed_amgd.ayzeh.repo.retrofit;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,6 +16,8 @@ import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.io.File;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -31,10 +35,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     public static final String UPLOAD_USER_IMAGE = "user";
     private static final String BASE_URL = "https://ayz-eh.herokuapp.com/";
+    //private static final String BASE_URL = "https://3ayez-eh.azurewebsites.net/";
     private static final int STATUS_CODE_SUCCESSFUL = 200;
     private static final int STATUS_CODE_CLIENT_INPUT_ERROR = 400;
     private static final int STATUS_CODE_CLIENT_EMPTY_IMAGE_ERROR = 403;
     private static final int STATUS_CODE_SERVER_ERROR = 500;
+    private static final String TAG = "RetrofitClient";
     private static RetrofitClient mInstance;
 
     private Retrofit mRetrofit;
@@ -64,23 +70,18 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    User user = convertResponseToUser(response);
-                    if (user != null) {
-                        result.setFinishedSuccessfully(user);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                User user = convertResponseToUser(response);
+                int errorCode = handleSuccess(user, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(user);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -93,22 +94,17 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    if (response.body() != null) {
-                        result.setFinishedSuccessfully(true);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                int errorCode = handleSuccess(response, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(true);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -121,22 +117,17 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    if (response.body() != null) {
-                        result.setFinishedSuccessfully(true);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                int errorCode = handleSuccess(response, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(true);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -155,22 +146,17 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    if (response.body() != null) {
-                        result.setFinishedSuccessfully(true);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                int errorCode = handleSuccess(response, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(true);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -182,23 +168,18 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    if (response.body() != null) {
-                        ArrayList<Shop> shops = convertResponseToShopsArrayList(response, lat, lon);
-                        result.setFinishedSuccessfully(shops);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                ArrayList<Shop> shops = convertResponseToShopsArrayList(response, lat, lon);
+                int errorCode = handleSuccess(shops, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(shops);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -210,23 +191,18 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    if (response.body() != null) {
-                        ArrayList<Shop> shops = convertResponseToShopsArrayList(response, lat, lon);
-                        result.setFinishedSuccessfully(shops);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                ArrayList<Shop> shops = convertResponseToShopsArrayList(response, lat, lon);
+                int errorCode = handleSuccess(shops, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(shops);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -238,23 +214,18 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                if (response.code() == STATUS_CODE_SUCCESSFUL) {
-                    if (response.body() != null) {
-                        Shop shop = convertResponseToShop(response, 0, 0);
-                        result.setFinishedSuccessfully(shop);
-                    } else {
-                        result.setFinishedWithError(ErrorHandler.BAD_RESPONSE_ERROR);
-                    }
-                } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.INPUT_ERROR);
-                } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
-                    result.setFinishedWithError(ErrorHandler.SERVER_ERROR);
+                Shop shop = convertResponseToShop(response, 0, 0);
+                int errorCode = handleSuccess(shop, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(shop);
+                } else {
+                    result.setFinishedWithError(errorCode);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                result.setFinishedWithError(ErrorHandler.NO_INTERNET_CONNECTION_ERROR);
+                result.setFinishedWithError(handleFailure(t));
             }
         });
         return result;
@@ -318,4 +289,34 @@ public class RetrofitClient {
         requestBody.put("user_data", userDataJsonObject);
         return requestBody;
     }
+
+
+    private int handleSuccess(Object o, Response<JsonObject> response) {
+        if (response.code() == STATUS_CODE_SUCCESSFUL) {
+            if (o != null) {
+                return ErrorHandler.NO_ERROR;
+            } else {
+                return ErrorHandler.BAD_RESPONSE_ERROR;
+            }
+        } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+            return ErrorHandler.INPUT_ERROR;
+        } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
+            return ErrorHandler.SERVER_ERROR;
+        } else {
+            return ErrorHandler.UNKNOWN_SERVER_ERROR;
+        }
+    }
+
+    private int handleFailure(Throwable t) {
+        t.printStackTrace();
+        Log.i(TAG, "onFailure: " + t.getMessage());
+        if (t.getClass() == UnknownHostException.class) {
+            return ErrorHandler.NO_INTERNET_CONNECTION_ERROR;
+        } else if (t.getClass() == SocketTimeoutException.class) {
+            return ErrorHandler.REQUEST_TIMED_OUT_ERROR;
+        } else {
+            return ErrorHandler.INTERNET_CONNECTION_UNSTABLE_ERROR;
+        }
+    }
+
 }

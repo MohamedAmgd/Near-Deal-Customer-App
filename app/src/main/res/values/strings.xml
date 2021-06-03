@@ -57,9 +57,26 @@
     <string name="location_permission_rationale">To get nearby shops we need your location</string>
     <string name="storage_permission_rationale">To choose an image we need storage access</string>
     <string name="logout">logout</string>
+    <string name="retry">Retry</string>
+
+    <!-- Input Error messages -->
     <string name="email_input_error">Wrong email address \nPlease enter a proper email</string>
     <string name="username_input_error">Username must contain characters only [A-Z,a-z]</string>
     <string name="password_input_error">Password must be :- \n - its size must be at least eight \n - a digit must occur at least once \n - a lower case letter must occur at least once \n - an upper case letter must occur at least once \n - a special character [@#$%^&amp;+=] must occur at least once \n - no whitespace allowed </string>
     <string name="confirm_password_input_error">Password and confirm password must be the same</string>
     <string name="birthdate_input_error">Birthdate must not be empty \nAge must be 12 or more</string>
+
+    <!-- Error messages used in Error Handler-->
+    <string name="no_internet_connection_error">No internet connection</string>
+    <string name="input_error">Input error</string>
+    <string name="server_error">Server error</string>
+    <string name="bad_response_error">Bad server response</string>
+    <string name="unknown_sign_user_error">Unknown sign user error</string>
+    <string name="need_sign_in_error">Need to sign in first</string>
+    <string name="failed_create_user_error">Failed to create user</string>
+    <string name="failed_sign_in_error">Failed to sign in</string>
+    <string name="failed_update_email_error">Failed to update email address</string>
+    <string name="failed_update_password_error">Failed to update password</string>
+    <string name="internet_connection_unstable_error">Pour internet connection\nPlease try again</string>
+    <string name="request_timed_out_error">Request timed out\nPlease try again</string>
 </resources>

@@ -15,8 +15,11 @@
         <item name="backgroundColor">@color/darker_white</item>
         <!-- font -->
         <item name="android:fontFamily">@font/roboto_regular</item>
-
+        <!-- chip style -->
         <item name="chipStyle">@style/ChoiceChip</item>
+        <!-- snackbar style -->
+        <item name="snackbarStyle">@style/Widget.App.Snackbar</item>
+        <item name="snackbarButtonStyle">@style/Widget.App.SnackbarButton</item>
     </style>
     <style name="SearchView" parent="Widget.AppCompat.SearchView">
         <item name="android:searchIcon">@drawable/ic_search_black</item>
@@ -65,14 +68,26 @@
     </style>
 
     <style name="FilterDialog" parent="Theme.Design.BottomSheetDialog">
-            <item name="bottomSheetStyle">@style/FilterDialog.Style</item>
+        <item name="bottomSheetStyle">@style/FilterDialog.Style</item>
     </style>
+
     <style name="FilterDialog.Style" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
     <style name="ShopDialog" parent="android:Theme.Material.Dialog.Alert">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:layout_marginBottom">24dp</item>
     </style>
+
+    <style name="Widget.App.Snackbar" parent="Widget.MaterialComponents.Snackbar">
+        <item name="backgroundTint">@color/gray</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Widget.App.SnackbarButton" parent="Widget.MaterialComponents.Button.TextButton.Snackbar">
+        <item name="android:textColor">?colorPrimary</item>
+    </style>
+
 </resources>

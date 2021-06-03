@@ -63,5 +63,9 @@ public class UserInfoFragment extends Fragment {
             mViewModel.initBirthdate(mBirthdate);
         });
         mViewModel.setEditChipAction(mEditChip);
+
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
+        });
     }
 }

@@ -1,6 +1,7 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,13 +27,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserInfoViewModel extends AndroidViewModel {
     public MutableLiveData<User> mUser;
+    public MutableLiveData<ErrorHandler.Error> mError;
     private RepositoryResult<User> mRepositoryResult;
     private FragmentManager mFragmentManager;
 
     public UserInfoViewModel(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
         mUser = new MutableLiveData<>();
+        mError = new MutableLiveData<>();
         mFragmentManager = fragmentManager;
+        initRepositoryResult();
+    }
+
+    private void initRepositoryResult() {
         mRepositoryResult = Repository.getInstance().getUser();
         mRepositoryResult.getIsLoadingLiveData().observeForever(isLoading -> {
             if (mRepositoryResult.isFinishedSuccessfully()) {
@@ -43,9 +50,10 @@ public class UserInfoViewModel extends AndroidViewModel {
                     transaction.replace(R.id.fragment_layout, new SignUpFragment());
                     transaction.commit();
                 } else {
-                    // TODO: 6/2/2021 show the error
-                    Toast.makeText(getApplication()
-                            , "Error code:" + mRepositoryResult.getErrorCode(), Toast.LENGTH_LONG).show();
+                    mError.setValue(new ErrorHandler.Error(mRepositoryResult.getErrorCode()
+                            , v -> {
+                        initRepositoryResult();
+                    }));
                 }
             } else {
                 // TODO: 6/2/2021 show loading
@@ -87,6 +95,10 @@ public class UserInfoViewModel extends AndroidViewModel {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_layout, new SignUpFragment());
         transaction.commit();
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
 
