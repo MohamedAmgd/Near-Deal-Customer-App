@@ -35,19 +35,19 @@ public class Repository {
         return mInstance;
     }
 
-    public MutableLiveData<ArrayList<Product>> getHotDeals() {
+    public RepositoryResult<SearchResult> getHotDeals() {
         // TODO: 5/8/2021 use retrofit client to get hot deals from api
-        return new MutableLiveData<>();
+        return new RepositoryResult<>(new MutableLiveData<>());
     }
 
-    public MutableLiveData<ArrayList<Offer>> getProductOffers(String productId) {
+    public RepositoryResult<ArrayList<Offer>> getProductOffers(String productId) {
         // TODO: 5/8/2021 use retrofit client to get offers of a product using its id from api
-        return new MutableLiveData<>();
+        return new RepositoryResult<>(new MutableLiveData<>());
     }
 
-    public SearchResult getSearchResult(String query, Filter filter) {
+    public RepositoryResult<SearchResult> searchProducts(String query, Filter filter) {
         // TODO: 5/9/2021 use retrofit client to get search result of query with filter
-        return new SearchResult(new MutableLiveData<>(), 0f, 1000f);
+        return new RepositoryResult<>(new MutableLiveData<>());
     }
 
     public RepositoryResult<Shop> getShopById(String shopId) {
@@ -55,9 +55,9 @@ public class Repository {
         return mRetrofitClient.getShop(shopId);
     }
 
-    public MutableLiveData<ArrayList<Product>> getShopProductsByShopId(String shopId) {
+    public RepositoryResult<ArrayList<Product>> getShopProductsByShopId(String shopId) {
         // TODO: 5/12/2021 use retrofit client to get shop's products using shopId
-        return new MutableLiveData<>();
+        return new RepositoryResult<>(new MutableLiveData<>());
     }
 
     public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
@@ -70,13 +70,9 @@ public class Repository {
         return mRetrofitClient.searchNearbyShopsByName(userLat, userLon, 50, query);
     }
 
-    public SearchResult getHotDealsSearchResult(String query, Filter filter) {
+    public RepositoryResult<SearchResult> getHotDealsSearchResult(String query, Filter filter) {
         // TODO: 5/18/2021 use retrofit client to get hot deals search result of query with filter
-        if (query == null) {
-            return new SearchResult(getHotDeals(), 0f, 1000f);
-        } else {
-            return new SearchResult(new MutableLiveData<>(), 0f, 1000f);
-        }
+        return new RepositoryResult<>(new MutableLiveData<>());
     }
 
     public RepositoryResult<User> getUser() {

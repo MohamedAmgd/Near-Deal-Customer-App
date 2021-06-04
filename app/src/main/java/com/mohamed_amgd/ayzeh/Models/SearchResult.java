@@ -1,26 +1,24 @@
 package com.mohamed_amgd.ayzeh.Models;
 
-import androidx.lifecycle.MutableLiveData;
-
 import java.util.ArrayList;
 
 public class SearchResult {
-    private MutableLiveData<ArrayList<Product>> mResultsLiveData;
+    private ArrayList<Product> mResultsLiveData;
     private float mMinPrice;
     private float mMaxPrice;
 
-    public SearchResult(MutableLiveData<ArrayList<Product>> mResultsLiveData, float mMinPrice, float mMaxPrice) {
+    public SearchResult(ArrayList<Product> mResultsLiveData, float mMinPrice, float mMaxPrice) {
         this.mResultsLiveData = mResultsLiveData;
         this.mMinPrice = mMinPrice;
         this.mMaxPrice = mMaxPrice;
     }
 
-    public MutableLiveData<ArrayList<Product>> getResultsLiveData() {
+    public ArrayList<Product> getResults() {
         return mResultsLiveData;
     }
 
-    public void setResultsLiveData(MutableLiveData<ArrayList<Product>> mResultsLiveData) {
-        this.mResultsLiveData = mResultsLiveData;
+    public void setResults(ArrayList<Product> mResults) {
+        this.mResultsLiveData = mResults;
     }
 
     public float getMinPrice() {

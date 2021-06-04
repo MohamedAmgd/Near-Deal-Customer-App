@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -29,13 +30,16 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
 
 public class HotDealsViewModel extends AndroidViewModel {
 
     private FragmentManager mFragmentManager;
+    public MutableLiveData<ErrorHandler.Error> mError;
     private String mQuery;
     private Filter mFilter;
     private MutableLiveData<ArrayList<Product>> mHotDealsLiveData;
@@ -46,12 +50,31 @@ public class HotDealsViewModel extends AndroidViewModel {
     public HotDealsViewModel(@NonNull Application application, FragmentManager fragmentManager, Bundle bundle) {
         super(application);
         mFragmentManager = fragmentManager;
+        mError = new MutableLiveData<>();
         mQuery = bundle.getString(HotDealsFragment.QUERY_BUNDLE_TAG);
         mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(HotDealsFragment.FILTER_BUNDLE_TAG));
-        SearchResult searchResult = Repository.getInstance().getHotDealsSearchResult(mQuery, mFilter);
-        mHotDealsLiveData = searchResult.getResultsLiveData();
-        mMinSearchResultPrice = searchResult.getMinPrice();
-        mMaxSearchResultPrice = searchResult.getMaxPrice();
+        mHotDealsLiveData = new MutableLiveData<>();
+        initHotDealsLiveData();
+    }
+
+    private void initHotDealsLiveData() {
+        RepositoryResult<SearchResult> result = Repository.getInstance().getHotDealsSearchResult(mQuery, mFilter);
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                SearchResult searchResult = result.getData().getValue();
+                mHotDealsLiveData.setValue(searchResult.getResults());
+                mMinSearchResultPrice = searchResult.getMinPrice();
+                mMaxSearchResultPrice = searchResult.getMaxPrice();
+            } else if (result.isFinishedWithError()) {
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initHotDealsLiveData();
+                }));
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void initSearchView(SearchView searchView) {
@@ -166,13 +189,10 @@ public class HotDealsViewModel extends AndroidViewModel {
         GridLayoutManager layoutManager = new GridLayoutManager(getApplication(), 2);
         hotDealsRecycler.setLayoutManager(layoutManager);
 
-        mHotDealsObserver = new Observer<ArrayList<Product>>() {
-            @Override
-            public void onChanged(ArrayList<Product> hotDeals) {
-                mResults.clear();
-                mResults.addAll(hotDeals);
-                adapter.notifyDataSetChanged();
-            }
+        mHotDealsObserver = hotDeals -> {
+            mResults.clear();
+            mResults.addAll(hotDeals);
+            adapter.notifyDataSetChanged();
         };
         mHotDealsLiveData.observeForever(mHotDealsObserver);
         adapter.setHotDealOnClickListener(getHotDealsOnClickListener());
@@ -189,6 +209,10 @@ public class HotDealsViewModel extends AndroidViewModel {
             transaction.addToBackStack(ProductFragment.CLASS_NAME);
             transaction.commit();
         };
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
     @Override

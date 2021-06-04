@@ -2,6 +2,8 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -17,18 +19,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mohamed_amgd.ayzeh.Models.Category;
 import com.mohamed_amgd.ayzeh.Models.Filter;
 import com.mohamed_amgd.ayzeh.Models.Product;
+import com.mohamed_amgd.ayzeh.Models.SearchResult;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.CategoriesRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
 
 public class ExploreViewModel extends AndroidViewModel {
 
+    public MutableLiveData<ErrorHandler.Error> mError;
     private final ArrayList<Category> categories;
     private FragmentManager mFragmentManager;
     private MutableLiveData<ArrayList<Product>> mHotDealsLiveData;
@@ -37,6 +43,7 @@ public class ExploreViewModel extends AndroidViewModel {
     ExploreViewModel(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
         mFragmentManager = fragmentManager;
+        mError = new MutableLiveData<>();
         // init categories
         categories = new ArrayList<>();
         categories.add(new Category(Filter.MEN_CATEGORY, R.drawable.ic_men_category));
@@ -46,13 +53,32 @@ public class ExploreViewModel extends AndroidViewModel {
         categories.add(new Category(Filter.TOOLS_CATEGORY, R.drawable.ic_tools_category));
 
         // init hot deals live data
-        mHotDealsLiveData = Repository.getInstance().getHotDeals();
+        mHotDealsLiveData = new MutableLiveData<>();
+        initHotDealsLiveData();
+    }
+
+    private void initHotDealsLiveData() {
+        RepositoryResult<SearchResult> result = Repository.getInstance().getHotDeals();
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                SearchResult searchResult = result.getData().getValue();
+                mHotDealsLiveData.setValue(searchResult.getResults());
+            } else if (result.isFinishedWithError()) {
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initHotDealsLiveData();
+                }));
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void searchViewAction(String query) {
         Bundle bundle = new Bundle();
         bundle.putString(SearchFragment.QUERY_BUNDLE_TAG, query);
-        bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG,new Filter());
+        bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG, new Filter());
         SearchFragment searchFragment = new SearchFragment();
         searchFragment.setArguments(bundle);
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -129,6 +155,10 @@ public class ExploreViewModel extends AndroidViewModel {
         };
         mHotDealsLiveData.observeForever(mHotDealsObserver);
         hotDealsRecyclerAdapter.setHotDealOnClickListener(getHotDealsOnClickListener());
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
     @Override

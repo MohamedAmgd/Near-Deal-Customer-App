@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -29,12 +30,15 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.ProductsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
 
 public class SearchViewModel extends AndroidViewModel {
 
+    public MutableLiveData<ErrorHandler.Error> mError;
     private FragmentManager mFragmentManager;
     private String mQuery;
     private Filter mFilter;
@@ -46,12 +50,33 @@ public class SearchViewModel extends AndroidViewModel {
     public SearchViewModel(@NonNull Application application, FragmentManager fragmentManager, Bundle bundle) {
         super(application);
         mFragmentManager = fragmentManager;
+        mError = new MutableLiveData<>();
         mQuery = bundle.getString(SearchFragment.QUERY_BUNDLE_TAG);
         mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(SearchFragment.FILTER_BUNDLE_TAG));
-        SearchResult searchResult = Repository.getInstance().getSearchResult(mQuery, mFilter);
-        mProductsLiveData = searchResult.getResultsLiveData();
-        mMinSearchResultPrice = searchResult.getMinPrice();
-        mMaxSearchResultPrice = searchResult.getMaxPrice();
+        mMinSearchResultPrice = 0f;
+        mMaxSearchResultPrice = 100f;
+        mProductsLiveData = new MutableLiveData<>();
+        initProductsLiveData();
+    }
+
+    private void initProductsLiveData() {
+        RepositoryResult<SearchResult> result = Repository.getInstance().searchProducts(mQuery, mFilter);
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                SearchResult searchResult = result.getData().getValue();
+                mProductsLiveData.setValue(searchResult.getResults());
+                mMinSearchResultPrice = searchResult.getMinPrice();
+                mMaxSearchResultPrice = searchResult.getMaxPrice();
+            } else if (result.isFinishedWithError()) {
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initProductsLiveData();
+                }));
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void initSearchView(SearchView searchView) {
@@ -102,7 +127,7 @@ public class SearchViewModel extends AndroidViewModel {
         if (mFilter.getPriceMin() != Filter.NO_PRICE) {
             leftThumb = mFilter.getPriceMin();
         }
-        if (mFilter.getPriceMax() != Filter.NO_PRICE ) {
+        if (mFilter.getPriceMax() != Filter.NO_PRICE) {
             rightThumb = mFilter.getPriceMax();
         }
         rangeSlider.setValues(leftThumb, rightThumb);
@@ -166,13 +191,10 @@ public class SearchViewModel extends AndroidViewModel {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         productsRecycler.setLayoutManager(layoutManager);
 
-        mProductsObserver = new Observer<ArrayList<Product>>() {
-            @Override
-            public void onChanged(ArrayList<Product> products) {
-                mResults.clear();
-                mResults.addAll(products);
-                adapter.notifyDataSetChanged();
-            }
+        mProductsObserver = products -> {
+            mResults.clear();
+            mResults.addAll(products);
+            adapter.notifyDataSetChanged();
         };
         mProductsLiveData.observeForever(mProductsObserver);
         adapter.setProductOnClickListener(getProductOnClickListener());
@@ -189,6 +211,10 @@ public class SearchViewModel extends AndroidViewModel {
             transaction.addToBackStack(ProductFragment.CLASS_NAME);
             transaction.commit();
         };
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
     @Override

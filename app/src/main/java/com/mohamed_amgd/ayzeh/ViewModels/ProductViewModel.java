@@ -2,8 +2,10 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -23,11 +25,14 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.OffersRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
+import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
 
 public class ProductViewModel extends AndroidViewModel {
+    public MutableLiveData<ErrorHandler.Error> mError;
     private FragmentManager mFragmentManager;
     private Product mProduct;
     private MutableLiveData<ArrayList<Offer>> mOffersLiveData;
@@ -35,10 +40,29 @@ public class ProductViewModel extends AndroidViewModel {
 
     public ProductViewModel(@NonNull Application application, FragmentManager fragmentManager, Bundle bundle) {
         super(application);
-        mFragmentManager =fragmentManager;
+        mFragmentManager = fragmentManager;
+        mError = new MutableLiveData<>();
         mProduct = (Product) bundle.get(ProductFragment.PRODUCT_BUNDLE_TAG);
+        mOffersLiveData = new MutableLiveData<>();
+        initOffersLiveData();
+    }
 
-        mOffersLiveData = Repository.getInstance().getProductOffers(mProduct.getId());
+    private void initOffersLiveData() {
+        RepositoryResult<ArrayList<Offer>> result
+                = Repository.getInstance().getProductOffers(mProduct.getId());
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                mOffersLiveData.setValue(result.getData().getValue());
+            } else if (result.isFinishedWithError()) {
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initOffersLiveData();
+                }));
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void initProductImage(ImageView productImage) {
@@ -60,11 +84,12 @@ public class ProductViewModel extends AndroidViewModel {
     public void initProductPrice(TextView productPrice) {
         productPrice.setText(mProduct.getPrice());
     }
+
     private OffersRecyclerAdapter.OnClickListener getOfferOnClickListener() {
         return position -> {
             String shopId = mOffersLiveData.getValue().get(position).getShopId();
             Bundle bundle = new Bundle();
-            bundle.putString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG,shopId);
+            bundle.putString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG, shopId);
             ShopInfoFragment shopInfoFragment = new ShopInfoFragment();
             shopInfoFragment.setArguments(bundle);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
@@ -76,7 +101,7 @@ public class ProductViewModel extends AndroidViewModel {
 
     public void initOffersRecycler(RecyclerView offersRecycler) {
         ArrayList<Offer> mOffers = new ArrayList<>();
-        OffersRecyclerAdapter adapter = new OffersRecyclerAdapter(getApplication(),mOffers);
+        OffersRecyclerAdapter adapter = new OffersRecyclerAdapter(getApplication(), mOffers);
         offersRecycler.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         offersRecycler.setLayoutManager(layoutManager);
@@ -91,6 +116,10 @@ public class ProductViewModel extends AndroidViewModel {
         };
         mOffersLiveData.observeForever(mOffersObserver);
         adapter.setOfferOnClickListener(getOfferOnClickListener());
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
     @Override
@@ -108,7 +137,7 @@ public class ProductViewModel extends AndroidViewModel {
 
         private final Bundle mBundle;
 
-        public Factory(@NonNull Application application,@NonNull FragmentManager fragmentManager, Bundle bundle) {
+        public Factory(@NonNull Application application, @NonNull FragmentManager fragmentManager, Bundle bundle) {
             mApplication = application;
             mFragmentManager = fragmentManager;
             mBundle = bundle;

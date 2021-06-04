@@ -46,9 +46,28 @@ public class ShopInfoViewModel extends AndroidViewModel {
         super(application);
         mFragmentManager = fragmentManager;
         mError = new MutableLiveData<>();
+        mProductsLiveData = new MutableLiveData<>();
         mShopId = bundle.getString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG);
         initShopResult();
-        mProductsLiveData = Repository.getInstance().getShopProductsByShopId(mShopId);
+        initShopProducts();
+    }
+
+    private void initShopProducts() {
+        RepositoryResult<ArrayList<Product>> result
+                = Repository.getInstance().getShopProductsByShopId(mShopId);
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                mProductsLiveData.setValue(result.getData().getValue());
+            } else if (result.isFinishedWithError()) {
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initShopProducts();
+                }));
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void initShopResult() {
