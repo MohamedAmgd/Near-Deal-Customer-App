@@ -11,11 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="49dp"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/filters"
         android:textColor="@color/black"
         android:textSize="27sp"
+        app:layout_constraintBottom_toTopOf="@+id/chip_group"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,10 +23,10 @@
         android:id="@+id/exit_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="57dp"
         android:layout_marginEnd="37dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_exit_filters_dialog"
+        app:layout_constraintBottom_toTopOf="@+id/chip_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,11 +35,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="33dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="116dp"
         app:chipSpacingHorizontal="15dp"
         app:chipSpacingVertical="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintTop_toTopOf="parent"
         app:singleSelection="true">
 
 
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/price_range"
         android:textColor="@color/black"
@@ -98,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="37dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="20dp"
         android:valueFrom="0"
         android:valueTo="100"
         app:layout_constraintStart_toStartOf="parent"
