@@ -44,8 +44,8 @@ public class ShopInfoFragment extends Fragment {
         Bundle bundle = getArguments();
         ShopInfoViewModel.Factory factory =
                 new ShopInfoViewModel.Factory(getActivity().getApplication()
-                , getFragmentManager(), bundle);
-        mViewModel = new ViewModelProvider(this,factory).get(ShopInfoViewModel.class);
+                        , getFragmentManager(), bundle);
+        mViewModel = new ViewModelProvider(this, factory).get(ShopInfoViewModel.class);
 
         mShopImage = view.findViewById(R.id.shop_image);
         mShopName = view.findViewById(R.id.shop_name_text_view);
@@ -53,7 +53,7 @@ public class ShopInfoFragment extends Fragment {
         mShopDescription = view.findViewById(R.id.shop_description_text_view);
         mProductsRecycler = view.findViewById(R.id.shop_products_recycler);
 
-        mViewModel.getShopLiveData().observe(getViewLifecycleOwner(),shop -> {
+        mViewModel.getShopLiveData().observe(getViewLifecycleOwner(), shop -> {
             mViewModel.initShopImage(mShopImage);
             mViewModel.initShopName(mShopName);
             mViewModel.initShopDescription(mShopDescription);
@@ -62,6 +62,9 @@ public class ShopInfoFragment extends Fragment {
             mGetDirections.setOnClickListener(v -> {
                 mViewModel.getDirectionsAction(v);
             });
+        });
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
         });
     }
 }

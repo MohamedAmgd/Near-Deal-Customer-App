@@ -1,6 +1,7 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
 import android.app.Application;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -9,22 +10,26 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SignInFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.UserInfoFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 import com.mohamed_amgd.ayzeh.repo.Util;
 
 public class SignUpViewModel extends AndroidViewModel {
     private FragmentManager mFragmentManager;
+    public MutableLiveData<ErrorHandler.Error> mError;
 
     public SignUpViewModel(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
         mFragmentManager = fragmentManager;
+        mError = new MutableLiveData<>();
     }
 
     public void setSignInAction() {
@@ -76,16 +81,24 @@ public class SignUpViewModel extends AndroidViewModel {
                 transaction.replace(R.id.fragment_layout, new UserInfoFragment());
                 transaction.commit();
             } else if (result.isFinishedWithError()) {
-                // TODO: 5/26/2021  show cannot sign up user error
-                Toast.makeText(getApplication()
-                        , "Error code:" + result.getErrorCode(), Toast.LENGTH_LONG).show();
-
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    setSignUpAction(emailEditText
+                            , usernameEditText
+                            , passwordEditText
+                            , confirmPasswordEditText
+                            , birthdateEditText);
+                }));
             } else {
                 // TODO: 6/2/2021 show loading
                 Toast.makeText(getApplication()
                         , "Loading", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

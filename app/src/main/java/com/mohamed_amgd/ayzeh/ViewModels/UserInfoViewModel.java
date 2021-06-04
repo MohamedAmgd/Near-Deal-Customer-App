@@ -28,7 +28,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserInfoViewModel extends AndroidViewModel {
     public MutableLiveData<User> mUser;
     public MutableLiveData<ErrorHandler.Error> mError;
-    private RepositoryResult<User> mRepositoryResult;
     private FragmentManager mFragmentManager;
 
     public UserInfoViewModel(@NonNull Application application, FragmentManager fragmentManager) {
@@ -36,23 +35,23 @@ public class UserInfoViewModel extends AndroidViewModel {
         mUser = new MutableLiveData<>();
         mError = new MutableLiveData<>();
         mFragmentManager = fragmentManager;
-        initRepositoryResult();
+        initUserInfoResult();
     }
 
-    private void initRepositoryResult() {
-        mRepositoryResult = Repository.getInstance().getUser();
-        mRepositoryResult.getIsLoadingLiveData().observeForever(isLoading -> {
-            if (mRepositoryResult.isFinishedSuccessfully()) {
-                mUser.setValue(mRepositoryResult.getData().getValue());
-            } else if (mRepositoryResult.isFinishedWithError()) {
-                if (mRepositoryResult.getErrorCode() == ErrorHandler.NEED_SIGN_IN_ERROR) {
+    private void initUserInfoResult() {
+        RepositoryResult<User> result = Repository.getInstance().getUser();
+        result.getIsLoadingLiveData().observeForever(isLoading -> {
+            if (result.isFinishedSuccessfully()) {
+                mUser.setValue(result.getData().getValue());
+            } else if (result.isFinishedWithError()) {
+                if (result.getErrorCode() == ErrorHandler.NEED_SIGN_IN_ERROR) {
                     FragmentTransaction transaction = mFragmentManager.beginTransaction();
                     transaction.replace(R.id.fragment_layout, new SignUpFragment());
                     transaction.commit();
                 } else {
-                    mError.setValue(new ErrorHandler.Error(mRepositoryResult.getErrorCode()
+                    mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                             , v -> {
-                        initRepositoryResult();
+                        initUserInfoResult();
                     }));
                 }
             } else {

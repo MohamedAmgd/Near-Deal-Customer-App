@@ -27,6 +27,7 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.ProductsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
@@ -35,6 +36,7 @@ import java.util.Locale;
 
 public class ShopInfoViewModel extends AndroidViewModel {
     private String mShopId;
+    public MutableLiveData<ErrorHandler.Error> mError;
     private MutableLiveData<Shop> mShopLiveData;
     private FragmentManager mFragmentManager;
     private MutableLiveData<ArrayList<Product>> mProductsLiveData;
@@ -43,22 +45,28 @@ public class ShopInfoViewModel extends AndroidViewModel {
     public ShopInfoViewModel(@NonNull Application application, FragmentManager fragmentManager, Bundle bundle) {
         super(application);
         mFragmentManager = fragmentManager;
+        mError = new MutableLiveData<>();
         mShopId = bundle.getString(ShopInfoFragment.SHOP_ID_BUNDLE_TAG);
-        Repository repository = Repository.getInstance();
+        initShopResult();
+        mProductsLiveData = Repository.getInstance().getShopProductsByShopId(mShopId);
+    }
+
+    private void initShopResult() {
         mShopLiveData = new MutableLiveData<>();
-        RepositoryResult<Shop> result = repository.getShopById(mShopId);
+        RepositoryResult<Shop> result = Repository.getInstance().getShopById(mShopId);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 mShopLiveData.setValue(result.getData().getValue());
             } else if (result.isFinishedWithError()) {
-                // TODO: 6/2/2021 show error ui
-                Toast.makeText(getApplication(), "Error :" + result.getErrorCode(), Toast.LENGTH_LONG).show();
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initShopResult();
+                }));
             } else {
                 // TODO: 6/2/2021 show loading ui
                 Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
             }
         });
-        mProductsLiveData = repository.getShopProductsByShopId(mShopId);
     }
 
     public MutableLiveData<Shop> getShopLiveData() {
@@ -115,6 +123,10 @@ public class ShopInfoViewModel extends AndroidViewModel {
             transaction.addToBackStack(ProductFragment.CLASS_NAME);
             transaction.commit();
         };
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
     @Override

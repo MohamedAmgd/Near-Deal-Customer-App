@@ -1,23 +1,20 @@
 package com.mohamed_amgd.ayzeh.Views.Fragments;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.SignInViewModel;
-import com.mohamed_amgd.ayzeh.ViewModels.SignUpViewModel;
 
 public class SignInFragment extends Fragment {
 
@@ -55,8 +52,11 @@ public class SignInFragment extends Fragment {
         });
 
         mSignInButton.setOnClickListener(v -> {
-            mViewModel.signInAction(mEmailEditText,mPasswordEditText);
+            mViewModel.signInAction(mEmailEditText, mPasswordEditText);
         });
 
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
+        });
     }
 }

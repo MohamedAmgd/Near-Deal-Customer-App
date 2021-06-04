@@ -68,6 +68,10 @@ public class SignUpFragment extends Fragment implements DatePickerDialog.OnDateS
         mBirthdateTextView.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
         mSignInLayout.setOnClickListener(this);
+
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
+        });
     }
 
     @Override
@@ -90,13 +94,13 @@ public class SignUpFragment extends Fragment implements DatePickerDialog.OnDateS
             new DatePickerDialog(getContext(), this, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        } else if (v.getId() == R.id.sign_up_button){
+        } else if (v.getId() == R.id.sign_up_button) {
             mViewModel.setSignUpAction(mEmailEditText
-                    ,mUsernameEditText
-                    ,mPasswordEditText
-                    ,mConfirmPasswordEditText
+                    , mUsernameEditText
+                    , mPasswordEditText
+                    , mConfirmPasswordEditText
                     , mBirthdateTextView);
-        } else if (v.getId() == R.id.sign_in_layout){
+        } else if (v.getId() == R.id.sign_in_layout) {
             mViewModel.setSignInAction();
         }
     }

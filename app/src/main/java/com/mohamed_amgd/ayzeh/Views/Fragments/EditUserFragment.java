@@ -2,13 +2,11 @@ package com.mohamed_amgd.ayzeh.Views.Fragments;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.EditUserViewModel;
 import com.mohamed_amgd.ayzeh.repo.Util;
 
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -94,6 +91,9 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
         mChangePhotoChip.setOnClickListener(this);
         mBirthdateLayout.setOnClickListener(this);
         mBirthdateTextView.setOnClickListener(this);
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
+        });
     }
 
     @Override
@@ -117,7 +117,7 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         } else if (v.getId() == R.id.change_photo_chip) {
-            if(hasStorageAccess()) {
+            if (hasStorageAccess()) {
                 openImageChooser();
             } else {
                 requestStoragePermission();
@@ -136,7 +136,7 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
                 , Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    private void requestStoragePermission(){
+    private void requestStoragePermission() {
         EasyPermissions.requestPermissions(this
                 , getString(R.string.storage_permission_rationale)
                 , STORAGE_PERMISSION_REQUEST_CODE
@@ -157,18 +157,17 @@ public class EditUserFragment extends Fragment implements DatePickerDialog.OnDat
         if (requestCode == CHOOSE_IMAGE_REQUEST && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
             Glide.with(this).load(data.getData()).into(mUserImage);
-            String imagePath = getImagePath(getContext(),data.getData());
+            String imagePath = getImagePath(getContext(), data.getData());
             mViewModel.changePhotoAction(imagePath);
         }
     }
 
-    public String getImagePath(final Context context, final Uri imageUri )
-    {
+    public String getImagePath(final Context context, final Uri imageUri) {
         String result = "";
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(imageUri,  proj, null, null, null);
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(imageUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             result = cursor.getString(column_index);

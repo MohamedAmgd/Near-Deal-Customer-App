@@ -53,7 +53,11 @@ public class NearbyLocationsFragment extends Fragment {
             }
         });
         mMapFragment.getMapAsync(googleMap -> {
-            mViewModel.onMapReady(googleMap,mMapFragment.getContext());
+            mViewModel.onMapReady(googleMap, mMapFragment.getContext());
+        });
+
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
         });
     }
 }

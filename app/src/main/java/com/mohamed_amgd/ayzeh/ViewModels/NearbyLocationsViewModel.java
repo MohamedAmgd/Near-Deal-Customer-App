@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
+import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 import com.mohamed_amgd.ayzeh.repo.Util;
@@ -50,6 +51,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class NearbyLocationsViewModel extends AndroidViewModel {
     public MutableLiveData<ArrayList<Shop>> mShops;
+    public MutableLiveData<ErrorHandler.Error> mError;
     private Observer<ArrayList<Shop>> mShopsObserver;
     private FragmentManager mFragmentManager;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -63,6 +65,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         super(application);
         mFragmentManager = fragmentManager;
         mShops = new MutableLiveData<>();
+        mError = new MutableLiveData<>();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
 
         if (hasLocationAccess()) {
@@ -125,8 +128,10 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
             if (result.isFinishedSuccessfully()) {
                 mShops.setValue(result.getData().getValue());
             } else if (result.isFinishedWithError()) {
-                // TODO: 6/2/2021 show error ui
-                Toast.makeText(getApplication(), "Error :" + result.getErrorCode(), Toast.LENGTH_LONG).show();
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initShopsLiveData(query);
+                }));
             } else {
                 // TODO: 6/2/2021 show loading ui
                 Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
@@ -206,6 +211,10 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
                 transaction.commit();
             }, 250);
         });
+    }
+
+    public void showError(View view, ErrorHandler.Error error) {
+        ErrorHandler.getInstance().showError(view, error);
     }
 
 
