@@ -21,7 +21,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -50,9 +49,7 @@ import java.util.ArrayList;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class NearbyLocationsViewModel extends AndroidViewModel {
-    public MutableLiveData<ArrayList<Shop>> mShops;
     public MutableLiveData<ErrorHandler.Error> mError;
-    private Observer<ArrayList<Shop>> mShopsObserver;
     private FragmentManager mFragmentManager;
     private FusedLocationProviderClient mFusedLocationClient;
     private WeakReference<Context> mMapContextWeakReference;
@@ -64,7 +61,6 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     public NearbyLocationsViewModel(Application application, FragmentManager fragmentManager) {
         super(application);
         mFragmentManager = fragmentManager;
-        mShops = new MutableLiveData<>();
         mError = new MutableLiveData<>();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
 
@@ -126,7 +122,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         }
         result.getIsLoadingLiveData().observeForever(isLoading -> {
             if (result.isFinishedSuccessfully()) {
-                mShops.setValue(result.getData().getValue());
+                addShopsMarkers(result.getData().getValue());
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
@@ -137,9 +133,6 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
             }
         });
-        mMap.clear();
-        mShopsObserver = shops -> addShopsMarkers(shops);
-        mShops.observeForever(mShopsObserver);
     }
 
     private boolean hasLocationAccess() {
@@ -157,6 +150,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
 
     private void addShopsMarkers(ArrayList<Shop> shops) {
         if (shops == null) return;
+        mMap.clear();
         for (int i = 0; i < shops.size(); i++) {
             Shop shop = shops.get(i);
             LatLng shopLocation = new LatLng(shop.getLocationLat(), shop.getLocationLon());
@@ -167,7 +161,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
 
         mMap.setOnMarkerClickListener(marker -> {
             int shopIndex = (int) marker.getTag();
-            shopDialogBuild(mShops.getValue().get(shopIndex));
+            shopDialogBuild(shops.get(shopIndex));
             return true;
         });
     }
@@ -215,13 +209,6 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
 
     public void showError(View view, ErrorHandler.Error error) {
         ErrorHandler.getInstance().showError(view, error);
-    }
-
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        mShops.removeObserver(mShopsObserver);
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
