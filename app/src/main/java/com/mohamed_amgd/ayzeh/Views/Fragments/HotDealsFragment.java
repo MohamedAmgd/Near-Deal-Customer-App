@@ -1,23 +1,20 @@
 package com.mohamed_amgd.ayzeh.Views.Fragments;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 
-import com.mohamed_amgd.ayzeh.ViewModels.HotDealsViewModel;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.mohamed_amgd.ayzeh.R;
-import com.mohamed_amgd.ayzeh.ViewModels.SearchViewModel;
+import com.mohamed_amgd.ayzeh.ViewModels.HotDealsViewModel;
 
 public class HotDealsFragment extends Fragment {
 
@@ -67,6 +64,10 @@ public class HotDealsFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
+        });
+
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
         });
     }
 }

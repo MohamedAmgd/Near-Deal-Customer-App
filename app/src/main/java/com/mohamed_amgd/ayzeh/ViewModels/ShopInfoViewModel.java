@@ -17,6 +17,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,8 +36,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class ShopInfoViewModel extends AndroidViewModel {
-    private String mShopId;
     public MutableLiveData<ErrorHandler.Error> mError;
+    private String mShopId;
     private MutableLiveData<Shop> mShopLiveData;
     private FragmentManager mFragmentManager;
     private MutableLiveData<ArrayList<Product>> mProductsLiveData;
@@ -103,7 +104,7 @@ public class ShopInfoViewModel extends AndroidViewModel {
     public void getDirectionsAction(View view) {
         double lat = mShopLiveData.getValue().getLocationLat();
         double lon = mShopLiveData.getValue().getLocationLon();
-        String uri = String.format(Locale.ENGLISH,"google.navigation:q=%f,%f",lat,lon);
+        String uri = String.format(Locale.ENGLISH, "google.navigation:q=%f,%f", lat, lon);
         Uri mapIntentUri = Uri.parse(uri);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
@@ -121,6 +122,7 @@ public class ShopInfoViewModel extends AndroidViewModel {
         productsRecycler.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         productsRecycler.setLayoutManager(layoutManager);
+        productsRecycler.addItemDecoration(new DividerItemDecoration(productsRecycler.getContext(), DividerItemDecoration.VERTICAL));
 
         mProductsObserver = products -> {
             mProducts.clear();

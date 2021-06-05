@@ -1,5 +1,6 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
+import android.Manifest;
 import android.app.Application;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +37,8 @@ import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class SearchViewModel extends AndroidViewModel {
 
@@ -60,7 +64,12 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
     private void initProductsLiveData() {
-        RepositoryResult<SearchResult> result = Repository.getInstance().searchProducts(mQuery, mFilter);
+        RepositoryResult<SearchResult> result;
+        if (hasLocationAccess()) {
+            result = new RepositoryResult<>(new MutableLiveData<>());
+        } else {
+            result = Repository.getInstance().searchProducts(mQuery, mFilter);
+        }
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 SearchResult searchResult = result.getData().getValue();
@@ -190,6 +199,8 @@ public class SearchViewModel extends AndroidViewModel {
         productsRecycler.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         productsRecycler.setLayoutManager(layoutManager);
+        productsRecycler.addItemDecoration(new DividerItemDecoration(productsRecycler.getContext(), DividerItemDecoration.VERTICAL));
+
 
         mProductsObserver = products -> {
             mResults.clear();
@@ -212,6 +223,12 @@ public class SearchViewModel extends AndroidViewModel {
             transaction.addToBackStack(ProductFragment.CLASS_NAME);
             transaction.commit();
         };
+    }
+
+    private boolean hasLocationAccess() {
+        return EasyPermissions.hasPermissions(getApplication()
+                , Manifest.permission.ACCESS_COARSE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     public void showError(View view, ErrorHandler.Error error) {

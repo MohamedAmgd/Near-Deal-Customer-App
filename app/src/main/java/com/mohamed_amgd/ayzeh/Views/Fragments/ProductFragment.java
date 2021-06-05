@@ -39,8 +39,8 @@ public class ProductFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         ProductViewModel.Factory factory = new ProductViewModel.Factory(getActivity().getApplication()
                 , getFragmentManager(), bundle);
@@ -61,6 +61,8 @@ public class ProductFragment extends Fragment {
             mViewModel.initProductPrice(mProductPrice);
         });
         mViewModel.initOffersRecycler(mOffersRecycler);
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
+        });
     }
-
 }
