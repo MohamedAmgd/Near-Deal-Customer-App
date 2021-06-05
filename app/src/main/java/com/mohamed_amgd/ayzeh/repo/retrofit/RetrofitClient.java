@@ -9,7 +9,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mohamed_amgd.ayzeh.Models.Offer;
 import com.mohamed_amgd.ayzeh.Models.Product;
+import com.mohamed_amgd.ayzeh.Models.SearchResult;
 import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
@@ -276,6 +278,172 @@ public class RetrofitClient {
             }
         });
         return result;
+    }
+
+    public RepositoryResult<ArrayList<Offer>> getProductOffers(String productId) {
+        RepositoryResult<ArrayList<Offer>> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.getProductOffers(productId);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                ArrayList<Offer> offers = convertResponseToOfferArrayList(response);
+                int errorCode = handleSuccess(offers, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(offers);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    public RepositoryResult<SearchResult> getHotDeals(double lat, double lon, int range) {
+        RepositoryResult<SearchResult> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.getHotDeals(lat, lon, range);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                SearchResult searchResult = convertResponseToProductSearchResult(response);
+                int errorCode = handleSuccess(searchResult, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(searchResult);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    public RepositoryResult<SearchResult> getHotDeals(int range) {
+        RepositoryResult<SearchResult> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.getHotDeals(range);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                SearchResult searchResult = convertResponseToProductSearchResult(response);
+                int errorCode = handleSuccess(searchResult, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(searchResult);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    public RepositoryResult<SearchResult> searchNearbyProductsByName(double lat
+            , double lon
+            , int range
+            , String name
+            , String category
+            , String priceMax
+            , String priceMin) {
+        RepositoryResult<SearchResult> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.searchNearbyProductsByName(lat, lon, range, name, category, priceMax, priceMin);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                SearchResult searchResult = convertResponseToProductSearchResult(response);
+                int errorCode = handleSuccess(searchResult, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(searchResult);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    public RepositoryResult<SearchResult> searchNearbyProductsByName(int range
+            , String name
+            , String category
+            , String priceMax
+            , String priceMin) {
+        RepositoryResult<SearchResult> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.searchNearbyProductsByName(range, name, category, priceMax, priceMin);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                SearchResult searchResult = convertResponseToProductSearchResult(response);
+                int errorCode = handleSuccess(searchResult, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(searchResult);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    private SearchResult convertResponseToProductSearchResult(Response<JsonObject> response) {
+        if (response.body() != null) {
+            ArrayList<Product> products = new ArrayList<>();
+            JsonObject message = response.body().get("message").getAsJsonObject();
+            JsonArray productsElements = message.get("products").getAsJsonArray();
+            for (JsonElement element :
+                    productsElements) {
+                products.add(convertJsonObjectToProduct(element.getAsJsonObject()));
+            }
+            float minItemPrice = message.get("min_item_price").getAsFloat();
+            float maxItemPrice = message.get("max_item_price").getAsFloat();
+            return new SearchResult(products, minItemPrice, maxItemPrice);
+        }
+        return null;
+    }
+
+    private ArrayList<Offer> convertResponseToOfferArrayList(Response<JsonObject> response) {
+        if (response.body() != null) {
+            ArrayList<Offer> offers = new ArrayList<>();
+            JsonArray elements = response.body().getAsJsonArray("message");
+            for (JsonElement element :
+                    elements) {
+                Offer offer = convertJsonObjectToOffer(element.getAsJsonObject());
+                offers.add(offer);
+            }
+            return offers;
+        }
+        return null;
+    }
+
+    private Offer convertJsonObjectToOffer(JsonObject jsonObject) {
+        String id = jsonObject.get("id").getAsString();
+        String shop_id = jsonObject.get("shop_id").getAsString();
+        String product_id = jsonObject.get("product_id").getAsString();
+        int amount = jsonObject.get("amount").getAsInt();
+        String price = jsonObject.get("price").getAsString();
+        //String shop_name = jsonObject.get("shop_name").getAsString();
+        //String shop_image_url = jsonObject.get("shop_image_url").getAsString();
+        return new Offer(id, product_id, shop_id, price, amount);
     }
 
     private Product convertResponseToProduct(Response<JsonObject> response) {

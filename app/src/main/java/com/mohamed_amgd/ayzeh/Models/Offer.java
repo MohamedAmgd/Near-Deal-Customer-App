@@ -7,16 +7,24 @@ public class Offer {
     private String shopName;
     private String shopImageUrl;
     private String price;
-    private int count;
+    private int amount;
 
-    public Offer(String id, String productId, String shopId, String shopName, String shopImageUrl, String price, int count) {
+    public Offer(String id, String productId, String shopId, String shopName, String shopImageUrl, String price, int amount) {
         this.id = id;
         this.productId = productId;
         this.shopId = shopId;
         this.shopName = shopName;
         this.shopImageUrl = shopImageUrl;
         this.price = price;
-        this.count = count;
+        this.amount = amount;
+    }
+
+    public Offer(String id, String productId, String shopId, String price, int amount) {
+        this.id = id;
+        this.productId = productId;
+        this.shopId = shopId;
+        this.price = price;
+        this.amount = amount;
     }
 
     public String getId() {
@@ -67,11 +75,11 @@ public class Offer {
         this.price = price;
     }
 
-    public int getCount() {
-        return count;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

@@ -36,22 +36,44 @@ public class Repository {
     }
 
     public RepositoryResult<SearchResult> getHotDeals() {
-        // TODO: 5/8/2021 use retrofit client to get hot deals from api
-        return new RepositoryResult<>(new MutableLiveData<>());
+        return mRetrofitClient.getHotDeals(2);
     }
 
     public RepositoryResult<ArrayList<Offer>> getProductOffers(String productId) {
-        // TODO: 5/8/2021 use retrofit client to get offers of a product using its id from api
-        return new RepositoryResult<>(new MutableLiveData<>());
+        return mRetrofitClient.getProductOffers(productId);
     }
 
     public RepositoryResult<Product> getProduct(String productId) {
         return mRetrofitClient.getProduct(productId);
     }
 
+    public RepositoryResult<SearchResult> searchProducts(double lat, double lon, String query, Filter filter) {
+        String category = null, priceMax = null, priceMin = null;
+        if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
+            category = filter.getCategoryName();
+        }
+        if (filter.getPriceMax() != Filter.NO_PRICE) {
+            priceMax = filter.getPriceMax() + "";
+        }
+        if (filter.getPriceMax() != Filter.NO_PRICE) {
+            priceMin = filter.getPriceMax() + "";
+        }
+
+        return mRetrofitClient.searchNearbyProductsByName(lat, lon, 5, query, category, priceMax, priceMin);
+    }
+
     public RepositoryResult<SearchResult> searchProducts(String query, Filter filter) {
-        // TODO: 6/5/2021 use retrofit client to get products search result of query with filter
-        return new RepositoryResult<>(new MutableLiveData<>());
+        String category = null, priceMax = null, priceMin = null;
+        if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
+            category = filter.getCategoryName();
+        }
+        if (filter.getPriceMax() != Filter.NO_PRICE) {
+            priceMax = filter.getPriceMax() + "";
+        }
+        if (filter.getPriceMax() != Filter.NO_PRICE) {
+            priceMin = filter.getPriceMax() + "";
+        }
+        return mRetrofitClient.searchNearbyProductsByName(5, query, category, priceMax, priceMin);
     }
 
     public RepositoryResult<Shop> getShopById(String shopId) {

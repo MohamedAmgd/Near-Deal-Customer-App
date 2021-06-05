@@ -7,7 +7,6 @@ import java.util.HashMap;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -25,9 +24,6 @@ public interface Api {
 
     @PUT("user_data")
     Call<JsonObject> updateUserData(@Query("uid") String uid, @Body() HashMap<String, Object> userData);
-
-    @DELETE("user_data")
-    Call<JsonObject> deleteUserData(@Query("uid") String uid);
 
     @Multipart
     @POST("upload_image")
@@ -54,5 +50,33 @@ public interface Api {
 
     @GET("products")
     Call<JsonObject> getShopProducts(@Query("shop_id") String shopId);
+
+    @GET("offers")
+    Call<JsonObject> getProductOffers(@Query("product_id") String shopId);
+
+    @GET("hot_deals")
+    Call<JsonObject> getHotDeals(@Query("lat") double lat
+            , @Query("lon") double lan
+            , @Query("range") int range);
+
+    @GET("hot_deals")
+    Call<JsonObject> getHotDeals(@Query("range") int range);
+
+    @GET("search_nearby_products_by_name")
+    Call<JsonObject> searchNearbyProductsByName(@Query("lat") double lat
+            , @Query("lon") double lan
+            , @Query("range") int range
+            , @Query("input_name") String name
+            , @Query("category") String category
+            , @Query("price_max") String price_max
+            , @Query("price_min") String price_min);
+
+    @GET("search_nearby_products_by_name")
+    Call<JsonObject> searchNearbyProductsByName(@Query("range") int range
+            , @Query("input_name") String name
+            , @Query("category") String category
+            , @Query("price_max") String price_max
+            , @Query("price_min") String price_min);
+
 
 }
