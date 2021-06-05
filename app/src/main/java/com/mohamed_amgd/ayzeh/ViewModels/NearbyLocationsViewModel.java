@@ -1,11 +1,9 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -26,9 +24,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,69 +34,38 @@ import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ShopInfoFragment;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
+import com.mohamed_amgd.ayzeh.repo.LocationUtil;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
-import com.mohamed_amgd.ayzeh.repo.Util;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import pub.devrel.easypermissions.EasyPermissions;
-
 public class NearbyLocationsViewModel extends AndroidViewModel {
     public MutableLiveData<ErrorHandler.Error> mError;
     private FragmentManager mFragmentManager;
-    private FusedLocationProviderClient mFusedLocationClient;
     private WeakReference<Context> mMapContextWeakReference;
     private GoogleMap mMap;
-    private double userLat;
-    private double userLon;
+    MutableLiveData<LocationUtil.UserLocation> userLocationLiveData;
 
     @SuppressLint("MissingPermission")
     public NearbyLocationsViewModel(Application application, FragmentManager fragmentManager) {
         super(application);
         mFragmentManager = fragmentManager;
         mError = new MutableLiveData<>();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
+        FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
+        LocationUtil locationUtil = LocationUtil.getInstance(mFusedLocationClient);
+        userLocationLiveData = locationUtil.getLocationLiveData();
 
-        if (hasLocationAccess()) {
-            askForLocationUpdate();
-            mFusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-                if (location != null) {
-                    updateMapData(location);
-                }
-            });
-        }
+        userLocationLiveData.observeForever(userLocation -> {
+            updateMapData(userLocation);
+        });
+
     }
 
-    private void updateMapData(Location location) {
-        boolean userLocationChanged = Util.getInstance()
-                .userLocationChanged(userLat, userLon, location.getLatitude(), location.getLongitude());
-        if (userLocationChanged) {
-            userLat = location.getLatitude();
-            userLon = location.getLongitude();
-            focusMapOnUserLocation();
-            initShopsLiveData(null);
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private void askForLocationUpdate() {
-        LocationRequest mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(60000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        LocationCallback mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                for (Location location : locationResult.getLocations()) {
-                    if (location != null) {
-                        updateMapData(location);
-                    }
-                }
-            }
-        };
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
+    private void updateMapData(LocationUtil.UserLocation location) {
+        focusMapOnUserLocation(location);
+        initShopsLiveData(null, location);
     }
 
     public void onMapReady(GoogleMap googleMap, Context context) {
@@ -110,15 +74,15 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     }
 
     public void searchViewAction(String query) {
-        initShopsLiveData(query);
+        initShopsLiveData(query, userLocationLiveData.getValue());
     }
 
-    private void initShopsLiveData(String query) {
+    private void initShopsLiveData(String query, LocationUtil.UserLocation location) {
         RepositoryResult<ArrayList<Shop>> result;
         if (query == null) {
-            result = Repository.getInstance().getNearbyShops(userLat, userLon);
+            result = Repository.getInstance().getNearbyShops(location);
         } else {
-            result = Repository.getInstance().getNearbyShops(userLat, userLon, query);
+            result = Repository.getInstance().getNearbyShops(location, query);
         }
         result.getIsLoadingLiveData().observeForever(isLoading -> {
             if (result.isFinishedSuccessfully()) {
@@ -126,7 +90,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
-                    initShopsLiveData(query);
+                    initShopsLiveData(query, location);
                 }));
             } else {
                 // TODO: 6/2/2021 show loading ui
@@ -135,16 +99,10 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         });
     }
 
-    private boolean hasLocationAccess() {
-        return EasyPermissions.hasPermissions(getApplication()
-                , Manifest.permission.ACCESS_COARSE_LOCATION
-                , Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
     @SuppressLint("MissingPermission")
-    private void focusMapOnUserLocation() {
+    private void focusMapOnUserLocation(LocationUtil.UserLocation location) {
         mMap.setMyLocationEnabled(true);
-        LatLng userLocation = new LatLng(userLat, userLon);
+        LatLng userLocation = new LatLng(location.getLat(), location.getLon());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15.0f));
     }
 

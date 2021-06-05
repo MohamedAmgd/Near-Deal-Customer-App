@@ -84,12 +84,12 @@ public class Repository {
         return mRetrofitClient.getShopProducts(shopId);
     }
 
-    public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
-        return mRetrofitClient.getNearbyShops(userLat, userLon, 50);
+    public RepositoryResult<ArrayList<Shop>> getNearbyShops(LocationUtil.UserLocation location) {
+        return mRetrofitClient.getNearbyShops(location.getLat(), location.getLon(), 50);
     }
 
-    public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
-        return mRetrofitClient.searchNearbyShopsByName(userLat, userLon, 50, query);
+    public RepositoryResult<ArrayList<Shop>> getNearbyShops(LocationUtil.UserLocation location, String query) {
+        return mRetrofitClient.searchNearbyShopsByName(location.getLat(), location.getLon(), 50, query);
     }
 
     public RepositoryResult<SearchResult> getHotDealsSearchResult(String query, Filter filter) {
