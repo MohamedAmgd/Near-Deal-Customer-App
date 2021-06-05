@@ -61,6 +61,10 @@ public class ExploreFragment extends Fragment {
             mViewModel.seeAllAction();
         });
 
+        mViewModel.mError.observe(getViewLifecycleOwner(), error -> {
+            mViewModel.showError(view, error);
+        });
+
         mViewModel.initCategoriesRecycler(mCategoriesRecycler);
         mViewModel.initHotDealsRecycler(mHotDealsRecycler);
     }
