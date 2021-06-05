@@ -45,28 +45,28 @@ public class Repository {
         return new RepositoryResult<>(new MutableLiveData<>());
     }
 
+    public RepositoryResult<Product> getProduct(String productId) {
+        return mRetrofitClient.getProduct(productId);
+    }
+
     public RepositoryResult<SearchResult> searchProducts(String query, Filter filter) {
-        // TODO: 5/9/2021 use retrofit client to get search result of query with filter
+        // TODO: 6/5/2021 use retrofit client to get products search result of query with filter
         return new RepositoryResult<>(new MutableLiveData<>());
     }
 
     public RepositoryResult<Shop> getShopById(String shopId) {
-        // TODO: 5/12/2021 use retrofit client to get shop details using its shopId
         return mRetrofitClient.getShop(shopId);
     }
 
     public RepositoryResult<ArrayList<Product>> getShopProductsByShopId(String shopId) {
-        // TODO: 5/12/2021 use retrofit client to get shop's products using shopId
-        return new RepositoryResult<>(new MutableLiveData<>());
+        return mRetrofitClient.getShopProducts(shopId);
     }
 
     public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon) {
-        // TODO: 5/15/2021 use retrofit to get nearby shops to user's location by userLat,userLon
         return mRetrofitClient.getNearbyShops(userLat, userLon, 50);
     }
 
     public RepositoryResult<ArrayList<Shop>> getNearbyShops(double userLat, double userLon, String query) {
-        // TODO: 5/18/2021 use retrofit to get nearby shops to user's location by userLat,userLon and query
         return mRetrofitClient.searchNearbyShopsByName(userLat, userLon, 50, query);
     }
 

@@ -133,10 +133,11 @@ public class ShopInfoViewModel extends AndroidViewModel {
 
     private ProductsRecyclerAdapter.OnClickListener getProductOnClickListener() {
         return position -> {
-            Product product = mProductsLiveData.getValue().get(position);
+            String productId = mProductsLiveData.getValue().get(position).getId();
             Bundle bundle = new Bundle();
-            bundle.putSerializable(ProductFragment.PRODUCT_BUNDLE_TAG, product);
+            bundle.putSerializable(ProductFragment.PRODUCT_ID_TAG, productId);
             ProductFragment productFragment = new ProductFragment();
+            productFragment.setArguments(bundle);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             transaction.replace(R.id.fragment_layout, productFragment);
             transaction.addToBackStack(ProductFragment.CLASS_NAME);

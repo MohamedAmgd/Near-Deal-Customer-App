@@ -17,7 +17,7 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.ViewModels.ProductViewModel;
 
 public class ProductFragment extends Fragment {
-    public static final String PRODUCT_BUNDLE_TAG = "product";
+    public static final String PRODUCT_ID_TAG = "product_id";
     public static final String CLASS_NAME = "ProductFragment";
 
     private ProductViewModel mViewModel;
@@ -45,7 +45,7 @@ public class ProductFragment extends Fragment {
         ProductViewModel.Factory factory = new ProductViewModel.Factory(getActivity().getApplication()
                 , getFragmentManager(), bundle);
 
-        mViewModel = new ViewModelProvider(this,factory).get(ProductViewModel.class);
+        mViewModel = new ViewModelProvider(this, factory).get(ProductViewModel.class);
         mProductImage = getActivity().findViewById(R.id.product_image);
         mProductName = getActivity().findViewById(R.id.product_name);
         mProductBrand = getActivity().findViewById(R.id.product_brand);
@@ -53,11 +53,13 @@ public class ProductFragment extends Fragment {
         mProductPrice = getActivity().findViewById(R.id.product_price);
         mOffersRecycler = getActivity().findViewById(R.id.offers_recycler);
 
-        mViewModel.initProductImage(mProductImage);
-        mViewModel.initProductName(mProductName);
-        mViewModel.initProductBrand(mProductBrand);
-        mViewModel.initProductDescription(mProductDescription);
-        mViewModel.initProductPrice(mProductPrice);
+        mViewModel.mProductLiveData.observe(getViewLifecycleOwner(), product -> {
+            mViewModel.initProductImage(mProductImage);
+            mViewModel.initProductName(mProductName);
+            mViewModel.initProductBrand(mProductBrand);
+            mViewModel.initProductDescription(mProductDescription);
+            mViewModel.initProductPrice(mProductPrice);
+        });
         mViewModel.initOffersRecycler(mOffersRecycler);
     }
 

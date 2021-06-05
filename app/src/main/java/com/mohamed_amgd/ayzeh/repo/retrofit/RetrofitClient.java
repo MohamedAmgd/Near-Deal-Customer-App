@@ -9,6 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mohamed_amgd.ayzeh.Models.Product;
 import com.mohamed_amgd.ayzeh.Models.Shop;
 import com.mohamed_amgd.ayzeh.Models.User;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
@@ -229,6 +230,85 @@ public class RetrofitClient {
             }
         });
         return result;
+    }
+
+    public RepositoryResult<ArrayList<Product>> getShopProducts(String shopId) {
+        RepositoryResult<ArrayList<Product>> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.getShopProducts(shopId);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                ArrayList<Product> products = convertResponseToProductArrayList(response);
+                int errorCode = handleSuccess(products, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(products);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    public RepositoryResult<Product> getProduct(String id) {
+        RepositoryResult<Product> result = new RepositoryResult<>(new MutableLiveData<>());
+        Call<JsonObject> request = mApi.getProduct(id);
+        request.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                Product product = convertResponseToProduct(response);
+                int errorCode = handleSuccess(product, response);
+                if (errorCode == ErrorHandler.NO_ERROR) {
+                    result.setFinishedSuccessfully(product);
+                } else {
+                    result.setFinishedWithError(errorCode);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                result.setFinishedWithError(handleFailure(t));
+            }
+        });
+        return result;
+    }
+
+    private Product convertResponseToProduct(Response<JsonObject> response) {
+        Product product = null;
+        if (response.body() != null) {
+            product = convertJsonObjectToProduct(response.body().getAsJsonObject("message"));
+        }
+        return product;
+    }
+
+    private ArrayList<Product> convertResponseToProductArrayList(Response<JsonObject> response) {
+        ArrayList<Product> products = new ArrayList<>();
+        if (response.body() != null) {
+            JsonArray elements = response.body().getAsJsonArray("message");
+            for (JsonElement element :
+                    elements) {
+                Product product = convertJsonObjectToProduct(element.getAsJsonObject());
+                products.add(product);
+            }
+        }
+        return products;
+    }
+
+    private Product convertJsonObjectToProduct(JsonObject jsonObject) {
+        String id = jsonObject.get("id").getAsString();
+        String name = jsonObject.get("name").getAsString();
+        String description = jsonObject.get("description").getAsString();
+        String brand = jsonObject.get("brand").getAsString();
+        // int amount = jsonObject.get("amount").getAsInt();
+        // String price = jsonObject.get("price").getAsString();
+        String category = jsonObject.get("category").getAsString();
+        String image_url = jsonObject.get("image_url").getAsString();
+        return new Product(id, name, category, brand, "", description, image_url);
     }
 
     private Shop convertResponseToShop(Response<JsonObject> response, double userLat, double userLon) {

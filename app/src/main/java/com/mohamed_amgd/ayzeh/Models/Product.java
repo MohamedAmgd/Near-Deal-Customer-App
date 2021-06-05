@@ -10,9 +10,8 @@ public class Product implements Serializable {
     private String price;
     private String description;
     private String imageUrl;
-    private String shopId;
 
-    public Product(String id, String name, String category, String brand, String price, String description, String imageUrl, String shopId) {
+    public Product(String id, String name, String category, String brand, String price, String description, String imageUrl) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -20,7 +19,6 @@ public class Product implements Serializable {
         this.price = price;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.shopId = shopId;
     }
 
     public String getId() {
@@ -79,11 +77,4 @@ public class Product implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
 }

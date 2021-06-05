@@ -47,6 +47,12 @@ public interface Api {
             , @Query("input_name") String name);
 
     @GET("shops")
-    Call<JsonObject> getShop(@Query("id") String id);
+    Call<JsonObject> getShop(@Query("shop_id") String id);
+
+    @GET("products")
+    Call<JsonObject> getProduct(@Query("product_id") String id);
+
+    @GET("products")
+    Call<JsonObject> getShopProducts(@Query("shop_id") String shopId);
 
 }

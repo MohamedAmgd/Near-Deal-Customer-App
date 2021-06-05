@@ -33,8 +33,9 @@ import java.util.ArrayList;
 
 public class ProductViewModel extends AndroidViewModel {
     public MutableLiveData<ErrorHandler.Error> mError;
+    public MutableLiveData<Product> mProductLiveData;
     private FragmentManager mFragmentManager;
-    private Product mProduct;
+    private String mProductId;
     private MutableLiveData<ArrayList<Offer>> mOffersLiveData;
     private Observer<ArrayList<Offer>> mOffersObserver;
 
@@ -42,14 +43,35 @@ public class ProductViewModel extends AndroidViewModel {
         super(application);
         mFragmentManager = fragmentManager;
         mError = new MutableLiveData<>();
-        mProduct = (Product) bundle.get(ProductFragment.PRODUCT_BUNDLE_TAG);
+        mProductLiveData = new MutableLiveData<>();
+        mProductId = (String) bundle.get(ProductFragment.PRODUCT_ID_TAG);
         mOffersLiveData = new MutableLiveData<>();
-        initOffersLiveData();
+        if (mProductId != null) {
+            initProductLiveData();
+            initOffersLiveData();
+        }
+    }
+
+    private void initProductLiveData() {
+        RepositoryResult<Product> result = Repository.getInstance().getProduct(mProductId);
+        result.getIsLoadingLiveData().observeForever(aBoolean -> {
+            if (result.isFinishedSuccessfully()) {
+                mProductLiveData.setValue(result.getData().getValue());
+            } else if (result.isFinishedWithError()) {
+                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                        , v -> {
+                    initOffersLiveData();
+                }));
+            } else {
+                // TODO: 6/2/2021 show loading ui
+                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void initOffersLiveData() {
         RepositoryResult<ArrayList<Offer>> result
-                = Repository.getInstance().getProductOffers(mProduct.getId());
+                = Repository.getInstance().getProductOffers(mProductId);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 mOffersLiveData.setValue(result.getData().getValue());
@@ -66,23 +88,23 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     public void initProductImage(ImageView productImage) {
-        Glide.with(getApplication()).load(mProduct.getImageUrl()).into(productImage);
+        Glide.with(getApplication()).load(mProductLiveData.getValue().getImageUrl()).into(productImage);
     }
 
     public void initProductName(TextView productName) {
-        productName.setText(mProduct.getName());
+        productName.setText(mProductLiveData.getValue().getName());
     }
 
     public void initProductBrand(TextView productBrand) {
-        productBrand.setText(mProduct.getBrand());
+        productBrand.setText(mProductLiveData.getValue().getBrand());
     }
 
     public void initProductDescription(TextView productDescription) {
-        productDescription.setText(mProduct.getDescription());
+        productDescription.setText(mProductLiveData.getValue().getDescription());
     }
 
     public void initProductPrice(TextView productPrice) {
-        productPrice.setText(mProduct.getPrice());
+        productPrice.setText(mProductLiveData.getValue().getPrice());
     }
 
     private OffersRecyclerAdapter.OnClickListener getOfferOnClickListener() {
@@ -106,13 +128,10 @@ public class ProductViewModel extends AndroidViewModel {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplication());
         offersRecycler.setLayoutManager(layoutManager);
 
-        mOffersObserver = new Observer<ArrayList<Offer>>() {
-            @Override
-            public void onChanged(ArrayList<Offer> offers) {
-                mOffers.clear();
-                mOffers.addAll(offers);
-                adapter.notifyDataSetChanged();
-            }
+        mOffersObserver = offers -> {
+            mOffers.clear();
+            mOffers.addAll(offers);
+            adapter.notifyDataSetChanged();
         };
         mOffersLiveData.observeForever(mOffersObserver);
         adapter.setOfferOnClickListener(getOfferOnClickListener());
