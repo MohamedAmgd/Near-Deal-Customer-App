@@ -33,6 +33,7 @@ import com.mohamed_amgd.ayzeh.Views.Adapters.ProductsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
+import com.mohamed_amgd.ayzeh.repo.LocationUtil;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
@@ -60,16 +61,19 @@ public class SearchViewModel extends AndroidViewModel {
         mMinSearchResultPrice = 0f;
         mMaxSearchResultPrice = 100f;
         mProductsLiveData = new MutableLiveData<>();
-        initProductsLiveData();
+        LocationUtil locationUtil = LocationUtil.getInstance();
+        locationUtil.getLocationLiveData().observeForever(location -> {
+            initProductsLiveData(location);
+        });
+        if (!locationUtil.hasLocationAccess()) {
+            initProductsLiveData(null);
+        }
+
     }
 
-    private void initProductsLiveData() {
-        RepositoryResult<SearchResult> result;
-        if (hasLocationAccess()) {
-            result = new RepositoryResult<>(new MutableLiveData<>());
-        } else {
-            result = Repository.getInstance().searchProducts(mQuery, mFilter);
-        }
+    private void initProductsLiveData(LocationUtil.UserLocation location) {
+        RepositoryResult<SearchResult> result
+                = Repository.getInstance().searchProducts(location, mQuery, mFilter);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 SearchResult searchResult = result.getData().getValue();
@@ -79,7 +83,7 @@ public class SearchViewModel extends AndroidViewModel {
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
-                    initProductsLiveData();
+                    initProductsLiveData(location);
                 }));
             } else {
                 // TODO: 6/2/2021 show loading ui

@@ -51,7 +51,8 @@ public class HotDealsRecyclerAdapter extends RecyclerView.Adapter<HotDealsRecycl
 
         holder.getHotDealTitleTextView().setText(hotDeal.getName());
         holder.getHotDealBrandTextView().setText(hotDeal.getBrand());
-        holder.getHotDealPriceTextView().setText(hotDeal.getPrice());
+        String price = hotDeal.getPrice() + "";
+        holder.getHotDealPriceTextView().setText(price);
 
     }
 

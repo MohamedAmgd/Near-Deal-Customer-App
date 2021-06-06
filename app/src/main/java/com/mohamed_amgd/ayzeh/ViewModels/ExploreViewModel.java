@@ -27,6 +27,7 @@ import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
+import com.mohamed_amgd.ayzeh.repo.LocationUtil;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
@@ -34,8 +35,8 @@ import java.util.ArrayList;
 
 public class ExploreViewModel extends AndroidViewModel {
 
-    public MutableLiveData<ErrorHandler.Error> mError;
     private final ArrayList<Category> categories;
+    public MutableLiveData<ErrorHandler.Error> mError;
     private FragmentManager mFragmentManager;
     private MutableLiveData<ArrayList<Product>> mHotDealsLiveData;
     private Observer<ArrayList<Product>> mHotDealsObserver;
@@ -54,11 +55,19 @@ public class ExploreViewModel extends AndroidViewModel {
 
         // init hot deals live data
         mHotDealsLiveData = new MutableLiveData<>();
-        initHotDealsLiveData();
+
+        LocationUtil locationUtil = LocationUtil.getInstance();
+        locationUtil.getLocationLiveData().observeForever(location -> {
+            initHotDealsLiveData(location);
+        });
+        if (!locationUtil.hasLocationAccess()) {
+            initHotDealsLiveData(null);
+        }
     }
 
-    private void initHotDealsLiveData() {
-        RepositoryResult<SearchResult> result = Repository.getInstance().getHotDeals();
+    private void initHotDealsLiveData(LocationUtil.UserLocation location) {
+        RepositoryResult<SearchResult> result
+                = Repository.getInstance().getHotDeals(location);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 SearchResult searchResult = result.getData().getValue();
@@ -66,7 +75,7 @@ public class ExploreViewModel extends AndroidViewModel {
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
-                    initHotDealsLiveData();
+                    initHotDealsLiveData(location);
                 }));
             } else {
                 // TODO: 6/2/2021 show loading ui
@@ -90,10 +99,10 @@ public class ExploreViewModel extends AndroidViewModel {
     public void seeAllAction() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(SearchFragment.FILTER_BUNDLE_TAG, new Filter());
-        HotDealsFragment hotDealsFragment =  new HotDealsFragment();
+        HotDealsFragment hotDealsFragment = new HotDealsFragment();
         hotDealsFragment.setArguments(bundle);
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_layout,hotDealsFragment);
+        transaction.replace(R.id.fragment_layout, hotDealsFragment);
         transaction.addToBackStack(HotDealsFragment.CLASS_NAME);
         transaction.commit();
     }

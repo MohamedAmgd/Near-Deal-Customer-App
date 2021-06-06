@@ -104,7 +104,8 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     public void initProductPrice(TextView productPrice) {
-        productPrice.setText(mProductLiveData.getValue().getPrice());
+        String price = mProductLiveData.getValue().getPrice() + "";
+        productPrice.setText(price);
     }
 
     private OffersRecyclerAdapter.OnClickListener getOfferOnClickListener() {

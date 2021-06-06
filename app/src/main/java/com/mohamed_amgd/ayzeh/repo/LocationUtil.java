@@ -16,22 +16,29 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationUtil {
     private static LocationUtil mInstance;
-    private MutableLiveData<UserLocation> locationLiveData;
+    private final MutableLiveData<UserLocation> locationLiveData;
     private FusedLocationProviderClient mFusedLocationClient;
 
 
-    private LocationUtil(FusedLocationProviderClient fusedLocationClient) {
+    private LocationUtil() {
         locationLiveData = new MutableLiveData<>();
-        mFusedLocationClient = fusedLocationClient;
-        askForLocationUpdate();
-        getLastLocation();
+        if (mFusedLocationClient != null) {
+            askForLocationUpdate();
+            getLastLocation();
+        }
     }
 
-    public static LocationUtil getInstance(FusedLocationProviderClient fusedLocationClient) {
+    public static LocationUtil getInstance() {
         if (mInstance == null) {
-            mInstance = new LocationUtil(fusedLocationClient);
+            mInstance = new LocationUtil();
         }
         return mInstance;
+    }
+
+    public void setFusedLocationClient(FusedLocationProviderClient mFusedLocationClient) {
+        this.mFusedLocationClient = mFusedLocationClient;
+        askForLocationUpdate();
+        getLastLocation();
     }
 
     public MutableLiveData<UserLocation> getLocationLiveData() {

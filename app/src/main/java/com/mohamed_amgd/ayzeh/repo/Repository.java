@@ -35,8 +35,13 @@ public class Repository {
         return mInstance;
     }
 
-    public RepositoryResult<SearchResult> getHotDeals() {
-        return mRetrofitClient.getHotDeals(2);
+    public RepositoryResult<SearchResult> getHotDeals(LocationUtil.UserLocation location) {
+        int range = 2;
+        if (location == null) {
+            return mRetrofitClient.getHotDeals(range);
+        } else {
+            return mRetrofitClient.getHotDeals(location.getLat(), location.getLon(), range);
+        }
     }
 
     public RepositoryResult<ArrayList<Offer>> getProductOffers(String productId) {
@@ -47,7 +52,7 @@ public class Repository {
         return mRetrofitClient.getProduct(productId);
     }
 
-    public RepositoryResult<SearchResult> searchProducts(double lat, double lon, String query, Filter filter) {
+    public RepositoryResult<SearchResult> searchProducts(LocationUtil.UserLocation location, String query, Filter filter) {
         String category = null, priceMax = null, priceMin = null;
         if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
             category = filter.getCategoryName();
@@ -58,8 +63,11 @@ public class Repository {
         if (filter.getPriceMax() != Filter.NO_PRICE) {
             priceMin = filter.getPriceMax() + "";
         }
-
-        return mRetrofitClient.searchNearbyProductsByName(lat, lon, 5, query, category, priceMax, priceMin);
+        if (location != null) {
+            return mRetrofitClient.searchNearbyProductsByName(location.getLat(), location.getLon(), 5, query, category, priceMax, priceMin);
+        } else {
+            return mRetrofitClient.searchNearbyProductsByName(5, query, category, priceMax, priceMin);
+        }
     }
 
     public RepositoryResult<SearchResult> searchProducts(String query, Filter filter) {
@@ -92,9 +100,22 @@ public class Repository {
         return mRetrofitClient.searchNearbyShopsByName(location.getLat(), location.getLon(), 50, query);
     }
 
-    public RepositoryResult<SearchResult> getHotDealsSearchResult(String query, Filter filter) {
-        // TODO: 5/18/2021 use retrofit client to get hot deals search result of query with filter
-        return new RepositoryResult<>(new MutableLiveData<>());
+    public RepositoryResult<SearchResult> getHotDealsSearchResult(LocationUtil.UserLocation location, String query, Filter filter) {
+        String category = null, priceMax = null, priceMin = null;
+        if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
+            category = filter.getCategoryName();
+        }
+        if (filter.getPriceMax() != Filter.NO_PRICE) {
+            priceMax = filter.getPriceMax() + "";
+        }
+        if (filter.getPriceMax() != Filter.NO_PRICE) {
+            priceMin = filter.getPriceMax() + "";
+        }
+        if (location != null) {
+            return mRetrofitClient.getHotDeals(location.getLat(), location.getLon(), 5, query, category, priceMax, priceMin);
+        } else {
+            return mRetrofitClient.getHotDeals(5, query, category, priceMax, priceMin);
+        }
     }
 
     public RepositoryResult<User> getUser() {

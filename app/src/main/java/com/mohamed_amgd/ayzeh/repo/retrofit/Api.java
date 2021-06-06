@@ -55,12 +55,28 @@ public interface Api {
     Call<JsonObject> getProductOffers(@Query("product_id") String shopId);
 
     @GET("hot_deals")
+    Call<JsonObject> getHotDeals(@Query("range") int range);
+
+    @GET("hot_deals")
     Call<JsonObject> getHotDeals(@Query("lat") double lat
             , @Query("lon") double lan
             , @Query("range") int range);
 
     @GET("hot_deals")
-    Call<JsonObject> getHotDeals(@Query("range") int range);
+    Call<JsonObject> getHotDeals(@Query("range") int range
+            , @Query("input_name") String name
+            , @Query("category") String category
+            , @Query("price_max") String price_max
+            , @Query("price_min") String price_min);
+
+    @GET("hot_deals")
+    Call<JsonObject> getHotDeals(@Query("lat") double lat
+            , @Query("lon") double lon
+            , @Query("range") int range
+            , @Query("input_name") String name
+            , @Query("category") String category
+            , @Query("price_max") String price_max
+            , @Query("price_min") String price_min);
 
     @GET("search_nearby_products_by_name")
     Call<JsonObject> searchNearbyProductsByName(@Query("lat") double lat

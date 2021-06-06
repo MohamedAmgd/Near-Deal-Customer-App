@@ -46,7 +46,8 @@ public class ProductsRecyclerAdapter extends RecyclerView.Adapter<ProductsRecycl
         Glide.with(mContext).load(product.getImageUrl()).into(holder.getProductItemImage());
         holder.getProductItemName().setText(product.getName());
         holder.getProductItemBrand().setText(product.getBrand());
-        holder.getProductItemPrice().setText(product.getPrice());
+        String price = product.getPrice() + "";
+        holder.getProductItemPrice().setText(price);
     }
 
     @Override

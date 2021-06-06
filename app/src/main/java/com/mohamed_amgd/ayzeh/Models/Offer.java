@@ -6,10 +6,10 @@ public class Offer {
     private String shopId;
     private String shopName;
     private String shopImageUrl;
-    private String price;
+    private float price;
     private int amount;
 
-    public Offer(String id, String productId, String shopId, String shopName, String shopImageUrl, String price, int amount) {
+    public Offer(String id, String productId, String shopId, String shopName, String shopImageUrl, float price, int amount) {
         this.id = id;
         this.productId = productId;
         this.shopId = shopId;
@@ -19,13 +19,6 @@ public class Offer {
         this.amount = amount;
     }
 
-    public Offer(String id, String productId, String shopId, String price, int amount) {
-        this.id = id;
-        this.productId = productId;
-        this.shopId = shopId;
-        this.price = price;
-        this.amount = amount;
-    }
 
     public String getId() {
         return id;
@@ -67,11 +60,11 @@ public class Offer {
         this.shopImageUrl = shopImageUrl;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 

@@ -7,16 +7,18 @@ public class Product implements Serializable {
     private String name;
     private String category;
     private String brand;
-    private String price;
+    private float price;
+    private int amount;
     private String description;
     private String imageUrl;
 
-    public Product(String id, String name, String category, String brand, String price, String description, String imageUrl) {
+    public Product(String id, String name, String category, String brand, float price, int amount, String description, String imageUrl) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.brand = brand;
         this.price = price;
+        this.amount = amount;
         this.description = description;
         this.imageUrl = imageUrl;
     }
@@ -53,12 +55,20 @@ public class Product implements Serializable {
         this.brand = brand;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public String getDescription() {

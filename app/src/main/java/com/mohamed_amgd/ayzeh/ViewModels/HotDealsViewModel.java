@@ -31,6 +31,7 @@ import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
+import com.mohamed_amgd.ayzeh.repo.LocationUtil;
 import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
@@ -38,8 +39,8 @@ import java.util.ArrayList;
 
 public class HotDealsViewModel extends AndroidViewModel {
 
-    private FragmentManager mFragmentManager;
     public MutableLiveData<ErrorHandler.Error> mError;
+    private FragmentManager mFragmentManager;
     private String mQuery;
     private Filter mFilter;
     private MutableLiveData<ArrayList<Product>> mHotDealsLiveData;
@@ -54,11 +55,18 @@ public class HotDealsViewModel extends AndroidViewModel {
         mQuery = bundle.getString(HotDealsFragment.QUERY_BUNDLE_TAG);
         mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(HotDealsFragment.FILTER_BUNDLE_TAG));
         mHotDealsLiveData = new MutableLiveData<>();
-        initHotDealsLiveData();
+        LocationUtil locationUtil = LocationUtil.getInstance();
+        locationUtil.getLocationLiveData().observeForever(location -> {
+            initHotDealsLiveData(location);
+        });
+        if (!locationUtil.hasLocationAccess()) {
+            initHotDealsLiveData(null);
+        }
     }
 
-    private void initHotDealsLiveData() {
-        RepositoryResult<SearchResult> result = Repository.getInstance().getHotDealsSearchResult(mQuery, mFilter);
+    private void initHotDealsLiveData(LocationUtil.UserLocation location) {
+        RepositoryResult<SearchResult> result
+                = Repository.getInstance().getHotDealsSearchResult(location, mQuery, mFilter);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 SearchResult searchResult = result.getData().getValue();
@@ -68,7 +76,7 @@ public class HotDealsViewModel extends AndroidViewModel {
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
-                    initHotDealsLiveData();
+                    initHotDealsLiveData(location);
                 }));
             } else {
                 // TODO: 6/2/2021 show loading ui

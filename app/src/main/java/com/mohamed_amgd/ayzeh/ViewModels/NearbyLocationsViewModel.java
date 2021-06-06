@@ -23,8 +23,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,21 +44,15 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     private FragmentManager mFragmentManager;
     private WeakReference<Context> mMapContextWeakReference;
     private GoogleMap mMap;
-    MutableLiveData<LocationUtil.UserLocation> userLocationLiveData;
+    MutableLiveData<LocationUtil.UserLocation> mUserLocationLiveData;
 
     @SuppressLint("MissingPermission")
     public NearbyLocationsViewModel(Application application, FragmentManager fragmentManager) {
         super(application);
         mFragmentManager = fragmentManager;
         mError = new MutableLiveData<>();
-        FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
-        LocationUtil locationUtil = LocationUtil.getInstance(mFusedLocationClient);
-        userLocationLiveData = locationUtil.getLocationLiveData();
-
-        userLocationLiveData.observeForever(userLocation -> {
-            updateMapData(userLocation);
-        });
-
+        LocationUtil locationUtil = LocationUtil.getInstance();
+        mUserLocationLiveData = locationUtil.getLocationLiveData();
     }
 
     private void updateMapData(LocationUtil.UserLocation location) {
@@ -71,10 +63,13 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
     public void onMapReady(GoogleMap googleMap, Context context) {
         mMap = googleMap;
         mMapContextWeakReference = new WeakReference<>(context);
+        mUserLocationLiveData.observeForever(userLocation -> {
+            updateMapData(userLocation);
+        });
     }
 
     public void searchViewAction(String query) {
-        initShopsLiveData(query, userLocationLiveData.getValue());
+        initShopsLiveData(query, mUserLocationLiveData.getValue());
     }
 
     private void initShopsLiveData(String query, LocationUtil.UserLocation location) {
