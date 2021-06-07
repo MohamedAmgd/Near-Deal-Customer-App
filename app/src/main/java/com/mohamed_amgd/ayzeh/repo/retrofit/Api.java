@@ -62,15 +62,15 @@ public interface Api {
             , @Query("lon") double lan
             , @Query("range") int range);
 
-    @GET("hot_deals")
-    Call<JsonObject> getHotDeals(@Query("range") int range
+    @GET("search_hot_deals")
+    Call<JsonObject> searchHotDeals(@Query("range") int range
             , @Query("input_name") String name
             , @Query("category") String category
             , @Query("price_max") String price_max
             , @Query("price_min") String price_min);
 
-    @GET("hot_deals")
-    Call<JsonObject> getHotDeals(@Query("lat") double lat
+    @GET("search_hot_deals")
+    Call<JsonObject> searchHotDeals(@Query("lat") double lat
             , @Query("lon") double lon
             , @Query("range") int range
             , @Query("input_name") String name

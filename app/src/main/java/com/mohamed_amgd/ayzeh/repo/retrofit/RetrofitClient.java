@@ -217,7 +217,7 @@ public class RetrofitClient {
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                Shop shop = convertResponseToShop(response, 0, 0);
+                Shop shop = convertResponseToShop(response);
                 int errorCode = handleSuccess(shop, response);
                 if (errorCode == ErrorHandler.NO_ERROR) {
                     result.setFinishedSuccessfully(shop);
@@ -356,7 +356,7 @@ public class RetrofitClient {
             , String price_max
             , String price_min) {
         RepositoryResult<SearchResult> result = new RepositoryResult<>(new MutableLiveData<>());
-        Call<JsonObject> request = mApi.getHotDeals(range, name, category, price_max, price_min);
+        Call<JsonObject> request = mApi.searchHotDeals(range, name, category, price_max, price_min);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
@@ -385,7 +385,7 @@ public class RetrofitClient {
             , String price_max
             , String price_min) {
         RepositoryResult<SearchResult> result = new RepositoryResult<>(new MutableLiveData<>());
-        Call<JsonObject> request = mApi.getHotDeals(lat, lon, range, name, category, price_max, price_min);
+        Call<JsonObject> request = mApi.searchHotDeals(lat, lon, range, name, category, price_max, price_min);
         request.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
@@ -465,6 +465,7 @@ public class RetrofitClient {
         if (response.body() != null) {
             ArrayList<Product> products = new ArrayList<>();
             try {
+                Log.i(TAG, "convertResponseToProductSearchResult: " + response.body());
                 JsonObject message = response.body().get("message").getAsJsonObject();
                 JsonArray productsElements = message.get("products").getAsJsonArray();
                 for (JsonElement element :
@@ -475,8 +476,8 @@ public class RetrofitClient {
                 if (products.size() != productsElements.size()) {
                     return null;
                 }
-                float minItemPrice = message.get("min_item_price").getAsFloat();
-                float maxItemPrice = message.get("max_item_price").getAsFloat();
+                float minItemPrice = message.get("min_price").getAsFloat();
+                float maxItemPrice = message.get("max_price").getAsFloat();
                 return new SearchResult(products, minItemPrice, maxItemPrice);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -562,22 +563,32 @@ public class RetrofitClient {
             String name = jsonObject.get("name").getAsString();
             String description = jsonObject.get("description").getAsString();
             String brand = jsonObject.get("brand").getAsString();
-            int amount = jsonObject.get("amount").getAsInt();
-            float price = jsonObject.get("price").getAsFloat();
+            int amount;
+            if (jsonObject.get("offer_amount") != null) {
+                amount = jsonObject.get("offer_amount").getAsInt();
+            } else {
+                amount = 0;
+            }
+            float price;
+            if (jsonObject.get("offer_price") != null) {
+                price = jsonObject.get("offer_price").getAsFloat();
+            } else {
+                price = 0;
+            }
             String category = jsonObject.get("category").getAsString();
             String image_url = jsonObject.get("image_url").getAsString();
-            return new Product(id, name, category, brand, price, amount, description, image_url);
+            return new Product(id, name, category, brand, price + "", amount, description, image_url);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private Shop convertResponseToShop(Response<JsonObject> response, double userLat, double userLon) {
+    private Shop convertResponseToShop(Response<JsonObject> response) {
         try {
             Shop shop = null;
             if (response.body() != null) {
-                shop = convertJsonObjectToShop(response.body().getAsJsonObject("message"), userLat, userLon);
+                shop = convertJsonObjectToShop(response.body().getAsJsonObject("message"), 0, 0);
             }
             return shop;
         } catch (Exception e) {

@@ -217,9 +217,10 @@ public class SearchViewModel extends AndroidViewModel {
 
     private ProductsRecyclerAdapter.OnClickListener getProductOnClickListener() {
         return position -> {
-            String productId = mProductsLiveData.getValue().get(position).getId();
+            Product product = mProductsLiveData.getValue().get(position);
             Bundle bundle = new Bundle();
-            bundle.putSerializable(ProductFragment.PRODUCT_ID_TAG, productId);
+            bundle.putString(ProductFragment.PRODUCT_ID_TAG, product.getId());
+            bundle.putSerializable(ProductFragment.PRODUCT_TAG, product);
             ProductFragment productFragment = new ProductFragment();
             productFragment.setArguments(bundle);
             FragmentTransaction transaction = mFragmentManager.beginTransaction();

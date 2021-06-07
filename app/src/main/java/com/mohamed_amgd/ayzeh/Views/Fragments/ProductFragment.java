@@ -19,6 +19,7 @@ import com.mohamed_amgd.ayzeh.ViewModels.ProductViewModel;
 public class ProductFragment extends Fragment {
     public static final String PRODUCT_ID_TAG = "product_id";
     public static final String CLASS_NAME = "ProductFragment";
+    public static final String PRODUCT_TAG = "product";
 
     private ProductViewModel mViewModel;
     private ImageView mProductImage;

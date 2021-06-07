@@ -7,12 +7,12 @@ public class Product implements Serializable {
     private String name;
     private String category;
     private String brand;
-    private float price;
+    private String price;
     private int amount;
     private String description;
     private String imageUrl;
 
-    public Product(String id, String name, String category, String brand, float price, int amount, String description, String imageUrl) {
+    public Product(String id, String name, String category, String brand, String price, int amount, String description, String imageUrl) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -55,11 +55,11 @@ public class Product implements Serializable {
         this.brand = brand;
     }
 
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
@@ -86,5 +86,4 @@ public class Product implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-
 }

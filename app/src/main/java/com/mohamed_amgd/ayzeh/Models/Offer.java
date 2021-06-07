@@ -7,6 +7,7 @@ public class Offer {
     private String shopName;
     private String shopImageUrl;
     private float price;
+    private String priceAsString;
     private int amount;
 
     public Offer(String id, String productId, String shopId, String shopName, String shopImageUrl, float price, int amount) {
@@ -74,5 +75,13 @@ public class Offer {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getPriceAsString() {
+        return priceAsString;
+    }
+
+    public void setPriceAsString(String priceAsString) {
+        this.priceAsString = priceAsString;
     }
 }

@@ -36,6 +36,7 @@ public class ProductViewModel extends AndroidViewModel {
     public MutableLiveData<Product> mProductLiveData;
     private FragmentManager mFragmentManager;
     private String mProductId;
+    private Product mProduct;
     private MutableLiveData<ArrayList<Offer>> mOffersLiveData;
     private Observer<ArrayList<Offer>> mOffersObserver;
 
@@ -45,6 +46,7 @@ public class ProductViewModel extends AndroidViewModel {
         mError = new MutableLiveData<>();
         mProductLiveData = new MutableLiveData<>();
         mProductId = (String) bundle.get(ProductFragment.PRODUCT_ID_TAG);
+        mProduct = (Product) bundle.get(ProductFragment.PRODUCT_TAG);
         mOffersLiveData = new MutableLiveData<>();
         if (mProductId != null) {
             initProductLiveData();
@@ -53,38 +55,54 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     private void initProductLiveData() {
-        RepositoryResult<Product> result = Repository.getInstance().getProduct(mProductId);
-        result.getIsLoadingLiveData().observeForever(aBoolean -> {
-            if (result.isFinishedSuccessfully()) {
-                mProductLiveData.setValue(result.getData().getValue());
-            } else if (result.isFinishedWithError()) {
-                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
-                        , v -> {
-                    initOffersLiveData();
-                }));
-            } else {
-                // TODO: 6/2/2021 show loading ui
-                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
-            }
-        });
+        if (mProduct != null) {
+            mProductLiveData.setValue(mProduct);
+        } else if (mProductId != null) {
+            RepositoryResult<Product> result = Repository.getInstance().getProduct(mProductId);
+            result.getIsLoadingLiveData().observeForever(aBoolean -> {
+                if (result.isFinishedSuccessfully()) {
+                    mProductLiveData.setValue(result.getData().getValue());
+                } else if (result.isFinishedWithError()) {
+                    mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                            , v -> {
+                        initOffersLiveData();
+                    }));
+                } else {
+                    // TODO: 6/2/2021 show loading ui
+                    Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private void initOffersLiveData() {
-        RepositoryResult<ArrayList<Offer>> result
-                = Repository.getInstance().getProductOffers(mProductId);
-        result.getIsLoadingLiveData().observeForever(aBoolean -> {
-            if (result.isFinishedSuccessfully()) {
-                mOffersLiveData.setValue(result.getData().getValue());
-            } else if (result.isFinishedWithError()) {
-                mError.setValue(new ErrorHandler.Error(result.getErrorCode()
-                        , v -> {
-                    initOffersLiveData();
-                }));
-            } else {
-                // TODO: 6/2/2021 show loading ui
-                Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
-            }
-        });
+        if (mProductId != null) {
+            RepositoryResult<ArrayList<Offer>> result
+                    = Repository.getInstance().getProductOffers(mProductId);
+            result.getIsLoadingLiveData().observeForever(aBoolean -> {
+                if (result.isFinishedSuccessfully()) {
+                    mOffersLiveData.setValue(result.getData().getValue());
+                    if (mOffersLiveData.getValue() == null) return;
+                    for (Offer offer :
+                            mOffersLiveData.getValue()) {
+                        if (offer.getAmount() != 0) {
+                            offer.setPriceAsString(offer.getPrice() + "");
+                        } else {
+                            String outOfStock = getApplication().getString(R.string.out_of_stock);
+                            offer.setPriceAsString(outOfStock);
+                        }
+                    }
+                } else if (result.isFinishedWithError()) {
+                    mError.setValue(new ErrorHandler.Error(result.getErrorCode()
+                            , v -> {
+                        initOffersLiveData();
+                    }));
+                } else {
+                    // TODO: 6/2/2021 show loading ui
+                    Toast.makeText(getApplication(), "Loading", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     public void initProductImage(ImageView productImage) {
