@@ -45,7 +45,7 @@ public class OffersRecyclerAdapter extends RecyclerView.Adapter<OffersRecyclerAd
 
         Glide.with(mContext).load(offer.getShopImageUrl()).into(holder.getOfferImage());
         holder.getOfferName().setText(offer.getShopName());
-        String price = offer.getPrice() + "";
+        String price = offer.getPriceAsString();
         holder.getOfferPrice().setText(price);
     }
 
