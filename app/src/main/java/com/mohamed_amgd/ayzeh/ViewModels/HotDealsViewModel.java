@@ -30,6 +30,7 @@ import com.mohamed_amgd.ayzeh.R;
 import com.mohamed_amgd.ayzeh.Views.Adapters.HotDealsRecyclerAdapter;
 import com.mohamed_amgd.ayzeh.Views.Fragments.HotDealsFragment;
 import com.mohamed_amgd.ayzeh.Views.Fragments.ProductFragment;
+import com.mohamed_amgd.ayzeh.Views.Fragments.SearchFragment;
 import com.mohamed_amgd.ayzeh.repo.ErrorHandler;
 import com.mohamed_amgd.ayzeh.repo.LocationUtil;
 import com.mohamed_amgd.ayzeh.repo.Repository;
@@ -53,7 +54,17 @@ public class HotDealsViewModel extends AndroidViewModel {
         mFragmentManager = fragmentManager;
         mError = new MutableLiveData<>();
         mQuery = bundle.getString(HotDealsFragment.QUERY_BUNDLE_TAG);
-        mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(HotDealsFragment.FILTER_BUNDLE_TAG));
+        mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(SearchFragment.FILTER_BUNDLE_TAG));
+        if (mFilter.getOriginalPriceMin() != Filter.NO_PRICE) {
+            mMinSearchResultPrice = mFilter.getOriginalPriceMin();
+        } else {
+            mMinSearchResultPrice = 0f;
+        }
+        if (mFilter.getOriginalPriceMax() != Filter.NO_PRICE) {
+            mMaxSearchResultPrice = mFilter.getOriginalPriceMax();
+        } else {
+            mMaxSearchResultPrice = 100f;
+        }
         mHotDealsLiveData = new MutableLiveData<>();
         LocationUtil locationUtil = LocationUtil.getInstance();
         locationUtil.getLocationLiveData().observeForever(location -> {
@@ -70,9 +81,17 @@ public class HotDealsViewModel extends AndroidViewModel {
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 SearchResult searchResult = result.getData().getValue();
-                mHotDealsLiveData.setValue(searchResult.getResults());
-                mMinSearchResultPrice = searchResult.getMinPrice();
-                mMaxSearchResultPrice = searchResult.getMaxPrice();
+                if (searchResult.getResults().size() > 0) {
+                    mHotDealsLiveData.setValue(searchResult.getResults());
+                    mMinSearchResultPrice = searchResult.getMinPrice();
+                    mMaxSearchResultPrice = searchResult.getMaxPrice();
+                    mFilter.setOriginalPriceMin(searchResult.getMinPrice());
+                    mFilter.setOriginalPriceMax(searchResult.getMaxPrice());
+                } else {
+                    // TODO: 6/2/2021 no results
+                    Toast.makeText(getApplication(), "No results found", Toast.LENGTH_LONG).show();
+                }
+
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
@@ -130,11 +149,11 @@ public class HotDealsViewModel extends AndroidViewModel {
         rangeSlider.setValueTo(mMaxSearchResultPrice);
         float leftThumb = mMinSearchResultPrice;
         float rightThumb = mMaxSearchResultPrice;
-        if (mFilter.getPriceMin() != Filter.NO_PRICE) {
-            leftThumb = mFilter.getPriceMin();
+        if (mFilter.getFilterPriceMin() != Filter.NO_PRICE) {
+            leftThumb = mFilter.getFilterPriceMin();
         }
-        if (mFilter.getPriceMax() != Filter.NO_PRICE) {
-            rightThumb = mFilter.getPriceMax();
+        if (mFilter.getFilterPriceMax() != Filter.NO_PRICE) {
+            rightThumb = mFilter.getFilterPriceMax();
         }
         rangeSlider.setValues(leftThumb, rightThumb);
         switch (mFilter.getCategoryName()) {
@@ -165,10 +184,10 @@ public class HotDealsViewModel extends AndroidViewModel {
         float leftThumb = values.get(0);
         float rightThumb = values.get(1);
         if (leftThumb > rangeSlider.getValueFrom()) {
-            newFilter.setPriceMin(leftThumb);
+            newFilter.setFilterPriceMin(leftThumb);
         }
         if (rightThumb < rangeSlider.getValueTo()) {
-            newFilter.setPriceMax(rightThumb);
+            newFilter.setFilterPriceMax(rightThumb);
         }
         int checkedChipId = chipGroup.getCheckedChipId();
         if (checkedChipId == R.id.men_chip) {

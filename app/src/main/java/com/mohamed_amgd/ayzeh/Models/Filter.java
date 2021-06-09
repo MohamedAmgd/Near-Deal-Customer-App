@@ -12,19 +12,26 @@ public class Filter implements Serializable {
     public static final String GADGETS_CATEGORY = "Gadgets";
     public static final String TOOLS_CATEGORY = "Tools";
     private String mCategoryName;
-    private float mPriceMin;
-    private float mPriceMax;
+    private float mFilterPriceMin;
+    private float mFilterPriceMax;
+    private float mOriginalPriceMin;
+    private float mOriginalPriceMax;
 
     public Filter() {
         mCategoryName = NO_CATEGORY;
-        mPriceMin = NO_PRICE;
-        mPriceMax = NO_PRICE;
+        mFilterPriceMin = NO_PRICE;
+        mFilterPriceMax = NO_PRICE;
+        mOriginalPriceMin = NO_PRICE;
+        mOriginalPriceMax = NO_PRICE;
     }
-    public static Filter createFromAnotherFilter(Filter anotherFilter){
+
+    public static Filter createFromAnotherFilter(Filter anotherFilter) {
         Filter newFilter = new Filter();
         newFilter.setCategoryName(anotherFilter.getCategoryName());
-        newFilter.setPriceMax(anotherFilter.getPriceMax());
-        newFilter.setPriceMin(anotherFilter.getPriceMin());
+        newFilter.setFilterPriceMax(anotherFilter.getFilterPriceMax());
+        newFilter.setFilterPriceMin(anotherFilter.getFilterPriceMin());
+        newFilter.setOriginalPriceMax(anotherFilter.getOriginalPriceMax());
+        newFilter.setOriginalPriceMin(anotherFilter.getOriginalPriceMin());
         return newFilter;
     }
 
@@ -36,19 +43,39 @@ public class Filter implements Serializable {
         this.mCategoryName = mCategoryName;
     }
 
-    public float getPriceMin() {
-        return mPriceMin;
+    public float getFilterPriceMin() {
+        return mFilterPriceMin;
     }
 
-    public void setPriceMin(float mPriceMin) {
-        this.mPriceMin = mPriceMin;
+    public void setFilterPriceMin(float mFilterPriceMin) {
+        if (mFilterPriceMin > mOriginalPriceMin || this.mFilterPriceMin == NO_PRICE)
+            this.mFilterPriceMin = mFilterPriceMin;
     }
 
-    public float getPriceMax() {
-        return mPriceMax;
+    public float getFilterPriceMax() {
+        return mFilterPriceMax;
     }
 
-    public void setPriceMax(float mPriceMax) {
-        this.mPriceMax = mPriceMax;
+    public void setFilterPriceMax(float mFilterPriceMax) {
+        if (mFilterPriceMax < mOriginalPriceMax || this.mFilterPriceMax == NO_PRICE)
+            this.mFilterPriceMax = mFilterPriceMax;
+    }
+
+    public float getOriginalPriceMin() {
+        return mOriginalPriceMin;
+    }
+
+    public void setOriginalPriceMin(float mOriginalPriceMin) {
+        this.mOriginalPriceMin = mOriginalPriceMin;
+        if (mOriginalPriceMin > mFilterPriceMin) mFilterPriceMin = mOriginalPriceMin;
+    }
+
+    public float getOriginalPriceMax() {
+        return mOriginalPriceMax;
+    }
+
+    public void setOriginalPriceMax(float mOriginalPriceMax) {
+        this.mOriginalPriceMax = mOriginalPriceMax;
+        if (mOriginalPriceMax < mFilterPriceMax) mFilterPriceMax = mOriginalPriceMax;
     }
 }

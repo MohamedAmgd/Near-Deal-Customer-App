@@ -57,11 +57,11 @@ public class Repository {
         if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
             category = filter.getCategoryName();
         }
-        if (filter.getPriceMax() != Filter.NO_PRICE) {
-            priceMax = filter.getPriceMax() + "";
+        if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
+            priceMax = filter.getFilterPriceMax() + "";
         }
-        if (filter.getPriceMax() != Filter.NO_PRICE) {
-            priceMin = filter.getPriceMax() + "";
+        if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
+            priceMin = filter.getFilterPriceMax() + "";
         }
         if (location != null) {
             return mRetrofitClient.searchNearbyProductsByName(location.getLat(), location.getLon(), 5, query, category, priceMax, priceMin);
@@ -75,11 +75,11 @@ public class Repository {
         if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
             category = filter.getCategoryName();
         }
-        if (filter.getPriceMax() != Filter.NO_PRICE) {
-            priceMax = filter.getPriceMax() + "";
+        if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
+            priceMax = filter.getFilterPriceMax() + "";
         }
-        if (filter.getPriceMax() != Filter.NO_PRICE) {
-            priceMin = filter.getPriceMax() + "";
+        if (filter.getFilterPriceMin() != Filter.NO_PRICE) {
+            priceMin = filter.getFilterPriceMin() + "";
         }
         return mRetrofitClient.searchNearbyProductsByName(5, query, category, priceMax, priceMin);
     }
@@ -105,11 +105,11 @@ public class Repository {
         if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
             category = filter.getCategoryName();
         }
-        if (filter.getPriceMax() != Filter.NO_PRICE) {
-            priceMax = filter.getPriceMax() + "";
+        if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
+            priceMax = filter.getFilterPriceMax() + "";
         }
-        if (filter.getPriceMax() != Filter.NO_PRICE) {
-            priceMin = filter.getPriceMax() + "";
+        if (filter.getFilterPriceMin() != Filter.NO_PRICE) {
+            priceMin = filter.getFilterPriceMin() + "";
         }
         if (location != null) {
             return mRetrofitClient.getHotDeals(location.getLat(), location.getLon(), 5, query, category, priceMax, priceMin);

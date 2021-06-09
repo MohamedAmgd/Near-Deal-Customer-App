@@ -73,11 +73,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.explore_menu_item) {
+                popAllBackStack();
                 mFragmentTransaction = mFragmentManager.beginTransaction();
                 mFragmentTransaction.replace(R.id.fragment_layout,new ExploreFragment());
                 mFragmentTransaction.commit();
             }  else if (itemId == R.id.nearby_locations_menu_item) {
                 if(hasLocationAccess()){
+                    popAllBackStack();
                     mFragmentTransaction = mFragmentManager.beginTransaction();
                     mFragmentTransaction.replace(R.id.fragment_layout,new NearbyLocationsFragment());
                     mFragmentTransaction.commit();
@@ -86,12 +88,19 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                     return false;
                 }
             } else if (itemId == R.id.account_menu_item) {
+                popAllBackStack();
                 mFragmentTransaction = mFragmentManager.beginTransaction();
-                mFragmentTransaction.replace(R.id.fragment_layout,new UserInfoFragment());
+                mFragmentTransaction.replace(R.id.fragment_layout, new UserInfoFragment());
                 mFragmentTransaction.commit();
             }
             return true;
         });
+    }
+
+    private void popAllBackStack() {
+        for (int i = 0; i < mFragmentManager.getBackStackEntryCount(); i++) {
+            mFragmentManager.popBackStack();
+        }
     }
 
     private boolean hasLocationAccess() {
@@ -100,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
                 , Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
-    private void requestLocationPermission(){
+    private void requestLocationPermission() {
         EasyPermissions.requestPermissions(this
                 , getString(R.string.location_permission_rationale)
                 , LOCATION_PERMISSION_REQUEST_CODE

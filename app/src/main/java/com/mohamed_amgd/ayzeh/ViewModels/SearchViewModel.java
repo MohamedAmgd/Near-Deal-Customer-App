@@ -3,6 +3,7 @@ package com.mohamed_amgd.ayzeh.ViewModels;
 import android.Manifest;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -58,8 +59,16 @@ public class SearchViewModel extends AndroidViewModel {
         mError = new MutableLiveData<>();
         mQuery = bundle.getString(SearchFragment.QUERY_BUNDLE_TAG);
         mFilter = Filter.createFromAnotherFilter((Filter) bundle.getSerializable(SearchFragment.FILTER_BUNDLE_TAG));
-        mMinSearchResultPrice = 0f;
-        mMaxSearchResultPrice = 100f;
+        if (mFilter.getOriginalPriceMin() != Filter.NO_PRICE) {
+            mMinSearchResultPrice = mFilter.getOriginalPriceMin();
+        } else {
+            mMinSearchResultPrice = 0f;
+        }
+        if (mFilter.getOriginalPriceMax() != Filter.NO_PRICE) {
+            mMaxSearchResultPrice = mFilter.getOriginalPriceMax();
+        } else {
+            mMaxSearchResultPrice = 100f;
+        }
         mProductsLiveData = new MutableLiveData<>();
         LocationUtil locationUtil = LocationUtil.getInstance();
         locationUtil.getLocationLiveData().observeForever(location -> {
@@ -77,9 +86,16 @@ public class SearchViewModel extends AndroidViewModel {
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
             if (result.isFinishedSuccessfully()) {
                 SearchResult searchResult = result.getData().getValue();
-                mProductsLiveData.setValue(searchResult.getResults());
-                mMinSearchResultPrice = searchResult.getMinPrice();
-                mMaxSearchResultPrice = searchResult.getMaxPrice();
+                if (searchResult.getResults().size() > 0) {
+                    mProductsLiveData.setValue(searchResult.getResults());
+                    mMinSearchResultPrice = searchResult.getMinPrice();
+                    mMaxSearchResultPrice = searchResult.getMaxPrice();
+                    mFilter.setOriginalPriceMin(searchResult.getMinPrice());
+                    mFilter.setOriginalPriceMax(searchResult.getMaxPrice());
+                } else {
+                    // TODO: 6/2/2021 no results
+                    Toast.makeText(getApplication(), "No results found", Toast.LENGTH_LONG).show();
+                }
             } else if (result.isFinishedWithError()) {
                 mError.setValue(new ErrorHandler.Error(result.getErrorCode()
                         , v -> {
@@ -137,11 +153,11 @@ public class SearchViewModel extends AndroidViewModel {
         rangeSlider.setValueTo(mMaxSearchResultPrice);
         float leftThumb = mMinSearchResultPrice;
         float rightThumb = mMaxSearchResultPrice;
-        if (mFilter.getPriceMin() != Filter.NO_PRICE) {
-            leftThumb = mFilter.getPriceMin();
+        if (mFilter.getFilterPriceMin() != Filter.NO_PRICE) {
+            leftThumb = mFilter.getFilterPriceMin();
         }
-        if (mFilter.getPriceMax() != Filter.NO_PRICE) {
-            rightThumb = mFilter.getPriceMax();
+        if (mFilter.getFilterPriceMax() != Filter.NO_PRICE) {
+            rightThumb = mFilter.getFilterPriceMax();
         }
         rangeSlider.setValues(leftThumb, rightThumb);
         switch (mFilter.getCategoryName()) {
@@ -171,11 +187,12 @@ public class SearchViewModel extends AndroidViewModel {
         ArrayList<Float> values = (ArrayList<Float>) rangeSlider.getValues();
         float leftThumb = values.get(0);
         float rightThumb = values.get(1);
+        Log.i("Filter dialog", "values: " + values);
         if (leftThumb > rangeSlider.getValueFrom()) {
-            newFilter.setPriceMin(leftThumb);
+            newFilter.setFilterPriceMin(leftThumb);
         }
         if (rightThumb < rangeSlider.getValueTo()) {
-            newFilter.setPriceMax(rightThumb);
+            newFilter.setFilterPriceMax(rightThumb);
         }
         int checkedChipId = chipGroup.getCheckedChipId();
         if (checkedChipId == R.id.men_chip) {

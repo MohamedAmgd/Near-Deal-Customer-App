@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="8dp"
+    android:background="?backgroundColor"
     tools:context=".Views.Fragments.SignInFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout

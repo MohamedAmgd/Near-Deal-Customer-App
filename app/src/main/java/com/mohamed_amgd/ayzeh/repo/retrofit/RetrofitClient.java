@@ -473,6 +473,9 @@ public class RetrofitClient {
                     Product product = convertJsonObjectToProduct(element.getAsJsonObject());
                     if (product != null) products.add(product);
                 }
+                if (productsElements.size() == 0) {
+                    return new SearchResult(new ArrayList<>(), 0f, 100f);
+                }
                 if (products.size() != productsElements.size()) {
                     return null;
                 }
