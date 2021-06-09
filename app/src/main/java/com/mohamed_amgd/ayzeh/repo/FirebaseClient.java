@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public class FirebaseClient {
     private static final String TAG = "FirebaseClient :";
@@ -38,7 +39,9 @@ public class FirebaseClient {
             }
         }).addOnFailureListener(e -> {
             result.setFinishedWithError(ErrorHandler.FAILED_CREATE_USER_ERROR);
+            reportNonFetalCrash(e);
             Log.i(TAG, "createNewUser: " + e.getMessage());
+            Log.i(TAG, "createNewUser: " + e);
         });
         return result;
     }
@@ -53,6 +56,7 @@ public class FirebaseClient {
             }
         }).addOnFailureListener(e -> {
             result.setFinishedWithError(ErrorHandler.FAILED_SIGN_IN_ERROR);
+            reportNonFetalCrash(e);
             Log.i(TAG, "createNewUser: " + e.getMessage());
         });
         return result;
@@ -65,6 +69,7 @@ public class FirebaseClient {
                 result.setFinishedSuccessfully(true);
             }).addOnFailureListener(e -> {
                 result.setFinishedWithError(ErrorHandler.FAILED_UPDATE_EMAIL_ERROR);
+                reportNonFetalCrash(e);
                 Log.i(TAG, "createNewUser: " + e.getMessage());
             });
         } else {
@@ -81,6 +86,7 @@ public class FirebaseClient {
                 Log.i(TAG, "updatePassword: " + true);
             }).addOnFailureListener(e -> {
                 result.setFinishedWithError(ErrorHandler.FAILED_UPDATE_PASSWORD_ERROR);
+                reportNonFetalCrash(e);
                 Log.i(TAG, "updatePassword: " + e.getMessage());
             });
         } else {
@@ -91,5 +97,9 @@ public class FirebaseClient {
 
     public void signOutUser() {
         mAuth.signOut();
+    }
+
+    public void reportNonFetalCrash(Throwable throwable) {
+        FirebaseCrashlytics.getInstance().recordException(throwable);
     }
 }

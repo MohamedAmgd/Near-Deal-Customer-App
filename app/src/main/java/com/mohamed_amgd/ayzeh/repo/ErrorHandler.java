@@ -92,6 +92,10 @@ public class ErrorHandler {
         snackbar.show();
     }
 
+    public void reportNonFetalCrash(Throwable throwable) {
+        FirebaseClient.getInstance().reportNonFetalCrash(throwable);
+    }
+
     public static class Error {
         private int errorCode;
         private View.OnClickListener listener;

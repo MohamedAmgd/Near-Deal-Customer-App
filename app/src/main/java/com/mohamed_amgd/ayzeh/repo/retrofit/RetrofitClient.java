@@ -1,7 +1,5 @@
 package com.mohamed_amgd.ayzeh.repo.retrofit;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -243,7 +241,6 @@ public class RetrofitClient {
                 ArrayList<Product> products = convertResponseToProductArrayList(response);
                 int errorCode = handleSuccess(products, response);
                 if (errorCode == ErrorHandler.NO_ERROR) {
-                    Log.i(TAG, "onResponse: " + products);
                     result.setFinishedSuccessfully(products);
                 } else {
                     result.setFinishedWithError(errorCode);
@@ -405,6 +402,7 @@ public class RetrofitClient {
         });
         return result;
     }
+
     public RepositoryResult<SearchResult> searchNearbyProductsByName(double lat
             , double lon
             , int range
@@ -465,7 +463,6 @@ public class RetrofitClient {
         if (response.body() != null) {
             ArrayList<Product> products = new ArrayList<>();
             try {
-                Log.i(TAG, "convertResponseToProductSearchResult: " + response.body());
                 JsonObject message = response.body().get("message").getAsJsonObject();
                 JsonArray productsElements = message.get("products").getAsJsonArray();
                 for (JsonElement element :
@@ -483,7 +480,7 @@ public class RetrofitClient {
                 float maxItemPrice = message.get("max_price").getAsFloat();
                 return new SearchResult(products, minItemPrice, maxItemPrice);
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorHandler.getInstance().reportNonFetalCrash(e);
             }
         }
         return null;
@@ -504,7 +501,7 @@ public class RetrofitClient {
                 }
                 return offers;
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorHandler.getInstance().reportNonFetalCrash(e);
             }
         }
         return null;
@@ -521,7 +518,7 @@ public class RetrofitClient {
             String shop_image_url = jsonObject.get("shop_image_url").getAsString();
             return new Offer(id, product_id, shop_id, shop_name, shop_image_url, price, amount);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -534,7 +531,7 @@ public class RetrofitClient {
             }
             return product;
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -555,7 +552,7 @@ public class RetrofitClient {
             }
             return products;
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -582,7 +579,7 @@ public class RetrofitClient {
             String image_url = jsonObject.get("image_url").getAsString();
             return new Product(id, name, category, brand, price + "", amount, description, image_url);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -595,7 +592,7 @@ public class RetrofitClient {
             }
             return shop;
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -616,7 +613,7 @@ public class RetrofitClient {
             }
             return shops;
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -633,7 +630,7 @@ public class RetrofitClient {
                     = Util.getInstance().getDistanceBetweenUserAndShop(userLat, userLon, shop_lat, shop_lon);
             return new Shop(id, name, image_url, description, shop_lon, shop_lat, distanceToUser);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -652,7 +649,7 @@ public class RetrofitClient {
             }
             return user;
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -669,7 +666,7 @@ public class RetrofitClient {
             requestBody.put("user_data", userDataJsonObject);
             return requestBody;
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorHandler.getInstance().reportNonFetalCrash(e);
             return null;
         }
     }
@@ -682,7 +679,8 @@ public class RetrofitClient {
             } else {
                 return ErrorHandler.NO_ERROR;
             }
-        } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR) {
+        } else if (response.code() == STATUS_CODE_CLIENT_INPUT_ERROR
+                || response.code() == STATUS_CODE_CLIENT_EMPTY_IMAGE_ERROR) {
             return ErrorHandler.INPUT_ERROR;
         } else if (response.code() == STATUS_CODE_SERVER_ERROR) {
             return ErrorHandler.SERVER_ERROR;
@@ -692,8 +690,6 @@ public class RetrofitClient {
     }
 
     private int handleFailure(Throwable t) {
-        t.printStackTrace();
-        Log.i(TAG, "onFailure: " + t.getMessage());
         if (t.getClass() == UnknownHostException.class) {
             return ErrorHandler.NO_INTERNET_CONNECTION_ERROR;
         } else if (t.getClass() == SocketTimeoutException.class) {
