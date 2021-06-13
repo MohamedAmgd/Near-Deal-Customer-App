@@ -90,8 +90,10 @@ public class SearchViewModel extends AndroidViewModel {
                     mProductsLiveData.setValue(searchResult.getResults());
                     mMinSearchResultPrice = searchResult.getMinPrice();
                     mMaxSearchResultPrice = searchResult.getMaxPrice();
-                    mFilter.setOriginalPriceMin(searchResult.getMinPrice());
-                    mFilter.setOriginalPriceMax(searchResult.getMaxPrice());
+                    if (mMinSearchResultPrice < mMaxSearchResultPrice) {
+                        mFilter.setOriginalPriceMin(searchResult.getMinPrice());
+                        mFilter.setOriginalPriceMax(searchResult.getMaxPrice());
+                    }
                 } else {
                     // TODO: 6/2/2021 no results
                     Toast.makeText(getApplication(), "No results found", Toast.LENGTH_LONG).show();
@@ -149,10 +151,10 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
     private void initFiltersDialog(RangeSlider rangeSlider, ChipGroup chipGroup) {
-        rangeSlider.setValueFrom(mMinSearchResultPrice);
-        rangeSlider.setValueTo(mMaxSearchResultPrice);
-        float leftThumb = mMinSearchResultPrice;
-        float rightThumb = mMaxSearchResultPrice;
+        rangeSlider.setValueFrom(mFilter.getOriginalPriceMin());
+        rangeSlider.setValueTo(mFilter.getOriginalPriceMax());
+        float leftThumb = mFilter.getOriginalPriceMin();
+        float rightThumb = mFilter.getOriginalPriceMax();
         if (mFilter.getFilterPriceMin() != Filter.NO_PRICE) {
             leftThumb = mFilter.getFilterPriceMin();
         }
