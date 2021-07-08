@@ -127,7 +127,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        mBottomNavigationView.setSelectedItemId(R.id.nearby_locations_menu_item);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE)
+            mBottomNavigationView.setSelectedItemId(R.id.nearby_locations_menu_item);
     }
 
     @Override

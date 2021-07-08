@@ -1,6 +1,5 @@
 package com.mohamed_amgd.ayzeh.ViewModels;
 
-import android.Manifest;
 import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,8 +38,6 @@ import com.mohamed_amgd.ayzeh.repo.Repository;
 import com.mohamed_amgd.ayzeh.repo.RepositoryResult;
 
 import java.util.ArrayList;
-
-import pub.devrel.easypermissions.EasyPermissions;
 
 public class SearchViewModel extends AndroidViewModel {
 
@@ -247,12 +244,6 @@ public class SearchViewModel extends AndroidViewModel {
             transaction.addToBackStack(ProductFragment.CLASS_NAME);
             transaction.commit();
         };
-    }
-
-    private boolean hasLocationAccess() {
-        return EasyPermissions.hasPermissions(getApplication()
-                , Manifest.permission.ACCESS_COARSE_LOCATION
-                , Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     public void showError(View view, ErrorHandler.Error error) {
