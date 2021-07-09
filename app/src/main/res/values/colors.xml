@@ -11,5 +11,6 @@
     <color name="darker_white">#eee</color>
     <color name="mercury">#E2E2E2</color>
     <color name="gray">#919191</color>
+    <color name="dark_gray">#63666A</color>
 
 </resources>

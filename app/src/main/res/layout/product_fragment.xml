@@ -39,6 +39,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/dark_gray"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +55,7 @@
         android:textColor="?colorPrimary"
         android:textSize="19sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/product_image"
+        app:layout_constraintTop_toBottomOf="@id/product_name"
         tools:text="749 EGP" />
 
     <TextView
@@ -77,10 +78,11 @@
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
         android:padding="8dp"
+        android:textColor="@color/dark_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description_header_text_view"
-        tools:text="@string/description"/>
+        tools:text="@string/description" />
 
     <TextView
         android:id="@+id/offers_list_header"

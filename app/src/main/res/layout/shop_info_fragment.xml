@@ -52,6 +52,7 @@
         android:layout_marginTop="19dp"
         android:paddingHorizontal="15dp"
         android:textSize="15sp"
+        android:textColor="#63666A"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description_header_text_view"

@@ -29,25 +29,33 @@
 
         <TextView
             android:id="@+id/shop_name_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="20dp"
+            android:layout_marginEnd="4dp"
+            android:ellipsize="end"
             android:fontFamily="@font/roboto_medium"
+            android:maxLines="1"
+            android:minLines="1"
             android:textColor="@color/black"
             android:textSize="19sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/shop_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Adidas Outlet" />
 
         <TextView
             android:id="@+id/shop_description_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="4dp"
             android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/dark_gray"
             android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/shop_image"
             app:layout_constraintTop_toBottomOf="@id/shop_name_text_view"
             tools:text="Sportswear" />
