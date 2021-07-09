@@ -2,7 +2,6 @@ package com.mohamed_amgd.near_deal.ViewModels;
 
 import android.app.Application;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -78,6 +77,7 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
     private void initProductsLiveData(LocationUtil.UserLocation location) {
+        if (location == null) return;
         RepositoryResult<SearchResult> result
                 = Repository.getInstance().searchProducts(location, mQuery, mFilter);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {
@@ -148,10 +148,10 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
     private void initFiltersDialog(RangeSlider rangeSlider, ChipGroup chipGroup) {
-        rangeSlider.setValueFrom(mFilter.getOriginalPriceMin());
-        rangeSlider.setValueTo(mFilter.getOriginalPriceMax());
-        float leftThumb = mFilter.getOriginalPriceMin();
-        float rightThumb = mFilter.getOriginalPriceMax();
+        rangeSlider.setValueFrom(mMinSearchResultPrice);
+        rangeSlider.setValueTo(mMaxSearchResultPrice);
+        float leftThumb = mMinSearchResultPrice;
+        float rightThumb = mMaxSearchResultPrice;
         if (mFilter.getFilterPriceMin() != Filter.NO_PRICE) {
             leftThumb = mFilter.getFilterPriceMin();
         }
@@ -186,7 +186,6 @@ public class SearchViewModel extends AndroidViewModel {
         ArrayList<Float> values = (ArrayList<Float>) rangeSlider.getValues();
         float leftThumb = values.get(0);
         float rightThumb = values.get(1);
-        Log.i("Filter dialog", "values: " + values);
         if (leftThumb > rangeSlider.getValueFrom()) {
             newFilter.setFilterPriceMin(leftThumb);
         }
@@ -210,7 +209,6 @@ public class SearchViewModel extends AndroidViewModel {
         filterDialog.dismiss();
         initNewSearchFragment(mQuery, newFilter);
     }
-
 
     public void initProductsRecycler(RecyclerView productsRecycler) {
         ArrayList<Product> mResults = new ArrayList<>();

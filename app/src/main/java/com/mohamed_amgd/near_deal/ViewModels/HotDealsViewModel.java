@@ -76,6 +76,7 @@ public class HotDealsViewModel extends AndroidViewModel {
     }
 
     private void initHotDealsLiveData(LocationUtil.UserLocation location) {
+        if (location == null) return;
         RepositoryResult<SearchResult> result
                 = Repository.getInstance().getHotDealsSearchResult(location, mQuery, mFilter);
         result.getIsLoadingLiveData().observeForever(aBoolean -> {

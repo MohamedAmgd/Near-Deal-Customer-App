@@ -16,12 +16,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationUtil {
     private static LocationUtil mInstance;
+    public final MutableLiveData<Boolean> needLocationAccessLiveData;
     private final MutableLiveData<UserLocation> locationLiveData;
     private FusedLocationProviderClient mFusedLocationClient;
 
-
     private LocationUtil() {
         locationLiveData = new MutableLiveData<>();
+        needLocationAccessLiveData = new MutableLiveData<>();
+        needLocationAccessLiveData.setValue(true);
         if (mFusedLocationClient != null) {
             askForLocationUpdate();
             getLastLocation();
@@ -43,6 +45,10 @@ public class LocationUtil {
 
     public MutableLiveData<UserLocation> getLocationLiveData() {
         return locationLiveData;
+    }
+
+    public MutableLiveData<Boolean> getNeedLocationAccessLiveData() {
+        return needLocationAccessLiveData;
     }
 
     @SuppressLint("MissingPermission")
@@ -90,9 +96,12 @@ public class LocationUtil {
     }
 
     public boolean hasLocationAccess() {
-        return EasyPermissions.hasPermissions(mFusedLocationClient.getApplicationContext()
+        boolean hasAccess = EasyPermissions.hasPermissions(mFusedLocationClient.getApplicationContext()
                 , Manifest.permission.ACCESS_COARSE_LOCATION
                 , Manifest.permission.ACCESS_FINE_LOCATION);
+        if (hasAccess) needLocationAccessLiveData.setValue(false);
+        else needLocationAccessLiveData.setValue(true);
+        return hasAccess;
     }
 
     public static class UserLocation {

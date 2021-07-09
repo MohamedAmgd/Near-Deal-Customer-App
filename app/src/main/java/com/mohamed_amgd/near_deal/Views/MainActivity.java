@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -47,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private void initLocationUtil() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
         LocationUtil.getInstance().setFusedLocationClient(fusedLocationClient);
+        LocationUtil.getInstance().needLocationAccessLiveData.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean needLocationAccess) {
+                if (needLocationAccess) requestLocationPermission();
+            }
+        });
     }
 
     private void increaseExploreItemSize() {
@@ -127,8 +134,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE)
-            mBottomNavigationView.setSelectedItemId(R.id.nearby_locations_menu_item);
+
     }
 
     @Override
