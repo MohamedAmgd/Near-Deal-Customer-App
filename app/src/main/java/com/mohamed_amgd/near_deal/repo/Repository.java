@@ -61,27 +61,13 @@ public class Repository {
             priceMax = filter.getFilterPriceMax() + "";
         }
         if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
-            priceMin = filter.getFilterPriceMax() + "";
+            priceMin = filter.getFilterPriceMin() + "";
         }
         if (location != null) {
             return mRetrofitClient.searchNearbyProductsByName(location.getLat(), location.getLon(), 5, query, category, priceMax, priceMin);
         } else {
             return mRetrofitClient.searchNearbyProductsByName(5, query, category, priceMax, priceMin);
         }
-    }
-
-    public RepositoryResult<SearchResult> searchProducts(String query, Filter filter) {
-        String category = null, priceMax = null, priceMin = null;
-        if (!filter.getCategoryName().equals(Filter.NO_CATEGORY)) {
-            category = filter.getCategoryName();
-        }
-        if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
-            priceMax = filter.getFilterPriceMax() + "";
-        }
-        if (filter.getFilterPriceMin() != Filter.NO_PRICE) {
-            priceMin = filter.getFilterPriceMin() + "";
-        }
-        return mRetrofitClient.searchNearbyProductsByName(5, query, category, priceMax, priceMin);
     }
 
     public RepositoryResult<Shop> getShopById(String shopId) {
