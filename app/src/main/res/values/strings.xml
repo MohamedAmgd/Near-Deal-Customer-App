@@ -80,4 +80,5 @@
     <string name="internet_connection_unstable_error">Pour internet connection\nPlease try again</string>
     <string name="request_timed_out_error">Request timed out\nPlease try again</string>
     <string name="out_of_stock">Out of stock</string>
+    <string name="turn_on_your_location">Please turn on your location...</string>
 </resources>
