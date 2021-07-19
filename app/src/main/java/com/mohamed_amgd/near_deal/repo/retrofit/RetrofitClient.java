@@ -35,8 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     public static final String UPLOAD_USER_IMAGE = "user";
-    //private static final String BASE_URL = "https://ayz-eh.herokuapp.com/";
-    private static final String BASE_URL = "https://3ayez-eh.azurewebsites.net/";
+    private static final String BASE_URL = "https://neardeal.azurewebsites.net";
     private static final int STATUS_CODE_SUCCESSFUL = 200;
     private static final int STATUS_CODE_CLIENT_INPUT_ERROR = 400;
     private static final int STATUS_CODE_CLIENT_EMPTY_IMAGE_ERROR = 403;
