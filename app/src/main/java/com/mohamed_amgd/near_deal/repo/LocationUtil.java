@@ -3,6 +3,7 @@ package com.mohamed_amgd.near_deal.repo;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.location.Location;
+import android.location.LocationManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -16,18 +17,18 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class LocationUtil {
     private static LocationUtil mInstance;
-    public final MutableLiveData<Boolean> needLocationAccessLiveData;
+    public final MutableLiveData<Boolean> needLocationPermissionLiveData;
+    public final MutableLiveData<Boolean> needLocationEnabledLiveData;
     private final MutableLiveData<UserLocation> locationLiveData;
     private FusedLocationProviderClient mFusedLocationClient;
+    private LocationManager mLocationManager;
 
     private LocationUtil() {
         locationLiveData = new MutableLiveData<>();
-        needLocationAccessLiveData = new MutableLiveData<>();
-        needLocationAccessLiveData.setValue(true);
-        if (mFusedLocationClient != null) {
-            askForLocationUpdate();
-            getLastLocation();
-        }
+        needLocationPermissionLiveData = new MutableLiveData<>();
+        needLocationPermissionLiveData.setValue(true);
+        needLocationEnabledLiveData = new MutableLiveData<>();
+        needLocationEnabledLiveData.setValue(true);
     }
 
     public static LocationUtil getInstance() {
@@ -39,16 +40,16 @@ public class LocationUtil {
 
     public void setFusedLocationClient(FusedLocationProviderClient mFusedLocationClient) {
         this.mFusedLocationClient = mFusedLocationClient;
-        askForLocationUpdate();
-        getLastLocation();
+    }
+
+    public void setLocationManager(LocationManager locationManager) {
+        this.mLocationManager = locationManager;
     }
 
     public MutableLiveData<UserLocation> getLocationLiveData() {
+        askForLocationUpdate();
+        getLastLocation();
         return locationLiveData;
-    }
-
-    public MutableLiveData<Boolean> getNeedLocationAccessLiveData() {
-        return needLocationAccessLiveData;
     }
 
     @SuppressLint("MissingPermission")
@@ -96,12 +97,35 @@ public class LocationUtil {
     }
 
     public boolean hasLocationAccess() {
-        boolean hasAccess = EasyPermissions.hasPermissions(mFusedLocationClient.getApplicationContext()
+        boolean a = hasLocationPermission();
+        boolean b = isLocationEnabled();
+        if (hasLocationPermission()) {
+            needLocationPermissionLiveData.setValue(false);
+        } else {
+            needLocationPermissionLiveData.setValue(true);
+        }
+        if (isLocationEnabled()) {
+            needLocationEnabledLiveData.setValue(false);
+        } else {
+            needLocationEnabledLiveData.setValue(true);
+        }
+        return hasLocationPermission() && isLocationEnabled();
+    }
+
+    public boolean hasLocationPermission() {
+        return EasyPermissions.hasPermissions(mFusedLocationClient.getApplicationContext()
                 , Manifest.permission.ACCESS_COARSE_LOCATION
                 , Manifest.permission.ACCESS_FINE_LOCATION);
-        if (hasAccess) needLocationAccessLiveData.setValue(false);
-        else needLocationAccessLiveData.setValue(true);
-        return hasAccess;
+    }
+
+    // method to check
+    // if location is enabled
+    public boolean isLocationEnabled() {
+        if (mLocationManager != null) {
+            return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }
+        return false;
     }
 
     public static class UserLocation {

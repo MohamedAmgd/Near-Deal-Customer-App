@@ -52,6 +52,7 @@ public class NearbyLocationsViewModel extends AndroidViewModel {
         mFragmentManager = fragmentManager;
         mError = new MutableLiveData<>();
         LocationUtil locationUtil = LocationUtil.getInstance();
+        locationUtil.hasLocationAccess();
         mUserLocationLiveData = locationUtil.getLocationLiveData();
     }
 

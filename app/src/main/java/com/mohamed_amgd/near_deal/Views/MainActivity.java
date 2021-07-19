@@ -1,11 +1,16 @@
 package com.mohamed_amgd.near_deal.Views;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +32,7 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 52;
 
@@ -48,12 +53,25 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     private void initLocationUtil() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplication());
         LocationUtil.getInstance().setFusedLocationClient(fusedLocationClient);
-        LocationUtil.getInstance().needLocationAccessLiveData.observe(this, new Observer<Boolean>() {
+        LocationUtil.getInstance().setLocationManager((LocationManager) getSystemService(Context.LOCATION_SERVICE));
+        LocationUtil.getInstance().needLocationPermissionLiveData.observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean needLocationAccess) {
-                if (needLocationAccess) requestLocationPermission();
+            public void onChanged(Boolean needLocationPermission) {
+                if (needLocationPermission) requestLocationPermission();
             }
         });
+        LocationUtil.getInstance().needLocationEnabledLiveData.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean needLocationEnabled) {
+                if (needLocationEnabled) requestLocationEnable();
+            }
+        });
+    }
+
+    private void requestLocationEnable() {
+        Toast.makeText(this, getString(R.string.turn_on_your_location), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
     }
 
     private void increaseExploreItemSize() {
@@ -71,10 +89,10 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         iconView.setLayoutParams(layoutParams);
     }
 
-    private void initNavigation(){
+    private void initNavigation() {
         mFragmentManager = getSupportFragmentManager();
         mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.add(R.id.fragment_layout,new ExploreFragment());
+        mFragmentTransaction.add(R.id.fragment_layout, new ExploreFragment());
         mFragmentTransaction.commit();
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -82,13 +100,13 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
             if (itemId == R.id.explore_menu_item) {
                 popAllBackStack();
                 mFragmentTransaction = mFragmentManager.beginTransaction();
-                mFragmentTransaction.replace(R.id.fragment_layout,new ExploreFragment());
+                mFragmentTransaction.replace(R.id.fragment_layout, new ExploreFragment());
                 mFragmentTransaction.commit();
-            }  else if (itemId == R.id.nearby_locations_menu_item) {
-                if(hasLocationAccess()){
+            } else if (itemId == R.id.nearby_locations_menu_item) {
+                if (hasLocationAccess()) {
                     popAllBackStack();
                     mFragmentTransaction = mFragmentManager.beginTransaction();
-                    mFragmentTransaction.replace(R.id.fragment_layout,new NearbyLocationsFragment());
+                    mFragmentTransaction.replace(R.id.fragment_layout, new NearbyLocationsFragment());
                     mFragmentTransaction.commit();
                 } else {
                     requestLocationPermission();
