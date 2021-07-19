@@ -60,7 +60,7 @@ public class Repository {
         if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
             priceMax = filter.getFilterPriceMax() + "";
         }
-        if (filter.getFilterPriceMax() != Filter.NO_PRICE) {
+        if (filter.getFilterPriceMin() != Filter.NO_PRICE) {
             priceMin = filter.getFilterPriceMin() + "";
         }
         if (location != null) {
