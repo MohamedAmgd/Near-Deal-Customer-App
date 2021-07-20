@@ -17,7 +17,7 @@ Explore           | Search | Filter
 :---------------------:|:------------------:|:------------------:
 <img src="/screenshots/1 - Explore screen.png" /> | <img src="/screenshots/2 - Search screen 2.png" /> | <img src="/screenshots/3 - Filter screen.png" />
 Nearby shops 1           | Nearby shops 2 | Sign-up
-<img src="/screenshots/4 - Nearby shops screen.png" /> | <img src="/screenshots/5 - Nearby shops screen 2.png"  /> | <img src="/screenshots/5 - Nearby shops screen 2.png" />
+<img src="/screenshots/4 - Nearby shops screen.png" /> | <img src="/screenshots/5 - Nearby shops screen 2.png"  /> | <img src="/screenshots/6 - Sign up screen 1.png" />
 Sign-in           | User info | Edit user info
 <img src="/screenshots/7 - Sign in screen.png" /> | <img src="/screenshots/8 - User info scree.png" /> | <img src="/screenshots/9 - Edit user info screen.png"  />
 
