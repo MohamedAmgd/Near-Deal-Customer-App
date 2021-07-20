@@ -9,7 +9,7 @@ use "Import Project" in Android Studio or you can just run this [APK](https://gi
 
 ## Requirements
 - Android 6.0 or higher
-- Android SDK (For devolping)
+- Android SDK (For developing)
 
 ## Screenshots
 
