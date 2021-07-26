@@ -29,8 +29,16 @@ User info         | Edit user info
 
 ## Tools & Technologies
 
+
+- [Fused location provider](https://developers.google.com/location-context/fused-location-provider) is used to get user's location to load nearby results.
+- [Maps SDK](https://developers.google.com/maps/documentation/android-sdk/overview) is used to show the nearby shops for user's location.
+- [Firebase](https://firebase.google.com/) is used in user authentication and in crashes and performance monitoring.
 - [Retrofit](https://github.com/square/retrofit) is used to build the REST Client in the app.
 - [Glide](https://github.com/bumptech/glide) is used to load and cache the images of the products.
+- [Image compressor](https://github.com/zetbaitsu/Compressor) is used to compress images before uploading.
+- [Circle Image View](https://github.com/hdodenhof/CircleImageView) is used to user's image in a circle.
+- [Easy permissions](https://github.com/googlesamples/easypermissions) is used to simplify requesting permissions.
+
 
 
 ## License
